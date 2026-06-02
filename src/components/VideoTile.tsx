@@ -43,10 +43,6 @@ export function VideoTile({ project, index, featured = false }: Props) {
         for (const e of entries) {
           if (e.isIntersecting) {
             setVisible(true);
-          } else {
-            const v = videoRef.current;
-            if (v) v.pause();
-            setPlaying(false);
           }
         }
       },
