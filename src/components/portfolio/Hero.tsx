@@ -2,6 +2,7 @@ import NeuralBackground from "@/components/ui/flow-field-background";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { RevealOnView } from "@/components/motion/RevealOnView";
 import { GradientShimmer } from "@/components/motion/GradientShimmer";
+import { openInquiry } from "@/lib/inquiry";
 
 export function Hero() {
   return (
@@ -74,12 +75,13 @@ export function Hero() {
               </span>
               <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↓</span>
             </a>
-            <a
-              href="#contact"
+            <button
+              type="button"
+              onClick={openInquiry}
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white hover:bg-white/[0.08] transition-colors"
             >
-              Book an intro call
-            </a>
+              Start a project
+            </button>
           </RevealOnView>
         </div>
       </div>
