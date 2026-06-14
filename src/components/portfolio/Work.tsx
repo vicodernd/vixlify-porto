@@ -71,59 +71,54 @@ export function Work() {
             }}
           />
 
-          {/* Header — h2 left, intro + CTA right. Mirrors the explorations header. */}
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.82fr] lg:items-end lg:gap-16">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="font-display text-[11px] uppercase tracking-[0.28em] text-white/50">
-                  02 · Founding projects
-                </span>
-                <span className="hairline w-16" />
-              </div>
-              <h2 className="mt-4 font-display text-balance text-5xl sm:text-6xl font-semibold tracking-tight text-white">
-                <AnimatedText as="span" className="block" stagger={80}>
-                  Client work,
-                </AnimatedText>
-                <AnimatedText as="span" className="block" stagger={80} delay={220}>
-                  <GradientShimmer delay={1000}>loading.</GradientShimmer>
-                </AnimatedText>
-              </h2>
+          {/* Header — one left-aligned block: eyebrow → headline → copy → slot → CTA. */}
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3">
+              <span className="font-display text-[11px] uppercase tracking-[0.28em] text-white/50">
+                02 · Founding projects
+              </span>
+              <span className="hairline w-16" />
             </div>
+            <h2 className="mt-4 font-display text-balance text-5xl sm:text-6xl font-semibold tracking-tight text-white">
+              <AnimatedText as="span" className="block" stagger={80}>
+                Client work,
+              </AnimatedText>
+              <AnimatedText as="span" className="block" stagger={80} delay={220}>
+                <GradientShimmer delay={1000}>loading.</GradientShimmer>
+              </AnimatedText>
+            </h2>
+            <RevealOnView as="p" delay={300} className="mt-6 max-w-xl text-base text-white/60">
+              Vixlify is new on purpose. Two founding clients get premium work at a founding
+              rate, and their launch becomes the first real case study on this page. We're
+              building with the first now. The next frame is open.
+            </RevealOnView>
 
-            <div>
-              <RevealOnView as="p" delay={300} className="max-w-md text-base text-white/60">
-                Vixlify is new on purpose. Two founding clients get premium work at a founding
-                rate, and their launch becomes the first real case study on this page. We're
-                building with the first now. The next frame is open.
-              </RevealOnView>
+            <RevealOnView
+              delay={450}
+              className="mt-6 flex items-center gap-3 text-[11px] font-display uppercase tracking-[0.28em] text-white/45"
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: "#8B5CF6", boxShadow: "0 0 10px #8B5CF6" }}
+              />
+              2 founding slots · case studies live Q2 2026
+            </RevealOnView>
 
-              <RevealOnView
-                delay={450}
-                className="mt-6 flex items-center gap-3 text-[11px] font-display uppercase tracking-[0.28em] text-white/45"
+            <RevealOnView delay={600} className="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                href="/founding"
+                className="group relative inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold uppercase tracking-wider text-[#05070f] glow-cyan transition-transform hover:scale-[1.03]"
               >
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: "#8B5CF6", boxShadow: "0 0 10px #8B5CF6" }}
-                />
-                2 founding slots · case studies live Q2 2026
-              </RevealOnView>
-
-              <RevealOnView delay={600} className="mt-8 flex flex-wrap items-center gap-4">
-                <a
-                  href="/founding"
-                  className="group relative inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold uppercase tracking-wider text-[#05070f] glow-cyan transition-transform hover:scale-[1.03]"
-                >
-                  Claim a founding slot
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
-                <a
-                  href="/founding"
-                  className="text-sm font-medium text-white/60 underline-offset-4 transition-colors hover:text-white hover:underline"
-                >
-                  How the program works
-                </a>
-              </RevealOnView>
-            </div>
+                Claim a founding slot
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="/founding"
+                className="text-sm font-medium text-white/60 underline-offset-4 transition-colors hover:text-white hover:underline"
+              >
+                How the program works
+              </a>
+            </RevealOnView>
           </div>
 
           {/* Ghost frames — open slots as a full-width row, echoing the reel grid above */}
@@ -132,7 +127,7 @@ export function Work() {
               <RevealOnView
                 key={g.label}
                 delay={350 + i * 120}
-                className="relative flex aspect-[3/2] items-center justify-center overflow-hidden rounded-[14px] border border-dashed border-white/15 bg-white/[0.02]"
+                className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-[14px] border border-dashed border-white/15 bg-white/[0.02]"
               >
                 <div
                   aria-hidden="true"
