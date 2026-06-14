@@ -39,7 +39,7 @@ const deliverables = [
   {
     icon: Layers,
     title: "Designed and built end to end",
-    body: "Strategy, layout, copy polish, and a production build — handled by one person who owns the whole outcome.",
+    body: "Strategy, layout, copy polish, and a production build, handled by one person who owns the whole outcome.",
   },
   {
     icon: Sparkles,
@@ -49,20 +49,20 @@ const deliverables = [
   {
     icon: Gauge,
     title: "Fast, responsive, yours to keep",
-    body: "Pixel-true on every screen, tuned for speed, and handed over clean — so it stays easy to extend long after launch.",
+    body: "Pixel-true on every screen, tuned for speed, and handed over clean, so it stays easy to extend long after launch.",
   },
 ];
 
 /* -------------------------------- The fit --------------------------------- */
 const goodFit = [
   "You're a founder or small team with a real product and real momentum.",
-  "Your current site undersells you — and you know it's costing you deals.",
+  "Your current site undersells you, and you know it's costing you deals.",
   "You can give honest feedback fast and make decisions without a committee.",
   "You're proud of what you do and happy to be featured publicly.",
 ];
 
 const notFit = [
-  "You want the cheapest option, full stop — price is the only lever.",
+  "You want the cheapest option, full stop. Price is the only lever.",
   "You need ten rounds of stakeholder sign-off on every pixel.",
   "You're not sure what you're building yet, or who it's for.",
   "You'd rather stay anonymous and skip the testimonial.",
@@ -73,7 +73,7 @@ const steps = [
   {
     n: "01",
     title: "Intro call",
-    body: "A 20-minute, no-pressure call (or a few DMs). We see if it's a fit — both ways. If it isn't, I'll tell you straight.",
+    body: "A 20-minute, no-pressure call (or a few DMs). We see if it's a fit, both ways. If it isn't, I'll tell you straight.",
     dot: "#00E5FF",
   },
   {
@@ -91,7 +91,7 @@ const steps = [
   {
     n: "04",
     title: "Launch",
-    body: "We ship it live, hand over a clean build, and capture the win — a short testimonial and the right to feature the work.",
+    body: "We ship it live, hand over a clean build, and capture the win: a short testimonial and the right to feature the work.",
     dot: "#00E5FF",
   },
 ];
@@ -104,11 +104,11 @@ const faqs = [
   },
   {
     q: "What's the catch on the founding rate?",
-    a: "No catch — just a couple of conditions. I ask for an honest testimonial after launch and the right to feature the project as a case study (site, process, and results). That's the value I'm trading for. Everything else is a normal client engagement.",
+    a: "No catch, just a couple of conditions. I ask for an honest testimonial after launch and the right to feature the project as a case study (site, process, and results). That's the value I'm trading for. Everything else is a normal client engagement.",
   },
   {
     q: "Is the quality actually lower because of the price?",
-    a: "No. The opposite, honestly. These two projects are my portfolio — they're how I win every client after you. I have every reason to make them the best work I've ever shipped.",
+    a: "No. The opposite, honestly. These two projects are my portfolio. They're how I win every client after you. I have every reason to make them the best work I've ever shipped.",
   },
   {
     q: "How long does it take?",
@@ -120,7 +120,7 @@ const faqs = [
   },
   {
     q: "What happens when the two slots are gone?",
-    a: "The program closes and the rate goes back up to standard. Founding pricing exists once, for the first two brands — that's the whole point.",
+    a: "The program closes and the rate goes back up to standard. Founding pricing exists once, for the first two brands. That's the whole point.",
   },
 ];
 
@@ -224,7 +224,7 @@ export function FoundingClient() {
                 Vixlify is a premium web design studio, newly launched. Before rates go to
                 full international pricing, I'm taking on{" "}
                 <span className="text-white">two founding clients</span> at a rate that won't
-                exist again — in exchange for two case studies worth building a studio on.
+                exist again, in exchange for two case studies worth building a studio on.
               </RevealOnView>
               <RevealOnView delay={1000} className="flex flex-col gap-3 sm:items-end">
                 <button
@@ -247,7 +247,7 @@ export function FoundingClient() {
             <RevealOnView delay={1200} className="mt-12 flex flex-wrap items-center gap-3">
               <Pill>Premium quality</Pill>
               <Pill>Founding-only rate</Pill>
-              <Pill>Ships in 2–3 weeks</Pill>
+              <Pill>Ships in 2 to 3 weeks</Pill>
               <Pill>Solo founder, fully accountable</Pill>
             </RevealOnView>
           </div>
@@ -274,7 +274,7 @@ export function FoundingClient() {
               Every studio with a waitlist started with a first client. Right now Vixlify needs
               exactly two: real brands, real launches, real results I can point to. You get
               premium work for a fraction of what it'll cost in six months. I get the proof that
-              lets me charge full rate. Nobody's doing anybody a favor — it's a fair swap, and
+              lets me charge full rate. Nobody's doing anybody a favor. It's a fair swap, and
               the window closes after two.
             </RevealOnView>
           </div>
@@ -327,10 +327,10 @@ export function FoundingClient() {
                 </h3>
                 <ul className="mt-6 space-y-4">
                   {[
-                    "A fully custom, fully built website — designed and shipped by one accountable founder.",
+                    "A fully custom, fully built website, designed and shipped by one accountable founder.",
                     "Founding pricing: a fraction of the standard rate, locked for this project only.",
                     "Priority attention. With two clients, you're never one of forty.",
-                    "A clean handover you own outright — no lock-in, no monthly rent.",
+                    "A clean handover you own outright, no lock-in, no monthly rent.",
                   ].map((t) => (
                     <li key={t} className="flex items-start gap-3 text-sm text-white/75 leading-relaxed">
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#00E5FF]" strokeWidth={2.4} />
@@ -349,7 +349,7 @@ export function FoundingClient() {
                     "An honest testimonial once the site is live and you've seen the impact.",
                     "Permission to feature the project as a public case study.",
                     "Fast, decisive feedback so we can ship at founding speed.",
-                    "An intro to one peer founder who'd value the same work — only if you'd genuinely recommend it.",
+                    "An intro to one peer founder who'd value the same work, only if you'd genuinely recommend it.",
                   ].map((t) => (
                     <li key={t} className="flex items-start gap-3 text-sm text-white/70 leading-relaxed">
                       <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
@@ -494,7 +494,7 @@ export function FoundingClient() {
               </AnimatedText>
             </h2>
             <RevealOnView as="p" delay={460} className="mx-auto mt-6 max-w-xl text-base text-white/60">
-              Tell me what you're building — no pressure, no hard sell. If it's a fit, we
+              Tell me what you're building. No pressure, no hard sell. If it's a fit, we
               start. If not, you'll get an honest read either way.
             </RevealOnView>
 

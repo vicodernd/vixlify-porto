@@ -33,6 +33,11 @@ export function VideoTile({ project, index, featured = false }: Props) {
   const [playing, setPlaying] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const accent = accentMap[project.accent];
+  const isClient = project.kind === "client";
+  const hasLink = isClient && Boolean(project.href);
+  // Honest framing: explorations have no live site, so the frame is a plain
+  // block — only real client work with an href becomes a clickable link.
+  const Frame = (hasLink ? "a" : "div") as "a" | "div";
 
   // Intersection observer — show/pause tile
   useEffect(() => {
@@ -95,24 +100,25 @@ export function VideoTile({ project, index, featured = false }: Props) {
           </span>
           <span className="h-px w-8 bg-white/15" />
           <span className="font-display text-[11px] uppercase tracking-[0.28em] text-white/55">
-            {project.client} · {project.year}
+            {project.category}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <span
-            className={`h-1.5 w-1.5 rounded-full transition-opacity ${playing ? "opacity-100 animate-pulse-ring" : "opacity-40"}`}
+            className="h-1.5 w-1.5 rounded-full"
             style={{ background: accent.color, boxShadow: `0 0 10px ${accent.color}` }}
             aria-hidden="true"
           />
           <span className="font-display text-[10px] uppercase tracking-[0.28em] text-white/55">
-            {playing ? "Live loop" : "Standby"}
-            {project.duration ? ` · ${project.duration}` : ""}
+            {isClient ? "Case study" : "Exploration"}
           </span>
         </div>
       </div>
 
-      <a
-        href={project.href ?? "#"}
+      <Frame
+        {...(hasLink
+          ? { href: project.href, target: "_blank", rel: "noopener noreferrer" }
+          : {})}
         className="block relative overflow-hidden rounded-[20px] bg-[#0b0f1f] ring-1 ring-white/10 transition-transform duration-700 ease-out will-change-transform group-hover:-translate-y-1"
         style={{ boxShadow: accent.shadow }}
       >
@@ -256,7 +262,7 @@ export function VideoTile({ project, index, featured = false }: Props) {
             />
           </div>
         </div>
-      </a>
+      </Frame>
 
       <div className="mt-5 flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0 max-w-xl">

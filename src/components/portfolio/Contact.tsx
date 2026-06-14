@@ -19,7 +19,7 @@ export function Contact() {
         <RevealOnView className="flex items-center justify-center gap-3">
           <span className="hairline w-16" />
           <span className="font-display text-[11px] uppercase tracking-[0.28em] text-white/50">
-            03 · Let's build
+            04 · Let's build
           </span>
           <span className="hairline w-16" />
         </RevealOnView>

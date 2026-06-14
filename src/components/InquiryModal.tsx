@@ -17,8 +17,8 @@ const PROJECT_TYPES = [
 
 const BUDGET_RANGES = [
   "Under $3k",
-  "$3k – $6k",
-  "$6k – $12k",
+  "$3k to $6k",
+  "$6k to $12k",
   "$12k+",
   "Not sure yet",
 ];
@@ -55,9 +55,9 @@ const VARIANTS: Record<
     subtitle:
       "A few details so I can give you a thoughtful reply. I take on a limited number of projects at a time.",
     submitLabel: "Send inquiry",
-    successTitle: "Thanks — it's landed.",
+    successTitle: "Thanks, it's landed.",
     successBody:
-      "I personally read every inquiry and reply within 1–2 business days. If it's a fit, we'll find a time to talk.",
+      "I personally read every inquiry and reply within 1 to 2 business days. If it's a fit, we'll find a time to talk.",
     messageLabel: "Tell me about it",
     messagePlaceholder: "Goals, timeline, what success looks like…",
     qualifier: { label: "Budget", key: "budget_range", options: BUDGET_RANGES },
@@ -68,11 +68,11 @@ const VARIANTS: Record<
     eyebrow: "Founding Client Program · 2 slots",
     title: "Apply for a founding slot.",
     subtitle:
-      "Two brands, one founding rate — in exchange for a testimonial and the right to feature the work. I'd rather leave a slot open than fill it with the wrong fit, so tell me a little about you.",
+      "Two brands, one founding rate, in exchange for a testimonial and the right to feature the work. I'd rather leave a slot open than fill it with the wrong fit, so tell me a little about you.",
     submitLabel: "Apply for a slot",
     successTitle: "Application in.",
     successBody:
-      "I read every founding application myself and reply within 1–2 business days. If it's a fit, we'll lock a slot and set real dates.",
+      "I read every founding application myself and reply within 1 to 2 business days. If it's a fit, we'll lock a slot and set real dates.",
     messageLabel: "What are you building, and why now?",
     messagePlaceholder: "Your brand, the goal, and why the timing is right…",
     qualifier: {
@@ -383,7 +383,7 @@ export function InquiryModal({ variant = "default" }: { variant?: Variant }) {
                           <Check className="pointer-events-none absolute h-3.5 w-3.5 text-[#05070f] opacity-0 peer-checked:opacity-100" />
                         </span>
                         <span className="text-xs leading-relaxed text-white/60">
-                          I understand the founding rate is an exchange — an honest
+                          I understand the founding rate is an exchange: an honest
                           testimonial after launch and the right to feature my
                           project as a public case study.
                         </span>

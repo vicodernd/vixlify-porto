@@ -28,7 +28,7 @@ export function Approach() {
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <RevealOnView className="flex items-center gap-3">
           <span className="font-display text-[11px] uppercase tracking-[0.28em] text-white/50">
-            02 · Approach
+            03 · Approach
           </span>
           <span className="hairline w-16" />
         </RevealOnView>
