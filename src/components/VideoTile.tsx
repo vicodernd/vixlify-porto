@@ -57,29 +57,64 @@ export function VideoTile({ project, index, featured = false }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  // When tile enters viewport: animate counter 0→95, trigger video load
+  // When tile enters viewport: animate counter toward real load, then reveal.
+  // The counter is driven by a time-based "ceiling" that eases up to 90, while
+  // real <video> buffering events (progress/canplay) push it the rest of the
+  // way. A hard fallback guarantees we never get stuck below 100.
   useEffect(() => {
     if (!visible || loaded) return;
 
     let rafId: number;
     let startTime: number | null = null;
+    let done = false;
     const DURATION = 2400;
 
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      setLoadProgress(100);
+      setLoaded(true);
+      videoRef.current
+        ?.play()
+        .then(() => setPlaying(true))
+        .catch(() => {});
+    };
+
     function tick(now: number) {
+      if (done) return;
       if (!startTime) startTime = now;
-      const p = Math.min(((now - startTime) / DURATION) * 95, 95);
-      setLoadProgress(Math.round(p));
-      if (p < 95) rafId = requestAnimationFrame(tick);
+      const elapsed = now - startTime;
+      // Time-based ceiling eases toward 90 — leaves headroom for real buffering.
+      const timeCeiling = Math.min((elapsed / DURATION) * 90, 90);
+      // Real buffered progress, if the browser reports any.
+      const v = videoRef.current;
+      let bufferCeiling = 0;
+      if (v && v.duration > 0 && v.buffered.length > 0) {
+        bufferCeiling = (v.buffered.end(v.buffered.length - 1) / v.duration) * 100;
+      }
+      // canReveal once we have a frame ready AND the bar visually reached ~100.
+      const target = Math.max(timeCeiling, bufferCeiling);
+      setLoadProgress((prev) => Math.max(prev, Math.round(target)));
+      if (v && v.readyState >= 3 && target >= 99) {
+        reveal();
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
     }
 
-    // Small delay so <video> mounts before play() is called
+    // Kick off real loading + the counter once <video> has mounted.
     const t = setTimeout(() => {
       videoRef.current?.play().catch(() => {});
       rafId = requestAnimationFrame(tick);
     }, 80);
 
+    // Hard fallback: never let the counter hang below 100 — reveal regardless
+    // after the video is decodable, or force it after a generous timeout.
+    const fallback = setTimeout(reveal, 8000);
+
     return () => {
       clearTimeout(t);
+      clearTimeout(fallback);
       cancelAnimationFrame(rafId);
     };
   }, [visible, loaded]);
@@ -218,17 +253,12 @@ export function VideoTile({ project, index, featured = false }: Props) {
                 muted
                 loop
                 playsInline
-                preload="none"
+                preload="auto"
                 aria-label={`${project.title} preview reel`}
-                onLoadedData={() => {
+                onError={() => {
+                  // Source failed (e.g. missing .webm) — don't hang at 95%.
                   setLoadProgress(100);
-                  setTimeout(() => {
-                    setLoaded(true);
-                    videoRef.current
-                      ?.play()
-                      .then(() => setPlaying(true))
-                      .catch(() => {});
-                  }, 300);
+                  setLoaded(true);
                 }}
                 className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
                   loaded ? "opacity-100" : "opacity-0"
