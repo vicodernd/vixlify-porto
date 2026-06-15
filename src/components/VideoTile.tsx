@@ -74,37 +74,48 @@ export function VideoTile({ project, index, featured = false }: Props) {
       done = true;
       setLoadProgress(100);
       setLoaded(true);
-      videoRef.current
-        ?.play()
-        .then(() => setPlaying(true))
-        .catch(() => {});
+      const v = videoRef.current;
+      if (v) {
+        // React's `muted` JSX prop doesn't reliably reflect to the DOM property,
+        // so the browser may treat the video as unmuted and block autoplay.
+        // Force it on the element before play() to satisfy the autoplay policy.
+        v.muted = true;
+        v.play()
+          .then(() => setPlaying(true))
+          .catch(() => {});
+      }
     };
 
     function tick(now: number) {
       if (done) return;
       if (!startTime) startTime = now;
-      const elapsed = now - startTime;
-      // Time-based ceiling eases toward 90 — leaves headroom for real buffering.
-      const timeCeiling = Math.min((elapsed / DURATION) * 90, 90);
-      // Real buffered progress, if the browser reports any.
       const v = videoRef.current;
+      // Reveal as soon as the browser can actually play the video
+      // (readyState >= 3 ≈ canplay). Don't wait for the whole file to buffer.
+      if (v && v.readyState >= 3) {
+        reveal();
+        return;
+      }
+      // While waiting, ease the cosmetic counter toward 95 — buffered progress
+      // (when reported) can push it higher so the bar reflects real loading.
+      const elapsed = now - startTime;
+      const timeCeiling = Math.min((elapsed / DURATION) * 95, 95);
       let bufferCeiling = 0;
       if (v && v.duration > 0 && v.buffered.length > 0) {
         bufferCeiling = (v.buffered.end(v.buffered.length - 1) / v.duration) * 100;
       }
-      // canReveal once we have a frame ready AND the bar visually reached ~100.
       const target = Math.max(timeCeiling, bufferCeiling);
       setLoadProgress((prev) => Math.max(prev, Math.round(target)));
-      if (v && v.readyState >= 3 && target >= 99) {
-        reveal();
-        return;
-      }
       rafId = requestAnimationFrame(tick);
     }
 
     // Kick off real loading + the counter once <video> has mounted.
     const t = setTimeout(() => {
-      videoRef.current?.play().catch(() => {});
+      const v = videoRef.current;
+      if (v) {
+        v.muted = true; // ensure muted on the DOM node (see reveal)
+        v.play().catch(() => {});
+      }
       rafId = requestAnimationFrame(tick);
     }, 80);
 
@@ -252,6 +263,7 @@ export function VideoTile({ project, index, featured = false }: Props) {
                 poster={project.poster}
                 muted
                 loop
+                autoPlay
                 playsInline
                 preload="auto"
                 aria-label={`${project.title} preview reel`}
