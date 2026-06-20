@@ -45,7 +45,7 @@ export function Hero() {
           </span>
           <span className="hidden sm:inline-block hairline w-24" />
           <span className="hidden sm:inline font-display text-[11px] uppercase tracking-[0.28em] text-white/40">
-            Est. 2022
+            Est. 2026
           </span>
         </RevealOnView>
 
