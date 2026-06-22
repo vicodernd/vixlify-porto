@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vixlify · Brand Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" />
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --purple: #8b5cf6;
+    --magenta: #ff2d95;
+    --space: #05070f;
+    --deep: #0a0d1a;
+    --fg: #f4f5fb;
+    --muted: rgba(244, 245, 251, 0.55);
+    --faint: rgba(244, 245, 251, 0.35);
+    --line: rgba(255, 255, 255, 0.1);
+    --line-soft: rgba(255, 255, 255, 0.06);
+    --grad: linear-gradient(110deg, #00e5ff 0%, #8b5cf6 45%, #ff2d95 95%);
+    --grad-soft: linear-gradient(135deg, #00e5ff 0%, #8b5cf6 100%);
+    --display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--space);
+    color: var(--fg);
+    font-family: var(--body);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Ambient aurora */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(60% 50% at 15% 0%, rgba(0, 229, 255, 0.08), transparent 60%),
+      radial-gradient(50% 50% at 85% 10%, rgba(255, 45, 149, 0.07), transparent 60%),
+      radial-gradient(60% 60% at 50% 100%, rgba(139, 92, 246, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 0 64px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 40px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 8px var(--cyan);
+  }
+  .hero-lockup { display: flex; align-items: center; gap: 22px; margin-bottom: 36px; }
+  .hero-lockup .word {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(40px, 8vw, 88px);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(32px, 5.5vw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: 24px;
+  }
+  .gradient-text {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p.lead {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--muted);
+    max-width: 56ch;
+  }
+  .hero .meta {
+    margin-top: 56px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .hero .meta b { display: block; color: var(--fg); font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+
+  /* ---------- Section scaffolding ---------- */
+  section { padding: 96px 0; border-top: 1px solid var(--line-soft); }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 48px; }
+  .sec-num {
+    font-family: var(--display); font-weight: 600; font-size: 13px;
+    letter-spacing: 0.2em; color: var(--cyan);
+  }
+  .sec-head h2 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(26px, 4vw, 40px); letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .sec-sub { color: var(--muted); max-width: 64ch; margin: -32px 0 48px; font-size: 16px; }
+
+  .grid { display: grid; gap: 20px; }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--deep);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+  }
+  .card.center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+  .label { font-family: var(--display); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+
+  /* ---------- Logo ---------- */
+  .logo-stage {
+    background: var(--deep);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    min-height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 22px;
+  }
+  .logo-stage.light { background: var(--fg); }
+  .logo-stage.mono { background: #11141f; }
+  .stage-word { font-family: var(--display); font-weight: 700; letter-spacing: 0.18em; }
+  .logo-stage .stage-word { color: var(--fg); font-size: 30px; }
+  .logo-stage.light .stage-word { color: var(--space); }
+
+  .mark-tile {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 16px; border: 1px solid var(--line);
+  }
+  .mark-tile.dark { background: var(--deep); }
+  .mark-tile.light { background: var(--fg); }
+  .mark-tile.grad { background: var(--grad-soft); }
+
+  .construction {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;
+  }
+  .construction .note { color: var(--muted); font-size: 15px; }
+  .construction .note h4 { font-family: var(--display); font-weight: 600; color: var(--fg); margin-bottom: 10px; font-size: 17px; }
+  .construction ul { list-style: none; display: grid; gap: 12px; margin-top: 16px; }
+  .construction li { display: flex; gap: 12px; align-items: flex-start; }
+  .construction li::before { content: ""; flex: none; width: 7px; height: 7px; margin-top: 7px; border-radius: 2px; background: var(--cyan); }
+
+  /* do / don't */
+  .rule { display: flex; flex-direction: column; gap: 14px; }
+  .rule .tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rule.do .tag { color: var(--cyan); }
+  .rule.dont .tag { color: var(--magenta); }
+  .rule .tag i { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; }
+  .rule.do .tag i { background: rgba(0,229,255,0.15); color: var(--cyan); }
+  .rule.dont .tag i { background: rgba(255,45,149,0.15); color: var(--magenta); }
+  .rule p { color: var(--muted); font-size: 14.5px; }
+
+  /* ---------- Color ---------- */
+  .swatch { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); cursor: pointer; transition: transform .2s ease; }
+  .swatch:hover { transform: translateY(-3px); }
+  .swatch .chip { height: 130px; }
+  .swatch .info { padding: 16px 18px; background: var(--deep); }
+  .swatch .info .name { font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .swatch .info .hex { font-family: var(--display); font-size: 13px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+  .swatch .info .role { font-size: 12.5px; color: var(--faint); margin-top: 6px; }
+  .copy-hint { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); opacity: 0; transition: opacity .2s; }
+  .swatch:hover .copy-hint { opacity: 1; }
+
+  .gradient-bar { height: 120px; border-radius: 16px; background: var(--grad); border: 1px solid var(--line); display: flex; align-items: flex-end; padding: 16px 20px; }
+  .gradient-bar code { font-family: var(--display); font-size: 12.5px; color: rgba(5,7,15,0.75); font-weight: 600; }
+
+  /* ---------- Typography ---------- */
+  .type-row { padding: 28px 0; border-bottom: 1px solid var(--line-soft); display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: baseline; }
+  .type-row:last-child { border-bottom: 0; }
+  .type-meta .fam { font-family: var(--display); font-weight: 600; font-size: 17px; }
+  .type-meta .use { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+  .type-meta .weights { color: var(--faint); font-size: 12px; margin-top: 8px; letter-spacing: 0.04em; }
+  .specimen-display { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.02em; line-height: 1.05; }
+  .specimen-body { font-family: var(--body); font-size: 18px; color: var(--muted); line-height: 1.7; }
+  .specimen-serif { font-family: var(--serif); font-style: italic; font-size: clamp(30px, 4.5vw, 46px); line-height: 1.2; }
+
+  /* ---------- Voice ---------- */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .voice-card { background: var(--deep); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .voice-card h4 { font-family: var(--display); font-weight: 600; font-size: 16px; margin-bottom: 10px; }
+  .voice-card .we { color: var(--cyan); }
+  .voice-card .not { color: var(--faint); text-decoration: line-through; text-decoration-color: rgba(255,45,149,0.5); }
+  .voice-card p { font-size: 14.5px; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- Footer ---------- */
+  footer { padding: 64px 0 96px; border-top: 1px solid var(--line-soft); color: var(--faint); font-size: 13px; }
+  footer .row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  footer .word { font-family: var(--display); font-weight: 700; letter-spacing: 0.18em; color: var(--fg); }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--fg); color: var(--space); font-family: var(--display); font-weight: 600;
+    font-size: 13px; padding: 10px 18px; border-radius: 999px; opacity: 0; transition: all .25s ease;
+    pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 760px) {
+    .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+    .cols-4 { grid-template-columns: 1fr 1fr; }
+    .construction { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: 12px; }
+    .voice-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <span class="eyebrow"><span class="dot"></span> Vixlify Studio · Brand Identity</span>
+    <div class="hero-lockup">
+      <svg width="84" height="84" viewBox="0 0 64 64" fill="none" aria-label="Vixlify lift mark">
+        <defs>
+          <linearGradient id="lift-hero" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#8B5CF6"/>
+          </linearGradient>
+        </defs>
+        <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M32 12 L44 24 M32 12 L20 24"/>
+          <path d="M32 30 L51 44 M32 30 L13 44"/>
+          <path d="M32 48 L56 61 M32 48 L8 61"/>
+        </g>
+      </svg>
+      <span class="word">VIXLIFY</span>
+    </div>
+    <h1>The visual system behind <span class="gradient-text">every pixel that has a purpose.</span></h1>
+    <p class="lead">Vixlify is a small studio crafting premium websites and product interfaces. This is the single source of truth for how the brand looks, sounds, and moves.</p>
+    <div class="meta">
+      <div><b>The Mark</b>Lift Mark — ascending chevrons</div>
+      <div><b>Type</b>Outfit · Manrope · Instrument Serif</div>
+      <div><b>Core</b>Cyan · Purple · Magenta on Space</div>
+      <div><b>Version</b>1.0 — 2026</div>
+    </div>
+  </header>
+
+  <!-- ===================== LOGO ===================== -->
+  <section id="logo">
+    <div class="sec-head"><span class="sec-num">01</span><h2>The logo</h2></div>
+    <p class="sec-sub">The Lift Mark is three ascending chevrons — a visual echo of <em>amplify / lift</em>, the "‑lify" in Vixlify. It is drawn, not typed: a custom geometric mark that reads as motion and upward momentum. Pair it with the wordmark for the primary lockup, or use the mark alone where space is tight.</p>
+
+    <div class="grid cols-2" style="margin-bottom:20px;">
+      <div class="logo-stage">
+        <svg width="58" height="58" viewBox="0 0 64 64" fill="none">
+          <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+        <span class="stage-word">VIXLIFY</span>
+      </div>
+      <div class="logo-stage light">
+        <svg width="58" height="58" viewBox="0 0 64 64" fill="none">
+          <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+        <span class="stage-word">VIXLIFY</span>
+      </div>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="mark-tile dark">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+      </div>
+      <div class="mark-tile light">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+      </div>
+      <div class="mark-tile grad">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <g stroke="#ffffff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+      </div>
+      <div class="mark-tile dark">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <g stroke="#f4f5fb" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <p class="label" style="margin-top:14px;">Gradient on dark · gradient on light · reversed (white on gradient) · mono white</p>
+
+    <div class="construction card" style="margin-top:40px;">
+      <div class="mark-tile dark" style="border:1px dashed var(--line); max-width:240px; margin:0 auto;">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none">
+          <rect x="2" y="2" width="60" height="60" rx="6" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+          <line x1="32" y1="0" x2="32" y2="64" stroke="rgba(0,229,255,0.25)" stroke-width="0.5"/>
+          <g stroke="url(#lift-hero)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M32 12 L44 24 M32 12 L20 24"/><path d="M32 30 L51 44 M32 30 L13 44"/><path d="M32 48 L56 61 M32 48 L8 61"/>
+          </g>
+        </svg>
+      </div>
+      <div class="note">
+        <h4>Construction & clear space</h4>
+        <p>Built on a 64×64 grid, symmetrical around the vertical axis. The mark widens as it descends, so the eye is pulled upward.</p>
+        <ul>
+          <li>Stroke: rounded caps and joins, weight ≈ 10% of the mark height.</li>
+          <li>Clear space: keep margins equal to the height of one chevron on all sides.</li>
+          <li>Minimum size: 20&nbsp;px (favicon) for the mark, 96&nbsp;px wide for the full lockup.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MISUSE ===================== -->
+  <section id="misuse">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Keep it clean</h2></div>
+    <p class="sec-sub">The mark earns its premium feel by staying disciplined. A few things to never do.</p>
+    <div class="grid cols-2">
+      <div class="card rule do"><span class="tag"><i>✓</i> Do</span><p>Use the gradient on solid dark, or the mono / reversed versions on busy or colored backgrounds.</p></div>
+      <div class="card rule dont"><span class="tag"><i>✕</i> Don't</span><p>Re-introduce the old rounded-square badge or place the mark inside a container box.</p></div>
+      <div class="card rule do"><span class="tag"><i>✓</i> Do</span><p>Preserve the chevron proportions and rounded stroke exactly as drawn.</p></div>
+      <div class="card rule dont"><span class="tag"><i>✕</i> Don't</span><p>Stretch, rotate, recolor with off-brand hues, add drop shadows, or sharpen the corners.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== COLOR ===================== -->
+  <section id="color">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Color</h2></div>
+    <p class="sec-sub">A near-black "space" canvas lets three neon accents do the work. Cyan leads, purple bridges, magenta punctuates. Click any swatch to copy its hex.</p>
+
+    <div class="grid cols-3" style="margin-bottom:20px;">
+      <div class="swatch" data-hex="#00E5FF"><div class="chip" style="background:#00E5FF"></div><div class="info"><div class="name">Cyan</div><div class="hex">#00E5FF <span class="copy-hint">click to copy</span></div><div class="role">Primary accent · gradient start</div></div></div>
+      <div class="swatch" data-hex="#8B5CF6"><div class="chip" style="background:#8B5CF6"></div><div class="info"><div class="name">Purple</div><div class="hex">#8B5CF6 <span class="copy-hint">click to copy</span></div><div class="role">Bridge · gradient mid</div></div></div>
+      <div class="swatch" data-hex="#FF2D95"><div class="chip" style="background:#FF2D95"></div><div class="info"><div class="name">Magenta</div><div class="hex">#FF2D95 <span class="copy-hint">click to copy</span></div><div class="role">Highlight · gradient end</div></div></div>
+    </div>
+    <div class="grid cols-3" style="margin-bottom:32px;">
+      <div class="swatch" data-hex="#05070F"><div class="chip" style="background:#05070F; border-bottom:1px solid var(--line)"></div><div class="info"><div class="name">Space</div><div class="hex">#05070F <span class="copy-hint">click to copy</span></div><div class="role">Primary background</div></div></div>
+      <div class="swatch" data-hex="#0A0D1A"><div class="chip" style="background:#0A0D1A; border-bottom:1px solid var(--line)"></div><div class="info"><div class="name">Deep</div><div class="hex">#0A0D1A <span class="copy-hint">click to copy</span></div><div class="role">Surfaces · cards</div></div></div>
+      <div class="swatch" data-hex="#F4F5FB"><div class="chip" style="background:#F4F5FB"></div><div class="info"><div class="name">Mist</div><div class="hex">#F4F5FB <span class="copy-hint">click to copy</span></div><div class="role">Foreground text · light surfaces</div></div></div>
+    </div>
+
+    <div class="gradient-bar"><code>linear-gradient(110deg, #00E5FF 0%, #8B5CF6 45%, #FF2D95 95%)</code></div>
+    <p class="label" style="margin-top:14px;">Signature gradient — reserve for the mark, key headlines, and single hero moments. Never as a full-page wash.</p>
+  </section>
+
+  <!-- ===================== TYPOGRAPHY ===================== -->
+  <section id="type">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Typography</h2></div>
+    <p class="sec-sub">Two workhorses and one accent. Outfit carries every headline and the wordmark; Manrope handles body copy; Instrument Serif appears sparingly for editorial emphasis.</p>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="fam">Outfit</div>
+        <div class="use">Display · headings · wordmark · UI labels</div>
+        <div class="weights">400 / 500 / 600 / 700 / 800</div>
+      </div>
+      <div><div class="specimen-display">Every pixel<br/>has a purpose</div></div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="fam">Manrope</div>
+        <div class="use">Body · paragraphs · captions</div>
+        <div class="weights">300 / 400 / 500 / 600 / 700</div>
+      </div>
+      <div><p class="specimen-body">We design with restraint and ship with rigor. A small team that owns the whole outcome — strategy, layout, copy polish, and a production build — handled end to end, so the work stays sharp from first frame to launch.</p></div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="fam">Instrument Serif</div>
+        <div class="use">Accent · pull-quotes · editorial italic</div>
+        <div class="weights">Italic, used sparingly</div>
+      </div>
+      <div><div class="specimen-serif">“Nobody briefed these — we built them.”</div></div>
+    </div>
+  </section>
+
+  <!-- ===================== VOICE ===================== -->
+  <section id="voice">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Voice &amp; motion</h2></div>
+    <p class="sec-sub">Confident, precise, never loud. We sound like a craftsperson who has already done the thinking.</p>
+    <div class="voice-grid">
+      <div class="voice-card"><h4>We are <span class="we">precise</span></h4><p>Specific claims, concrete nouns, short sentences. We name the outcome, not the effort.</p></div>
+      <div class="voice-card"><h4>Not <span class="not">hype-driven</span></h4><p>No buzzwords, no exclamation marks, no "revolutionary." The work carries the weight.</p></div>
+      <div class="voice-card"><h4>Motion has a <span class="we">job</span></h4><p>Every animation guides the eye, builds trust, or closes the gap to a yes. Cubic-bezier(0.4, 0, 0.2, 1), 0.4–0.6s.</p></div>
+      <div class="voice-card"><h4>Not <span class="not">decoration</span></h4><p>No motion for its own sake. If a transition doesn't aid comprehension, it gets cut.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="row">
+      <span class="word">VIXLIFY</span>
+      <span>Brand Identity v1.0 · Every pixel has a purpose · © 2026 Vixlify Studio</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+  document.querySelectorAll('.swatch').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var hex = el.getAttribute('data-hex');
+      navigator.clipboard.writeText(hex).then(function () {
+        var t = document.getElementById('toast');
+        t.textContent = hex + ' copied';
+        t.classList.add('show');
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1400);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

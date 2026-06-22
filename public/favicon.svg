@@ -1,15 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00E5FF"/>
-      <stop offset="50%" stop-color="#8B5CF6"/>
-      <stop offset="100%" stop-color="#FF2D95"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
     </linearGradient>
   </defs>
-  <!-- Gradient border -->
-  <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="url(#g)"/>
-  <!-- Dark inner background (3px inset) -->
-  <rect x="5" y="5" width="54" height="54" rx="10" ry="10" fill="#05070f"/>
-  <!-- V letter -->
-  <text x="32" y="47" font-family="Arial Black, Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle">V</text>
+  <g stroke="url(#g)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 12 L44 24 M32 12 L20 24"/>
+    <path d="M32 30 L51 44 M32 30 L13 44"/>
+    <path d="M32 48 L56 61 M32 48 L8 61"/>
+  </g>
 </svg>
