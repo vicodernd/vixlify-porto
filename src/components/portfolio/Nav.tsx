@@ -2,15 +2,18 @@ import { openInquiry } from "@/lib/inquiry";
 import { Logo } from "@/components/Logo";
 
 export function Nav() {
+  const onHome = window.location.pathname.replace(/\/+$/, "") === "";
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8 pt-5">
         <div className="flex items-center justify-between rounded-full border border-white/10 bg-black/40 px-4 py-2.5 backdrop-blur-md">
-          <Logo href="#top" />
+          <Logo href={onHome ? "#top" : "/"} />
           <nav className="hidden md:flex items-center gap-7 text-sm text-white/70">
-            <a href="#work" className="hover:text-white transition-colors">Work</a>
-            <a href="#approach" className="hover:text-white transition-colors">Approach</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+            <a href={onHome ? "#work" : "/#work"} className="hover:text-white transition-colors">Work</a>
+            <a href={onHome ? "#approach" : "/#approach"} className="hover:text-white transition-colors">Approach</a>
+            <a href="/templates" className={`transition-colors ${onHome ? "hover:text-white" : "text-white"}`}>Templates</a>
+            <a href={onHome ? "#contact" : "/#contact"} className="hover:text-white transition-colors">Contact</a>
           </nav>
           <button
             type="button"

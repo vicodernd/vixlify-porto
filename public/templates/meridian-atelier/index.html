@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meridian Atelier — Architecture &amp; Interiors</title>
+<meta name="description" content="Meridian Atelier is an architecture studio in Oslo. Buildings that hold light." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Instrument+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" />
+<style>
+  :root {
+    --ivory: #f0ece3;
+    --ivory-deep: #e7e2d6;
+    --ink: #171410;
+    --ink-soft: rgba(23, 20, 16, 0.62);
+    --ink-faint: rgba(23, 20, 16, 0.38);
+    --bronze: #a97e4f;
+    --line: rgba(23, 20, 16, 0.14);
+    --serif: "Fraunces", serif;
+    --sans: "Instrument Sans", sans-serif;
+    --mono: "Spline Sans Mono", monospace;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--bronze); color: var(--ivory); }
+
+  /* film grain, fixed and inert */
+  .grain {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+
+  /* ── top bar ─────────────────────────────────── */
+  header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.6rem clamp(1.25rem, 4vw, 3.5rem);
+    mix-blend-mode: difference; color: #e9e4d8;
+  }
+  .wordmark { display: flex; align-items: baseline; gap: 0.6rem; text-decoration: none; color: inherit; }
+  .wordmark strong { font-family: var(--sans); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.32em; }
+  .wordmark em { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 0.95rem; letter-spacing: 0.02em; opacity: 0.75; }
+  nav { display: flex; align-items: center; gap: 2.2rem; }
+  nav a {
+    position: relative; color: inherit; text-decoration: none;
+    font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.72;
+    transition: opacity 0.4s var(--ease);
+  }
+  nav a::after {
+    content: ""; position: absolute; left: 0; bottom: -5px; height: 1px; width: 100%;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform 0.55s var(--ease);
+  }
+  nav a:hover { opacity: 1; }
+  nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+  @media (max-width: 760px) { nav { display: none; } }
+
+  /* ── pinned hero stage ───────────────────────── */
+  .stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: var(--ivory); }
+
+  .hero-copy {
+    position: absolute; inset: 0; z-index: 30;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 clamp(1.25rem, 4vw, 3.5rem);
+    pointer-events: none;
+  }
+  .eyebrow {
+    display: flex; align-items: center; gap: 0.9rem; margin-bottom: clamp(1.2rem, 2.5vh, 2rem);
+  }
+  .eyebrow .rule { width: 44px; height: 1px; background: var(--bronze); }
+  .eyebrow span {
+    font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 340;
+    font-size: clamp(3.4rem, 11.5vw, 11rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  h1 .line { display: block; overflow: hidden; }
+  h1 .line > span { display: inline-block; will-change: transform; }
+  h1 em { font-style: italic; font-weight: 300; color: var(--bronze); }
+  h1 .indent { padding-left: clamp(2.5rem, 12vw, 12rem); }
+
+  .hero-meta {
+    position: absolute; left: clamp(1.25rem, 4vw, 3.5rem); right: clamp(1.25rem, 4vw, 3.5rem);
+    bottom: clamp(1.4rem, 4vh, 2.6rem);
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    color: var(--ink-faint); text-transform: uppercase;
+  }
+  .hero-meta .scroll-cue { display: flex; align-items: center; gap: 0.7rem; color: var(--ink-soft); }
+  .scroll-cue .tick { width: 1px; height: 28px; background: var(--ink-faint); overflow: hidden; position: relative; }
+  .scroll-cue .tick::after {
+    content: ""; position: absolute; inset: 0; background: var(--bronze);
+    animation: drop 2.2s var(--ease) infinite;
+  }
+  @keyframes drop { 0% { transform: translateY(-100%); } 55% { transform: translateY(0); } 100% { transform: translateY(100%); } }
+  @media (max-width: 760px) { .hero-meta { font-size: 0.62rem; flex-wrap: wrap; gap: 0.8rem; } }
+
+  /* the framed image that grows to full bleed */
+  .frame {
+    position: absolute; z-index: 20;
+    left: 64%; top: 54%;
+    width: min(38vw, 580px); aspect-ratio: 16 / 10;
+    transform: translate(-50%, -50%);
+    will-change: width, height, transform;
+  }
+  .frame .shell {
+    position: absolute; inset: 0;
+    background: rgba(23, 20, 16, 0.05);
+    border: 1px solid var(--line);
+    padding: clamp(0.5rem, 0.9vw, 0.9rem);
+  }
+  .frame .core { position: relative; width: 100%; height: 100%; overflow: hidden; }
+  .frame img {
+    position: absolute; inset: -3%; width: 106%; height: 106%;
+    object-fit: cover; will-change: transform;
+  }
+  .frame .veil {
+    position: absolute; inset: 0; z-index: 2;
+    background: linear-gradient(to top, rgba(15, 12, 8, 0.55), transparent 45%);
+    opacity: 0;
+  }
+  .frame .caption {
+    position: absolute; z-index: 3; left: clamp(1rem, 3vw, 2.6rem); bottom: clamp(1rem, 3vh, 2.2rem);
+    color: #ece7db; opacity: 0;
+    transform: translateY(14px);
+  }
+  .frame .caption .cap-title { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(1.3rem, 2.4vw, 2rem); }
+  .frame .caption .cap-meta { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin-top: 0.45rem; }
+  @media (max-width: 760px) {
+    .hero-copy { justify-content: flex-start; padding-top: 17vh; }
+    h1 { font-size: clamp(2.9rem, 13vw, 4.2rem); }
+    .frame { width: 86vw; left: 50%; top: 66%; }
+    .frame .caption .cap-title { font-size: 1.15rem; }
+    .frame .caption .cap-meta { font-size: 0.55rem; }
+  }
+
+  /* ── after the pin: editorial beat ───────────── */
+  .beat {
+    position: relative; z-index: 5;
+    background: var(--ivory);
+    padding: clamp(6rem, 14vh, 11rem) clamp(1.25rem, 4vw, 3.5rem);
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
+    border-top: 1px solid var(--line);
+  }
+  .beat .visual { grid-column: 2 / span 4; }
+  .beat .visual .shell {
+    background: rgba(23, 20, 16, 0.05); border: 1px solid var(--line);
+    padding: clamp(0.5rem, 0.9vw, 0.9rem);
+  }
+  .beat .visual .core { overflow: hidden; aspect-ratio: 4 / 5; }
+  .beat .visual img { width: 100%; height: 112%; object-fit: cover; margin-top: -6%; will-change: transform; }
+  .beat .visual figcaption {
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin-top: 0.9rem;
+  }
+  .beat .words { grid-column: 7 / span 5; }
+  .beat .words h2 {
+    font-family: var(--serif); font-weight: 340; font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+    line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance;
+  }
+  .beat .words h2 em { font-style: italic; color: var(--bronze); font-weight: 300; }
+  .beat .words p {
+    margin-top: 1.6rem; max-width: 46ch;
+    font-size: 0.98rem; line-height: 1.75; color: var(--ink-soft);
+  }
+  .beat .cta {
+    display: inline-flex; align-items: center; gap: 0.9rem; margin-top: 2.4rem;
+    text-decoration: none; color: var(--ink);
+    font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .beat .cta .disc {
+    display: grid; place-items: center; width: 44px; height: 44px;
+    border: 1px solid var(--ink); border-radius: 50%;
+    transition: background 0.5s var(--ease), color 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .beat .cta:hover .disc { background: var(--ink); color: var(--ivory); transform: translate(3px, -3px); }
+  .beat .cta svg { width: 14px; height: 14px; }
+  @media (max-width: 900px) {
+    .beat { grid-template-columns: 1fr; }
+    .beat .visual { grid-column: 1; max-width: 420px; }
+    .beat .words { grid-column: 1; }
+  }
+
+  /* ── footer strip ────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 1.6rem clamp(1.25rem, 4vw, 3.5rem);
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-faint);
+    background: var(--ivory);
+  }
+  footer a { color: var(--ink-soft); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  .reveal-mask { overflow: hidden; }
+  .reveal-mask > * { will-change: transform; }
+
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <a class="wordmark" href="#"><strong>MERIDIAN</strong><em>Atelier</em></a>
+  <nav>
+    <a href="#">Projects</a>
+    <a href="#">Studio</a>
+    <a href="#">Journal</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+
+<!-- pinned cinematic hero -->
+<section class="stage" id="stage">
+  <div class="hero-copy">
+    <div class="eyebrow" data-hero-fade>
+      <span class="rule"></span>
+      <span>Architecture &amp; Interiors — Oslo</span>
+    </div>
+    <h1 aria-label="Buildings that hold light.">
+      <span class="line"><span data-hero-line>Buildings</span></span>
+      <span class="line indent"><span data-hero-line>that <em>hold</em></span></span>
+      <span class="line"><span data-hero-line>light.</span></span>
+    </h1>
+  </div>
+
+  <div class="frame" id="frame">
+    <div class="shell">
+      <div class="core">
+        <img id="frameImg" src="hero.webp" alt="Hillside House at golden hour, board-formed concrete and glass" />
+        <div class="veil" id="veil"></div>
+        <div class="caption" id="caption">
+          <div class="cap-title">Hillside House, Valdres</div>
+          <div class="cap-meta">Completed 2025 — Private residence, 240 m²</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-meta" data-hero-fade>
+    <span>59.9139° N, 10.7522° E</span>
+    <span class="scroll-cue"><span class="tick"></span> Scroll</span>
+    <span>Est. 2011 — 14 built works</span>
+  </div>
+</section>
+
+<!-- editorial beat -->
+<section class="beat">
+  <figure class="visual">
+    <div class="shell">
+      <div class="core"><img id="beatImg" src="detail.webp" alt="Sunlight raking across a concrete staircase with a bronze handrail" /></div>
+    </div>
+    <figcaption>Stair detail — in-situ concrete, bronze rail</figcaption>
+  </figure>
+  <div class="words">
+    <div class="reveal-mask"><h2 data-beat-reveal>Few projects, taken <em>slowly.</em></h2></div>
+    <p data-beat-fade>
+      The studio accepts four commissions a year. Each begins with the site: how the sun
+      crosses it in winter, where the ground holds water, what the wind does at dusk.
+      The building comes after, and it comes patiently.
+    </p>
+    <a class="cta" href="#" data-beat-fade>
+      View the work
+      <span class="disc" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span>Meridian Atelier © 2026</span>
+  <span>Sagveien 21A, 0459 Oslo</span>
+  <a href="#">post@meridianatelier.no</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  const EASE = "expo.out";
+
+  /* entrance: headline lines rise out of their masks, frame breathes in */
+  const intro = gsap.timeline({ defaults: { ease: EASE } });
+  intro
+    .from("[data-hero-line]", { yPercent: 110, duration: 1.4, stagger: 0.12 }, 0.15)
+    .from("[data-hero-fade]", { opacity: 0, y: 18, duration: 1.1, stagger: 0.1 }, 0.5)
+    .from("#frame", { opacity: 0, scale: 0.94, duration: 1.6 }, 0.35);
+
+  /* scroll: pin the stage, grow the frame to full bleed, melt the copy.
+     if the user scrubs before the entrance finishes, complete it instantly
+     so the melt always starts from clean values */
+  const grow = gsap.timeline({
+    scrollTrigger: {
+      trigger: "#stage",
+      start: "top top",
+      end: "+=160%",
+      scrub: 1,
+      pin: true,
+      anticipatePin: 1,
+      onUpdate(self) { if (self.progress > 0 && intro.progress() < 1) intro.progress(1); }
+    },
+    defaults: { ease: "none" }
+  });
+  grow
+    .fromTo("[data-hero-line]",
+      { yPercent: 0, opacity: 1, filter: "blur(0px)" },
+      { yPercent: -60, opacity: 0, filter: "blur(10px)", stagger: 0.04, immediateRender: false }, 0)
+    .fromTo("[data-hero-fade]",
+      { opacity: 1, y: 0 },
+      { opacity: 0, y: -24, immediateRender: false }, 0)
+    .to("#frame", { width: "100vw", height: "100dvh", top: "50%", left: "50%" }, 0.05)
+    .to("#frame .shell", { padding: 0, borderColor: "rgba(23,20,16,0)", backgroundColor: "rgba(23,20,16,0)" }, 0.05)
+    .fromTo("#frameImg", { scale: 1.0, yPercent: -1.5 }, { scale: 1.03, yPercent: 1.5 }, 0)
+    .to("#veil", { opacity: 1 }, 0.45)
+    .fromTo("#caption", { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, ease: "power2.out" }, 0.62);
+
+  /* second beat: masked reveal + parallax on the detail image */
+  gsap.from("[data-beat-reveal]", {
+    yPercent: 110, duration: 1.3, ease: EASE,
+    scrollTrigger: { trigger: ".beat", start: "top 72%" }
+  });
+  gsap.from("[data-beat-fade]", {
+    opacity: 0, y: 26, duration: 1.1, ease: EASE, stagger: 0.14,
+    scrollTrigger: { trigger: ".beat", start: "top 68%" }
+  });
+  gsap.fromTo("#beatImg", { yPercent: -6 }, {
+    yPercent: 6, ease: "none",
+    scrollTrigger: { trigger: ".beat .visual", start: "top bottom", end: "bottom top", scrub: true }
+  });
+</script>
+</body>
+</html>
