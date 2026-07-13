@@ -27,7 +27,11 @@ export function TemplatesPage() {
       <Nav />
       <main className="relative overflow-hidden px-5 pb-32 pt-40 sm:px-8">
         {/* Ambient glow */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-cyan/[0.07] blur-[160px]" aria-hidden></div>
+        <div
+          className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2"
+          style={{ background: "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,229,255,0.09) 0%, rgba(0,229,255,0.03) 45%, transparent 70%)" }}
+          aria-hidden
+        ></div>
 
         <div className="relative z-10 mx-auto max-w-[1400px]">
           {/* Header */}
