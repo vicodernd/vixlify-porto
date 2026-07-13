@@ -6,7 +6,7 @@ export function TemplateCard({ template, onOpenPrompt }: { template: Template; o
   const { copied, copy } = useCopyToClipboard();
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-md transition-all duration-500 hover:-translate-y-2 hover:border-cyan/40 hover:shadow-[0_8px_32px_rgba(0,229,255,0.08)]">
+    <div className="group flex flex-col overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.07] to-white/[0.02] transition-all duration-500 hover:-translate-y-2 hover:border-cyan/40 hover:shadow-[0_8px_32px_rgba(0,229,255,0.08)]">
       {/* Thumbnail */}
       <button
         type="button"
