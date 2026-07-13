@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arus Coffee Roasters — Roasted where it grows</title>
+<meta name="description" content="Single origin Indonesian coffee from Gayo, Kintamani and Toraja. Roasted in Jakarta, shipped worldwide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Vollkorn:ital,wght@0,400;0,500;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ARUS COFFEE ROASTERS
+   Design direction: warm editorial, black-and-tan discipline.
+   One accent (ember) used three ways only: underline, route,
+   button fuse. Display sans + serif body + mono metadata.
+   ============================================================ */
+:root{
+  --paper:#F2ECDF;
+  --tan:#E6D8C0;
+  --tan-deep:#D9C6A6;
+  --ink:#191210;
+  --ink-soft:rgba(25,18,16,.64);
+  --ink-faint:rgba(25,18,16,.4);
+  --ember:#C14D24;
+  --hair:rgba(25,18,16,.14);
+  --hair-l:rgba(242,236,223,.18);
+  --paper-soft:rgba(242,236,223,.72);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --rad:1.5rem;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:auto}
+@media (min-width:1024px){html{font-size:1.1111vw}} /* 1440 design base, layout scales as one unit */
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'Vollkorn',Georgia,serif;font-size:1.06rem;line-height:1.62;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+main{width:100%;max-width:100%;overflow-x:clip}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.03em;line-height:.95}
+.mono{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase}
+.wrap{max-width:82rem;margin:0 auto;padding:0 3rem}
+::selection{background:var(--ember);color:var(--paper)}
+
+/* ---------- grain ---------- */
+body::after{
+  content:"";position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:200;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+#loader .temp{font-family:'Space Mono',monospace;font-size:4.4rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+#loader .temp em{font-style:normal;color:var(--ember)}
+#loader .lmark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:.42em;font-size:.8rem;opacity:.6}
+
+/* ---------- page curtain ---------- */
+#curtain{position:fixed;inset:0;z-index:190;background:var(--ink);color:var(--paper);transform:translateY(102%);display:flex;align-items:center;justify-content:center;border-radius:2.5rem 2.5rem 0 0}
+#curtain .cname{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:3rem;letter-spacing:-.02em}
+
+/* ---------- header ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.4rem 3rem;display:flex;align-items:center;justify-content:space-between;
+  transition:color .4s var(--ease),transform .5s var(--ease),background .35s var(--ease)}
+header.hide{transform:translateY(-110%)}
+header.scrolled{background:rgba(242,236,223,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+header.scrolled.on-dark{background:rgba(25,18,16,.6)}
+header .brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:.3em}
+header nav{display:flex;gap:2.4rem;align-items:center}
+header nav a.nl{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;position:relative}
+header nav a.nl::after{content:"";position:absolute;left:0;bottom:-.35rem;height:1.5px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
+header nav a.nl:hover::after,header nav a.nl.active::after{transform:scaleX(1);transform-origin:left}
+header.on-dark{color:var(--paper)}
+header .fuse.small{height:2.5rem;padding:0 1.2rem;font-size:.78rem;margin-right:2.7rem}
+header .fuse.small::after{width:2.5rem;height:2.5rem;right:-2.6rem;font-size:.85rem}
+
+/* ---------- fuse button (pill + detached circle, merge on hover) ----------
+   The circle's box is locked to the pill's exact height so the two shapes are
+   the same size, and on hover the circle slides left to close the hairline gap
+   while the facing corners square off: one continuous capsule, no seam. */
+.fuse{display:inline-flex;align-items:center;position:relative;background:var(--ink);color:var(--paper);
+  border-radius:99rem;height:3.1rem;padding:0 1.7rem;margin-right:3.35rem;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.01em;
+  transition:border-radius .3s var(--ease),background .3s var(--ease),transform .15s var(--ease);cursor:pointer}
+.fuse::after{content:"\2192";position:absolute;right:-3.22rem;top:0;width:3.1rem;height:3.1rem;border-radius:50%;
+  background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:1rem;
+  transition:border-radius .3s var(--ease),background .3s var(--ease),transform .3s var(--ease)}
+.fuse:hover{border-top-right-radius:0;border-bottom-right-radius:0;background:var(--ember)}
+.fuse:hover::after{border-top-left-radius:0;border-bottom-left-radius:0;background:var(--ember);transform:translateX(-.2rem)} /* slight same-color overlap kills the subpixel seam */
+.fuse:active{transform:scale(.98)}
+header.on-dark .fuse,header.on-dark .fuse::after{background:var(--paper);color:var(--ink)}
+header.on-dark .fuse:hover,header.on-dark .fuse:hover::after{background:var(--ember);color:var(--paper)}
+
+/* ---------- pages ---------- */
+.page{display:none}
+.page.active{display:block}
+
+/* ---------- reveals ---------- */
+.rvl{overflow:hidden;display:block}
+.rvl>span{display:block;transform:translateY(112%);transition:transform 1s var(--ease)}
+.rv-in .rvl>span{transform:translateY(0)}
+.rvf{opacity:0;transform:translateY(1.6rem);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv-in .rvf,.rvf.rv-in{opacity:1;transform:none}
+
+/* ============================================================ HOME */
+.hero{min-height:100dvh;position:relative;display:flex;align-items:center;padding:7.5rem 3rem 4rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;width:100%;max-width:88rem;margin:0 auto}
+.hero h1{font-size:7.2rem;font-weight:800}
+.hero h1 .l2{color:var(--ember)}
+.hero .sub{max-width:30rem;margin:2rem 0 2.6rem;color:var(--ink-soft);font-size:1.12rem}
+.hero-visual{position:relative}
+/* double bezel frame around the bean canvas */
+.bean-frame{background:rgba(25,18,16,.05);border:1px solid var(--hair);border-radius:2rem;padding:.6rem}
+.bean-stage{position:relative;border-radius:calc(2rem - .6rem);overflow:hidden;aspect-ratio:4/4.6}
+.bean-stage img,.bean-stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bean-caption{margin-top:1rem;display:flex;justify-content:space-between;color:var(--ink-faint)}
+.hero-cta{display:flex;align-items:center;gap:2.2rem}
+.hero-cta .tl{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.95rem;border-bottom:2px solid var(--ember);padding-bottom:.2rem;transition:opacity .3s var(--ease)}
+.hero-cta .tl:hover{opacity:.6}
+
+/* arc marquee band */
+.arc-band{background:var(--ink);color:var(--paper);padding:5rem 0 0;border-radius:2.5rem 2.5rem 0 0;margin-top:-2.5rem;position:relative;overflow:hidden}
+.arc-band svg{display:block;width:100%;height:auto}
+.arc-band text{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:64px;letter-spacing:.02em;fill:var(--paper)}
+.arc-band text .em{fill:var(--ember)}
+
+/* origins */
+.origins{background:var(--ink);color:var(--paper);padding:7rem 0 9rem;border-radius:0 0 2.5rem 2.5rem}
+.origins h2{font-size:4rem;max-width:38rem}
+.origins h2 u{text-decoration-color:var(--ember);text-decoration-thickness:.09em;text-underline-offset:.12em}
+.origin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:4.5rem}
+.o-card{position:relative}
+.o-card:nth-child(2){margin-top:3.5rem}
+.o-card:nth-child(3){margin-top:-1.5rem}
+.o-media{border-radius:var(--rad);overflow:hidden;aspect-ratio:4/5;position:relative}
+.o-media img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.o-card:hover .o-media img{transform:scale(1.05)}
+.o-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(25,18,16,.82) 0%,rgba(25,18,16,0) 46%);opacity:0;transition:opacity .5s var(--ease);display:flex;align-items:flex-end;padding:1.6rem}
+.o-card:hover .o-veil{opacity:1}
+.o-veil p{font-style:italic;font-size:1.05rem;line-height:1.45}
+.o-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:1.3rem}
+.o-head h3{font-size:1.9rem;font-weight:700}
+.o-head span{color:var(--hair-l);color:rgba(242,236,223,.55)}
+.o-meta{margin-top:.5rem;color:rgba(242,236,223,.55)}
+
+/* philosophy notch */
+.philo{padding:9rem 0}
+.notch-wrap{position:relative;border-radius:2rem 2rem 2rem 0;overflow:hidden} /* bottom-left square: the paper panel owns that corner, a radius there clips its text */
+.notch-wrap>img{width:100%;aspect-ratio:16/8.5;object-fit:cover}
+.notch-panel{position:absolute;left:0;bottom:0;background:var(--paper);max-width:34rem;padding:2.6rem 3rem .2rem 0;border-top-right-radius:2rem}
+.notch-panel::before{content:"";position:absolute;top:-1.6rem;left:0;width:1.6rem;height:1.6rem;
+  background:radial-gradient(circle at 100% 0,transparent 1.58rem,var(--paper) 1.6rem)}
+.notch-panel::after{content:"";position:absolute;bottom:0;right:-1.6rem;width:1.6rem;height:1.6rem;
+  background:radial-gradient(circle at 100% 0,transparent 1.58rem,var(--paper) 1.6rem)}
+.notch-panel h2{font-size:2.9rem;margin-bottom:1.1rem}
+.notch-panel h2 u{text-decoration-color:var(--ember);text-decoration-thickness:.09em;text-underline-offset:.12em}
+.notch-panel p{color:var(--ink-soft);max-width:28rem}
+
+/* process route */
+.process{padding:3rem 0 10rem}
+.process h2{font-size:4rem;max-width:40rem}
+.route-stage{position:relative;margin-top:5rem}
+.route-stage svg{position:absolute;left:0;right:0;top:1.4rem;width:100%;height:5rem;overflow:visible}
+.route-stage path{stroke:var(--ember);stroke-width:3;fill:none;stroke-linecap:round}
+.route-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative}
+.r-step{padding-top:4.6rem}
+.r-step .dot{position:absolute;top:1rem;width:1rem;height:1rem;border-radius:50%;background:var(--ember)}
+.r-step h3{font-size:1.5rem;margin-bottom:.5rem}
+.r-step p{color:var(--ink-soft);font-size:.98rem;max-width:15rem}
+.r-step .note{font-style:italic;color:var(--ember);margin-top:.6rem;font-size:.95rem}
+.process-photo{margin-top:6rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:end}
+.process-photo img{border-radius:var(--rad);width:100%;object-fit:cover}
+.process-photo img:first-child{aspect-ratio:4/3;transform:rotate(-1.2deg)}
+.process-photo .pp-copy{padding-bottom:1rem}
+.process-photo .pp-copy p{color:var(--ink-soft);max-width:26rem;font-size:1.1rem}
+
+/* testimonial */
+.testi{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden}
+.testi>img{position:absolute;inset:0;width:100%;height:112%;object-fit:cover;top:-6%}
+.testi .t-inner{position:relative;color:var(--paper);max-width:52rem;margin:0 auto;padding:8rem 3rem;text-align:center}
+.testi blockquote{font-family:'Vollkorn',serif;font-style:italic;font-size:2.2rem;line-height:1.35}
+.testi cite{display:block;margin-top:2rem;font-style:normal;font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;opacity:.8}
+
+/* cta band + footer */
+.cta-band{background:var(--ink);color:var(--paper);border-radius:2.5rem 2.5rem 0 0;padding:9rem 3rem 7rem;text-align:center}
+.cta-band h2{font-size:4.6rem;max-width:52rem;margin:0 auto 1.4rem}
+.cta-band h2 em{font-style:normal;color:var(--ember)}
+.cta-band p{color:rgba(242,236,223,.6);max-width:30rem;margin:0 auto 3rem}
+.cta-band .fuse,.cta-band .fuse::after{background:var(--paper);color:var(--ink)}
+.cta-band .fuse:hover,.cta-band .fuse:hover::after{background:var(--ember);color:var(--paper)}
+footer{background:var(--ink);color:var(--paper);padding:4rem 3rem 0;overflow:hidden}
+.f-links{display:flex;justify-content:space-between;border-top:1px solid var(--hair-l);padding-top:2.6rem;flex-wrap:wrap;gap:1.5rem}
+.f-links a{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;opacity:.7;transition:opacity .3s,color .3s}
+.f-links a:hover{opacity:1;color:var(--ember)}
+.f-mark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19vw;line-height:.72;letter-spacing:-.02em;text-align:center;margin-top:3rem;margin-bottom:-4.5vw;user-select:none}
+.f-legal{display:flex;justify-content:space-between;padding:1.6rem 0 1.2rem;border-top:1px solid var(--hair-l);color:rgba(242,236,223,.45)}
+
+/* ============================================================ BEANS */
+.p-head{padding:11rem 3rem 4rem;max-width:88rem;margin:0 auto}
+.p-head .kicker{color:var(--ember);margin-bottom:1.2rem;display:block}
+.p-head h1{font-size:5.6rem;max-width:56rem}
+.p-head .lede{max-width:34rem;color:var(--ink-soft);margin-top:1.8rem;font-size:1.12rem}
+.bean-row{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:5rem 0;border-top:1px solid var(--hair)}
+.bean-row:first-of-type{border-top:0}
+.bean-row .b-media{border-radius:2rem;overflow:hidden;aspect-ratio:4/4.4}
+.bean-row .b-media img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.bean-row:hover .b-media img{transform:scale(1.04)}
+.bean-row.flip .b-media{order:2}
+.b-copy h2{font-size:3.4rem;margin-bottom:.4rem}
+.b-copy .b-sub{font-style:italic;color:var(--ember);font-size:1.15rem;margin-bottom:1.4rem}
+.b-copy>p{color:var(--ink-soft);max-width:30rem}
+.spec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem 2.5rem;margin-top:2.2rem;max-width:30rem}
+.spec div b{display:block;font-family:'Space Mono',monospace;font-weight:400;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.3rem}
+.spec div span{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:1.02rem}
+.b-buy{margin-top:2.4rem;display:flex;align-items:center;gap:1.8rem}
+.b-buy .price{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.7rem}
+.b-buy .price small{font-family:'Space Mono',monospace;font-weight:400;font-size:.62rem;letter-spacing:.14em;color:var(--ink-faint);display:block}
+.season-band{background:var(--tan);border-radius:2rem;padding:4.5rem 4rem;margin:3rem 0 6rem;display:grid;grid-template-columns:1.2fr .8fr;gap:3rem;align-items:center}
+.season-band h2{font-size:3.2rem}
+.season-band h2 u{text-decoration-color:var(--ember);text-decoration-thickness:.09em;text-underline-offset:.12em}
+.season-band p{color:var(--ink-soft);max-width:28rem;margin-top:1rem}
+
+/* ============================================================ BREW */
+.brew-hero{border-radius:2rem;overflow:hidden;max-width:88rem;margin:0 auto;padding:0 3rem}
+.brew-hero img{border-radius:2rem;width:100%;aspect-ratio:16/7.2;object-fit:cover}
+.method{display:grid;grid-template-columns:.9fr 1.1fr;gap:4rem;padding:6rem 0;border-top:1px solid var(--hair)}
+.method:first-of-type{border-top:0}
+.m-left{position:sticky;top:8rem;align-self:start}
+.m-left h2{font-size:3.6rem}
+.m-left .ratio{display:flex;gap:2.6rem;margin-top:2rem}
+.m-left .ratio div b{display:block;font-family:'Space Mono',monospace;font-weight:400;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.3rem}
+.m-left .ratio div span{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.9rem}
+.m-left>p{color:var(--ink-soft);max-width:22rem;margin-top:1.6rem;font-style:italic}
+.m-steps{display:grid;gap:2.2rem}
+.m-step{display:grid;grid-template-columns:4rem 1fr;gap:1.4rem;align-items:start}
+.m-step .n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2.2rem;color:var(--tan-deep)}
+.m-step h3{font-size:1.35rem;margin-bottom:.35rem}
+.m-step p{color:var(--ink-soft);max-width:30rem}
+
+/* ============================================================ ABOUT */
+.about-state{padding:11rem 3rem 5rem;max-width:88rem;margin:0 auto}
+.about-state h1{font-size:4.6rem;max-width:66rem}
+.about-state h1 .w{display:inline-block;opacity:.12}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;max-width:88rem;margin:0 auto;padding:2rem 3rem 6rem}
+.about-grid img{border-radius:2rem;width:100%;aspect-ratio:4/3.4;object-fit:cover}
+.about-grid .a-copy p{color:var(--ink-soft);max-width:30rem;margin-bottom:1.4rem}
+.about-grid .a-copy p:first-child{color:var(--ink);font-size:1.25rem}
+.values{background:var(--ink);color:var(--paper);border-radius:2.5rem;max-width:88rem;margin:0 auto 8rem;padding:5.5rem 4rem}
+.values h2{font-size:3.2rem;margin-bottom:3.4rem}
+.values h2 u{text-decoration-color:var(--ember);text-decoration-thickness:.09em;text-underline-offset:.12em}
+.v-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.v-grid>div{padding:0 2.4rem;border-left:1px solid var(--hair-l)}
+.v-grid>div:first-child{padding-left:0;border-left:0}
+.v-grid h3{font-size:1.5rem;margin-bottom:.8rem}
+.v-grid p{color:rgba(242,236,223,.62);font-size:.98rem}
+.v-grid .num{font-family:'Space Mono',monospace;font-size:2.4rem;font-weight:700;color:var(--ember);display:block;margin-bottom:1rem;font-variant-numeric:tabular-nums}
+
+/* ============================================================ responsive */
+@media (max-width:1023px){
+  .wrap,.p-head,.about-state,.about-grid{padding-left:1.4rem;padding-right:1.4rem}
+  header{padding:1.1rem 1.4rem}
+  header nav a.nl{display:none}
+  .hero{padding:6.5rem 1.4rem 3rem}
+  .hero-grid{grid-template-columns:1fr;gap:2.5rem}
+  .hero h1{font-size:clamp(3.2rem,13vw,5.4rem)}
+  .arc-band text{font-size:110px}
+  .origin-grid{grid-template-columns:1fr;margin-top:3rem}
+  .o-card:nth-child(2),.o-card:nth-child(3){margin-top:0}
+  .origins h2,.process h2{font-size:clamp(2.4rem,9vw,3.4rem)}
+  .notch-wrap>img{aspect-ratio:4/5}
+  .notch-panel{position:relative;max-width:none;padding:2rem 0 0}
+  .notch-panel::before,.notch-panel::after{display:none}
+  .route-stage svg{display:none}
+  .route-steps{grid-template-columns:1fr;gap:2.6rem}
+  .r-step{padding-top:0;padding-left:2rem;position:relative}
+  .r-step .dot{top:.45rem;left:0}
+  .process-photo{grid-template-columns:1fr}
+  .testi blockquote{font-size:1.5rem}
+  .cta-band h2{font-size:clamp(2.2rem,9vw,3.2rem)}
+  .p-head h1{font-size:clamp(2.8rem,11vw,4rem)}
+  .bean-row{grid-template-columns:1fr;gap:2rem;padding:3.5rem 0}
+  .bean-row.flip .b-media{order:0}
+  .b-copy h2{font-size:2.6rem}
+  .season-band{grid-template-columns:1fr;padding:2.6rem 1.8rem}
+  .brew-hero{padding:0 1.4rem}
+  .brew-hero img{aspect-ratio:4/3}
+  .method{grid-template-columns:1fr;gap:2.4rem;padding:4rem 0}
+  .m-left{position:static}
+  .about-state h1{font-size:clamp(2.4rem,9.5vw,3.4rem)}
+  .about-grid{grid-template-columns:1fr}
+  .values{border-radius:1.6rem;padding:2.8rem 1.8rem;margin:0 1.4rem 5rem;max-width:none}
+  .v-grid{grid-template-columns:1fr;gap:2.4rem}
+  .v-grid>div{padding:0;border-left:0}
+  .f-mark{font-size:26vw}
+  .f-legal{flex-direction:column;gap:.4rem}
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="lmark">ARUS</div><div class="temp"><span id="tval">0</span><em>°C</em></div></div>
+<div id="curtain"><div class="cname" id="cname">Arus</div></div>
+
+<header id="hdr">
+  <a class="brand" href="#/">ARUS</a>
+  <nav>
+    <a class="nl" data-nav="/beans" href="#/beans">Beans</a>
+    <a class="nl" data-nav="/brew" href="#/brew">Brew Guides</a>
+    <a class="nl" data-nav="/about" href="#/about">About</a>
+    <a class="fuse small" href="#/beans">Shop beans</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============================================================ HOME -->
+<section class="page" id="page-home">
+  <div class="hero rv">
+    <div class="hero-grid">
+      <div>
+        <h1><span class="rvl"><span>Roasted where</span></span><span class="rvl"><span class="l2">it grows.</span></span></h1>
+        <p class="sub rvf">Single origins from Gayo, Kintamani and Toraja, roasted in Jakarta and shipped worldwide days after first crack.</p>
+        <div class="hero-cta rvf">
+          <a class="fuse" href="#/beans">Shop beans</a>
+          <a class="tl" href="#/brew">Read the brew guides</a>
+        </div>
+      </div>
+      <div class="hero-visual rvf">
+        <div class="bean-frame">
+          <div class="bean-stage" id="beanStage">
+            <img id="beanBase" src="img/beans-green.webp" alt="Raw green coffee beans">
+            <canvas id="beanCanvas"></canvas>
+          </div>
+        </div>
+        <div class="bean-caption mono"><span>Move your cursor: green to roast</span><span>Lot 07, Gayo</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arc-band" id="arcBand">
+    <svg viewBox="0 0 1600 430" aria-hidden="true">
+      <path id="arcPath" d="M -220 430 Q 800 60 1820 430" fill="none"/>
+      <text><textPath id="arcText" href="#arcPath" startOffset="-12%">SINGLE ORIGIN · SMALL LOT · <tspan class="em">ROASTED IN JAKARTA</tspan> · SHIPPED WORLDWIDE · SINGLE ORIGIN · SMALL LOT · <tspan class="em">ROASTED IN JAKARTA</tspan> · SHIPPED WORLDWIDE</textPath></text>
+    </svg>
+  </div>
+
+  <div class="origins dark rv">
+    <div class="wrap">
+      <h2><span class="rvl"><span>Three islands,</span></span><span class="rvl"><span><u>three profiles</u>.</span></span></h2>
+      <div class="origin-grid">
+        <a class="o-card rvf" href="#/beans">
+          <div class="o-media"><img src="img/origin-gayo.webp" alt="Gayo highlands, Aceh"><div class="o-veil"><p>Orange peel, panela, cacao nib. Heavy body that holds up to milk.</p></div></div>
+          <div class="o-head"><h3>Gayo</h3><span class="mono">Aceh, Sumatra</span></div>
+          <p class="o-meta mono">1400 to 1650 masl · Wet hulled</p>
+        </a>
+        <a class="o-card rvf" href="#/beans">
+          <div class="o-media"><img src="img/origin-kintamani.webp" alt="Kintamani volcanic farms, Bali"><div class="o-veil"><p>Lemon zest, cane sugar, white florals. Bright and clean, made for filter.</p></div></div>
+          <div class="o-head"><h3>Kintamani</h3><span class="mono">Bali</span></div>
+          <p class="o-meta mono">1200 to 1500 masl · Washed</p>
+        </a>
+        <a class="o-card rvf" href="#/beans">
+          <div class="o-media"><img src="img/origin-toraja.webp" alt="Toraja mountains, Sulawesi"><div class="o-veil"><p>Dark plum, brown spice, cedar. Long, syrupy finish.</p></div></div>
+          <div class="o-head"><h3>Toraja</h3><span class="mono">Sulawesi</span></div>
+          <p class="o-meta mono">1500 to 1800 masl · Semi washed</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="philo rv">
+    <div class="wrap">
+      <div class="notch-wrap">
+        <img src="img/roastery-interior.webp" alt="The Arus roastery in Jakarta, morning light on the drum roaster">
+        <div class="notch-panel">
+          <h2><span class="rvl"><span>Short journeys</span></span><span class="rvl"><span>make <u>honest coffee</u>.</span></span></h2>
+          <p class="rvf">Most Indonesian lots travel eight thousand kilometres to be roasted, then eight thousand back. Ours travel across town. We buy directly from fourteen producing families, roast small batches in Danau Sunter, and ship the same week.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="process rv">
+    <div class="wrap">
+      <h2><span class="rvl"><span>From farm gate</span></span><span class="rvl"><span>to your door.</span></span></h2>
+      <div class="route-stage">
+        <svg preserveAspectRatio="none" viewBox="0 0 1200 80" aria-hidden="true"><path id="routeLine" d="M 8 60 C 180 10, 300 70, 450 40 S 750 10, 900 50 S 1120 30, 1192 44"/></svg>
+        <div class="route-steps">
+          <div class="r-step rvf"><span class="dot"></span><h3>Source</h3><p>Harvest lots cupped at origin with the producing family, priced above fair trade.</p><span class="note">14 partner farms</span></div>
+          <div class="r-step rvf"><span class="dot"></span><h3>Roast</h3><p>Small 12 kilogram batches on a 1974 Probat, profiled per lot, never blended away.</p><span class="note">first crack at 196°C</span></div>
+          <div class="r-step rvf"><span class="dot"></span><h3>Rest</h3><p>Beans degas for five to seven days before any bag is sealed. Peak flavour, not fresh hype.</p><span class="note">valve sealed at day 6</span></div>
+          <div class="r-step rvf"><span class="dot"></span><h3>Ship</h3><p>Worldwide in recyclable packs. Roast date printed on every bag, always under two weeks old.</p><span class="note">tracked, 3 to 8 days</span></div>
+        </div>
+      </div>
+      <div class="process-photo">
+        <img class="rvf" src="img/process-roasting.webp" alt="Pulling the sample trier mid roast">
+        <div class="pp-copy rvf"><p>Every batch is cupped the morning after roasting. If it does not match the lot profile we sell it as staff coffee, not as yours.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="testi dark rv">
+    <img id="testiImg" src="img/espresso-pour.webp" alt="Espresso pouring from a bottomless portafilter">
+    <div class="t-inner">
+      <blockquote class="rvf">"The Gayo lot outperformed coffees we pay a third more for. It has become the espresso our regulars ask about."</blockquote>
+      <cite class="rvf">Nadia Rahmani · Head of Coffee, Fold &amp; Filter, Melbourne</cite>
+    </div>
+  </div>
+
+  <div class="cta-band dark rv">
+    <h2 class="rvf">Taste the <em>short journey</em>.</h2>
+    <p class="rvf">Freshly roasted lots ship every Monday and Thursday from Jakarta.</p>
+    <a class="fuse rvf" href="#/beans">Shop beans</a>
+  </div>
+</section>
+
+<!-- ============================================================ BEANS -->
+<section class="page" id="page-beans">
+  <div class="p-head rv">
+    <span class="kicker mono rvf">Current lots · July 2026</span>
+    <h1><span class="rvl"><span>Four lots,</span></span><span class="rvl"><span>nothing hiding.</span></span></h1>
+    <p class="lede rvf">Every bag carries its farm, altitude, process and roast date. If a lot runs out, it is gone until next harvest. We do not stretch a season.</p>
+  </div>
+  <div class="wrap">
+
+    <div class="bean-row rv">
+      <div class="b-media"><img src="img/origin-gayo.webp" alt="Gayo highlands at dawn"></div>
+      <div class="b-copy">
+        <h2 class="rvf">Gayo Atu Lintang</h2>
+        <p class="b-sub rvf">Orange peel · panela · cacao nib</p>
+        <p class="rvf">Grown by the Bahagia cooperative around Atu Lintang village. Wet hulled the traditional Sumatran way, which gives it that deep, earthy sweetness and a body that carries through milk. Our workhorse espresso.</p>
+        <div class="spec rvf">
+          <div><b>Altitude</b><span>1400 to 1650 masl</span></div>
+          <div><b>Process</b><span>Wet hulled</span></div>
+          <div><b>Varietal</b><span>Ateng, Timtim</span></div>
+          <div><b>Roast</b><span>Medium dark</span></div>
+        </div>
+        <div class="b-buy rvf"><span class="price">$19<small>250 g, whole bean</small></span><a class="fuse" href="mailto:hello@aruscoffee.id?subject=Order">Order a bag</a></div>
+      </div>
+    </div>
+
+    <div class="bean-row flip rv">
+      <div class="b-media"><img src="img/origin-kintamani.webp" alt="Kintamani farms under Mount Batur"></div>
+      <div class="b-copy">
+        <h2 class="rvf">Kintamani Ulian</h2>
+        <p class="b-sub rvf">Lemon zest · cane sugar · white florals</p>
+        <p class="rvf">From subak abian gardens on the slopes above Lake Batur, where coffee grows between orange trees. Fully washed for a clean, bright cup that rewards a careful pour over. Our lightest roast.</p>
+        <div class="spec rvf">
+          <div><b>Altitude</b><span>1200 to 1500 masl</span></div>
+          <div><b>Process</b><span>Washed</span></div>
+          <div><b>Varietal</b><span>Kopyol, S795</span></div>
+          <div><b>Roast</b><span>Light</span></div>
+        </div>
+        <div class="b-buy rvf"><span class="price">$21<small>250 g, whole bean</small></span><a class="fuse" href="mailto:hello@aruscoffee.id?subject=Order">Order a bag</a></div>
+      </div>
+    </div>
+
+    <div class="bean-row rv">
+      <div class="b-media"><img src="img/origin-toraja.webp" alt="Toraja mountain valleys"></div>
+      <div class="b-copy">
+        <h2 class="rvf">Toraja Sapan</h2>
+        <p class="b-sub rvf">Dark plum · brown spice · cedar</p>
+        <p class="rvf">Picked in the high valleys around Sapan, north Toraja, and semi washed to keep its signature weight. Syrupy, spiced and long. The cup we reach for after dinner, brewed slow on a French press.</p>
+        <div class="spec rvf">
+          <div><b>Altitude</b><span>1500 to 1800 masl</span></div>
+          <div><b>Process</b><span>Semi washed</span></div>
+          <div><b>Varietal</b><span>Typica, Jember</span></div>
+          <div><b>Roast</b><span>Medium</span></div>
+        </div>
+        <div class="b-buy rvf"><span class="price">$22<small>250 g, whole bean</small></span><a class="fuse" href="mailto:hello@aruscoffee.id?subject=Order">Order a bag</a></div>
+      </div>
+    </div>
+
+    <div class="season-band rv">
+      <div>
+        <h2 class="rvf">Seasonal: <u>Flores Bajawa</u></h2>
+        <p class="rvf">A small honey processed lot from the Ngada highlands, here until roughly September. Ripe mango, milk chocolate, a soft floral finish. When the last bag ships, that is the season.</p>
+      </div>
+      <div class="b-copy">
+        <div class="spec rvf">
+          <div><b>Altitude</b><span>1300 to 1600 masl</span></div>
+          <div><b>Process</b><span>Yellow honey</span></div>
+          <div><b>Lot size</b><span>18 bags left</span></div>
+          <div><b>Roast</b><span>Light medium</span></div>
+        </div>
+        <div class="b-buy rvf"><span class="price">$24<small>250 g, whole bean</small></span><a class="fuse" href="mailto:hello@aruscoffee.id?subject=Order">Order a bag</a></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ BREW -->
+<section class="page" id="page-brew">
+  <div class="p-head rv">
+    <h1><span class="rvl"><span>Brew it the way</span></span><span class="rvl"><span>the farm intended.</span></span></h1>
+    <p class="lede rvf">Three methods cover every lot we roast. Recipes below are our roastery bar's daily settings; adjust grind before anything else.</p>
+  </div>
+  <div class="brew-hero rv"><img class="rvf" src="img/pourover.webp" alt="Pour over brewing at the Arus roastery bar"></div>
+  <div class="wrap">
+
+    <div class="method rv">
+      <div class="m-left">
+        <h2 class="rvf">V60 pour over</h2>
+        <div class="ratio rvf">
+          <div><b>Ratio</b><span>1:15</span></div>
+          <div><b>Water</b><span>94°C</span></div>
+          <div><b>Total time</b><span>2:45</span></div>
+        </div>
+        <p class="rvf">Best for Kintamani Ulian and the seasonal Flores. Clarity over body.</p>
+      </div>
+      <div class="m-steps">
+        <div class="m-step rvf"><span class="n">01</span><div><h3>Rinse and dose</h3><p>Rinse the paper thoroughly, then dose 15 g ground slightly finer than sea salt into the cone.</p></div></div>
+        <div class="m-step rvf"><span class="n">02</span><div><h3>Bloom</h3><p>Pour 45 g of water, swirl once, and wait 40 seconds while the fresh roast degasses.</p></div></div>
+        <div class="m-step rvf"><span class="n">03</span><div><h3>Two pours</h3><p>Pour to 150 g in slow circles, pause 20 seconds, then finish to 225 g down the centre.</p></div></div>
+        <div class="m-step rvf"><span class="n">04</span><div><h3>Drawdown</h3><p>A flat bed by 2:45 means the grind is right. Muddy and slow, go coarser. Fast and hollow, go finer.</p></div></div>
+      </div>
+    </div>
+
+    <div class="method rv">
+      <div class="m-left">
+        <h2 class="rvf">French press</h2>
+        <div class="ratio rvf">
+          <div><b>Ratio</b><span>1:14</span></div>
+          <div><b>Water</b><span>96°C</span></div>
+          <div><b>Total time</b><span>8:00</span></div>
+        </div>
+        <p class="rvf">Made for Toraja Sapan. The long steep builds that syrupy finish.</p>
+      </div>
+      <div class="m-steps">
+        <div class="m-step rvf"><span class="n">01</span><div><h3>Coarse and hot</h3><p>Dose 30 g ground coarse, like raw sugar, and pour 420 g of water in one confident stream.</p></div></div>
+        <div class="m-step rvf"><span class="n">02</span><div><h3>Leave it alone</h3><p>No stirring, no plunging yet. Let it steep for a full four minutes with the lid off.</p></div></div>
+        <div class="m-step rvf"><span class="n">03</span><div><h3>Break and skim</h3><p>Break the crust with a spoon, skim the foam, then wait another four minutes for the fines to settle.</p></div></div>
+        <div class="m-step rvf"><span class="n">04</span><div><h3>Pour, do not plunge</h3><p>Press the mesh just below the surface and pour gently. The bed stays behind, the silt stays out of your cup.</p></div></div>
+      </div>
+    </div>
+
+    <div class="method rv">
+      <div class="m-left">
+        <h2 class="rvf">Espresso</h2>
+        <div class="ratio rvf">
+          <div><b>Ratio</b><span>1:2</span></div>
+          <div><b>Dose</b><span>18 g</span></div>
+          <div><b>Shot time</b><span>27 s</span></div>
+        </div>
+        <p class="rvf">Dialed for Gayo Atu Lintang. It shines through milk without disappearing.</p>
+      </div>
+      <div class="m-steps">
+        <div class="m-step rvf"><span class="n">01</span><div><h3>Dose and distribute</h3><p>18 g in, levelled with a light tap. Fresh roasts run fast, so start one notch finer than usual.</p></div></div>
+        <div class="m-step rvf"><span class="n">02</span><div><h3>Pull to weight</h3><p>Stop the shot at 36 g out. Aim for 25 to 30 seconds from the first drop, not from the pump.</p></div></div>
+        <div class="m-step rvf"><span class="n">03</span><div><h3>Taste before milk</h3><p>Sour and sharp, go finer. Bitter and hollow, go coarser. The panela sweetness should sit mid palate.</p></div></div>
+        <div class="m-step rvf"><span class="n">04</span><div><h3>For milk drinks</h3><p>Keep the same shot and steam to 55 to 60°C. The cacao nib note is what cuts through a flat white.</p></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ ABOUT -->
+<section class="page" id="page-about">
+  <div class="about-state rv">
+    <h1 id="aboutState">Arus means current. Coffee has always moved through this archipelago; we just shortened the route.</h1>
+  </div>
+  <div class="about-grid rv">
+    <img class="rvf" src="img/hands-sorting.webp" alt="Sorting green beans by hand on a rattan tray">
+    <div class="a-copy">
+      <p class="rvf">Arus started in 2019 as a Saturday cupping table in a Danau Sunter garage, buying single sacks directly from a cousin's farm in Gayo.</p>
+      <p class="rvf">Seven harvests later we work with fourteen producing families across three islands, pay above fair trade at the farm gate, and roast everything ourselves on a rebuilt 1974 Probat. The garage is now the roastery. The cupping table is still the same table.</p>
+      <p class="rvf">We stayed small on purpose. Every lot is bought by someone who has stood on that farm, and every batch is approved by the person who roasted it.</p>
+    </div>
+  </div>
+  <div class="values dark rv">
+    <h2 class="rvf">What we <u>hold to</u>.</h2>
+    <div class="v-grid">
+      <div class="rvf"><span class="num" data-count="14">0</span><h3>Producing families</h3><p>Direct relationships, visited every harvest, priced at the farm gate above fair trade minimums.</p></div>
+      <div class="rvf"><span class="num" data-count="7">0</span><h3>Harvests together</h3><p>The same farms since 2019. Consistency in the cup starts with consistency in who we buy from.</p></div>
+      <div class="rvf"><span class="num" data-count="12">0</span><h3>Kilograms per batch</h3><p>Small enough that a single roast profile fits a single lot. Nothing gets averaged into a house blend.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="dark">
+  <div class="f-links">
+    <a href="#/beans">Beans</a>
+    <a href="#/brew">Brew Guides</a>
+    <a href="#/about">About</a>
+    <a href="mailto:hello@aruscoffee.id">hello@aruscoffee.id</a>
+    <a href="#/">Instagram</a>
+  </div>
+  <div class="f-mark" aria-hidden="true">ARUS</div>
+  <div class="f-legal mono"><span>© 2026 Arus Coffee Roasters</span><span>Roasted in Jakarta</span></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let ready=false;
+
+/* ---------- router ---------- */
+const ROUTES={'':'page-home','/':'page-home','/beans':'page-beans','/brew':'page-brew','/about':'page-about'};
+const NAMES={'page-home':'Arus','page-beans':'The Beans','page-brew':'Brew Guides','page-about':'About us'};
+const inited=new Set();
+function routeId(){const h=location.hash.replace(/^#/,'');return ROUTES[h]||'page-home'}
+
+function activate(id){
+  $$('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById(id);pg.classList.add('active');
+  window.scrollTo(0,0);
+  $$('#hdr .nl').forEach(a=>a.classList.toggle('active','page-'+ (a.dataset.nav||'').replace('/','')===id));
+  if(!inited.has(id)){inited.add(id);(PAGE_INIT[id]||(()=>{}))()}
+  ScrollTrigger.refresh();
+  observeReveals(pg);
+  headerWatch();
+}
+
+let navBusy=false;
+function navigateTo(id){
+  if(navBusy||!ready){activate(id);return}
+  navBusy=true;
+  $('#cname').textContent=NAMES[id];
+  const c=$('#curtain');
+  gsap.timeline({onComplete:()=>{navBusy=false}})
+    .set(c,{borderRadius:'2.5rem 2.5rem 0 0'})
+    .to(c,{y:'0%',duration:.55,ease:'power3.in'})
+    .add(()=>{activate(id);c.style.borderRadius='0 0 2.5rem 2.5rem'})
+    .to(c,{y:'-102%',duration:.65,ease:'power3.out',delay:.12})
+    .set(c,{y:'102%'});
+}
+window.addEventListener('hashchange',()=>navigateTo(routeId()));
+
+/* ---------- reveals (line masks + fade ups) ---------- */
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('rv-in');io.unobserve(e.target)}})
+},{threshold:.18});
+function observeReveals(scope){
+  if(!ready)return; /* the loader gates first paint; it re-calls this when done */
+  scope.querySelectorAll('.rv,.rvf').forEach(el=>{
+    if(!el.classList.contains('rv-in'))io.observe(el);
+  });
+}
+
+/* ---------- header inverts over dark sections ---------- */
+let lastY=0;
+function headerWatch(){
+  const hdr=$('#hdr');
+  const darks=$$('.page.active .dark, .page.active .arc-band, footer');
+  let onDark=false;
+  const y=(hdr.offsetHeight||64)/2;
+  for(const el of darks){
+    const r=el.getBoundingClientRect();
+    if(r.top<=y&&r.bottom>=y){onDark=true;break}
+  }
+  hdr.classList.toggle('on-dark',onDark);
+  const sy=window.scrollY;
+  hdr.classList.toggle('scrolled',sy>40);
+  hdr.classList.toggle('hide',sy>lastY&&sy>160);
+  lastY=sy;
+}
+let hwTick=false;
+addEventListener('scroll',()=>{
+  if(hwTick)return;hwTick=true;
+  requestAnimationFrame(()=>{headerWatch();hwTick=false});
+},{passive:true});
+
+/* ---------- per-page inits ---------- */
+const PAGE_INIT={
+  'page-home'(){
+    liquidReveal();
+    /* arc marquee scrubs with scroll */
+    gsap.fromTo('#arcText',{attr:{startOffset:'-12%'}},{attr:{startOffset:'-42%'},ease:'none',
+      scrollTrigger:{trigger:'#arcBand',start:'top bottom',end:'bottom top',scrub:.6}});
+    /* route line draws in */
+    const path=$('#routeLine');const len=path.getTotalLength();
+    gsap.set(path,{strokeDasharray:len,strokeDashoffset:len});
+    gsap.to(path,{strokeDashoffset:0,ease:'none',
+      scrollTrigger:{trigger:'.route-stage',start:'top 82%',end:'top 30%',scrub:.5}});
+    /* position route dots along the grid columns */
+    /* testimonial photo parallax */
+    gsap.fromTo('#testiImg',{yPercent:-5},{yPercent:5,ease:'none',
+      scrollTrigger:{trigger:'.testi',start:'top bottom',end:'bottom top',scrub:.5}});
+  },
+  'page-beans'(){},
+  'page-brew'(){},
+  'page-about'(){
+    /* word-by-word statement reveal, scroll scrubbed */
+    const h=$('#aboutState');
+    h.innerHTML=h.textContent.trim().split(/\s+/).map(w=>`<span class="w">${w}</span>`).join(' ');
+    gsap.to('#aboutState .w',{opacity:1,stagger:.05,ease:'none',
+      scrollTrigger:{trigger:'#aboutState',start:'top 75%',end:'bottom 50%',scrub:.4}});
+    /* count up numbers */
+    $$('.v-grid .num').forEach(n=>{
+      const target=+n.dataset.count;
+      gsap.fromTo(n,{innerText:0},{innerText:target,snap:{innerText:1},ease:'none',
+        scrollTrigger:{trigger:n,start:'top 88%',end:'top 55%',scrub:.4}});
+    });
+  }
+};
+
+/* ---------- liquid reveal: cursor paints roasted beans over green ---------- */
+function liquidReveal(){
+  const stage=$('#beanStage'),canvas=$('#beanCanvas'),base=$('#beanBase');
+  const ctx=canvas.getContext('2d');
+  const after=new Image();after.src='img/beans-roasted.webp';
+  let cw=0,ch=0,dpr=Math.min(devicePixelRatio||1,2);
+  let cover=null; /* offscreen cover-fit copy of the after image */
+  let pts=[],idle=0,last=null;
+  function resize(){
+    const r=stage.getBoundingClientRect();cw=r.width;ch=r.height;
+    canvas.width=cw*dpr;canvas.height=ch*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    if(after.complete&&after.naturalWidth)buildCover();
+  }
+  function buildCover(){
+    cover=document.createElement('canvas');cover.width=cw*dpr;cover.height=ch*dpr;
+    const c=cover.getContext('2d');
+    const s=Math.max(cw*dpr/after.naturalWidth,ch*dpr/after.naturalHeight);
+    const w=after.naturalWidth*s,h=after.naturalHeight*s;
+    c.drawImage(after,(cw*dpr-w)/2,(ch*dpr-h)/2,w,h);
+  }
+  after.onload=()=>{resize()};
+  new ResizeObserver(resize).observe(stage);
+  const R=Math.max(90,Math.min(150,innerWidth*.08));
+  stage.addEventListener('pointermove',e=>{
+    const r=stage.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    if(last){const dx=x-last.x,dy=y-last.y,d=Math.hypot(dx,dy);
+      const steps=Math.min(60,Math.max(1,Math.floor(d/(R*.3))));
+      for(let i=1;i<=steps;i++)pts.push({x:last.x+dx*i/steps,y:last.y+dy*i/steps,a:1});
+    } else pts.push({x,y,a:1});
+    last={x,y};idle=0;
+  });
+  stage.addEventListener('pointerleave',()=>{last=null});
+  const brush=document.createElement('canvas');
+  function stamp(x,y){
+    if(!cover)return;
+    brush.width=R*2*dpr;brush.height=R*2*dpr;
+    const b=brush.getContext('2d');
+    const g=b.createRadialGradient(R*dpr,R*dpr,0,R*dpr,R*dpr,R*dpr);
+    g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.7,'rgba(0,0,0,.65)');g.addColorStop(1,'rgba(0,0,0,0)');
+    b.fillStyle=g;b.fillRect(0,0,brush.width,brush.height);
+    b.globalCompositeOperation='source-in';
+    b.drawImage(cover,(x-R)*dpr,(y-R)*dpr,R*2*dpr,R*2*dpr,0,0,R*2*dpr,R*2*dpr);
+    ctx.drawImage(brush,x-R,y-R,R*2,R*2);
+  }
+  (function frame(){
+    /* decay: trail heals back to green */
+    idle++;
+    ctx.globalCompositeOperation='destination-out';
+    ctx.fillStyle=`rgba(0,0,0,${idle>90?0.05:0.010})`;
+    ctx.fillRect(0,0,cw,ch);
+    ctx.globalCompositeOperation='source-over';
+    while(pts.length){const p=pts.shift();stamp(p.x,p.y)}
+    requestAnimationFrame(frame);
+  })();
+}
+
+/* ---------- loader: roast temperature counter ---------- */
+(function(){
+  const val={t:0};
+  gsap.timeline()
+    .to(val,{t:205,duration:1.35,ease:'power2.inOut',onUpdate(){$('#tval').textContent=Math.round(val.t)}})
+    .to('#loader',{yPercent:-102,duration:.8,ease:'power3.inOut',delay:.15,
+      onComplete(){
+        $('#loader').style.display='none';ready=true;
+        const pg=$('.page.active');observeReveals(pg);
+      }});
+  /* activate the initial route immediately under the loader */
+  activate(routeId());
+})();
+</script>
+</body>
+</html>

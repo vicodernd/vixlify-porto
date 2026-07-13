@@ -29,6 +29,65 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'arus-coffee',
+    title: 'Arus — Indonesian Roastery Site',
+    category: 'site',
+    tags: ['GSAP', 'Hash router', 'Canvas', 'Editorial'],
+    description:
+      'A four page site for a fictional Indonesian specialty roastery in one self-contained file: hash routed pages behind an ink curtain transition, a cursor brush that "roasts" green beans in the hero, an arced marquee, and warm editorial pages for beans, brew guides and the story.',
+    prompt: `You are a principal designer at a high-end studio, building an award-grade multi page website for a fictional Indonesian specialty coffee roastery called "Arus" (arus means current; the brand story is shortening coffee's journey: single origins from Gayo, Kintamani and Toraja, roasted in Jakarta, shipped worldwide). The output is ONE self-contained HTML file with all CSS and JS inline (GSAP + ScrollTrigger from CDN allowed) containing four pages switched by a hash router. Quality bar is Awwwards, not a template.
+
+ART DIRECTION
+Mood: warm editorial with black-and-tan discipline. Cream paper ground, one true warm off-black for ink and full dark sections, and exactly one accent (a burnt ember orange) reserved for three jobs only: headline underlines and color-shifted words, the drawn route line and small markers, and button hover fills. Film grain overlay at 5% via a fixed SVG noise pseudo element. Nothing else gets color. The bean is the brand color; restraint is the whole strategy.
+
+PALETTE (CSS custom properties)
+--paper: #F2ECDF (page ground)
+--tan: #E6D8C0 (tinted surfaces) and --tan-deep: #D9C6A6 (big ghost numerals)
+--ink: #191210 (text, dark sections, curtain, footer)
+--ember: #C14D24 (the single accent)
+--hair: rgba(25,18,16,.14) and rgba(242,236,223,.18) for hairlines on light and dark
+
+TYPE
+Display: Bricolage Grotesque (Google Fonts) 700/800, letter-spacing -0.03em, line-height .95. Hero at ~7.2rem, section heads 3 to 4.6rem.
+Body: Vollkorn serif 400/500, 1.06rem, line-height 1.62; italics for tasting notes and asides. The grotesque display plus serif body pairing is the editorial voice.
+Meta: Space Mono, uppercase, 0.68rem, letter-spacing .18em, for nav links, spec labels, captions and the footer legal row.
+Page shell: above 1024px set html font-size to 1.1111vw (a 1440 design base) and size EVERYTHING in rem so the whole layout scales as one proportional unit on any monitor; below 1024px fall back to 16px with clamp() display sizes and single column layouts.
+
+STRUCTURE (four pages in one file, hash routed: #/ home, #/beans, #/brew, #/about)
+Router: pages are sections toggled by a class. Every navigation runs an ink curtain transition: a fixed full screen ink panel with a 2.5rem top radius slides up from the bottom (power3.in, .55s) showing the destination page name in display type, the page swaps and scrolls to top underneath, then the panel continues off the top with its bottom corners rounded (power3.out, .65s). First load instead shows a loader: the ARUS wordmark and a Space Mono counter that climbs 0 to 205°C (a roast temperature) in ~1.4s, then the panel slides away and gates every hero reveal until it is gone.
+Header: fixed, transparent at top. Wordmark ARUS letterspaced left; three mono nav links plus a "Shop beans" pill right. The pill is a fuse button: a pill and a detached circle with an arrow sitting 2px apart, and on hover the two facing corners square off so the shapes merge into one capsule while both flood ember. Header hides on scroll down, returns on scroll up with a blurred translucent backdrop, and swaps to cream text whenever it sits over a dark band (checked per frame against the dark sections' bounding boxes).
+
+HOME
+1) Hero, min-height 100dvh, two column grid: left, a stacked two line headline "Roasted where / it grows." with the second line in ember, a 18 word serif subline, a fuse button "Shop beans" and an underlined text link to the brew guides. Right, a double bezel frame (hairline outer shell, padded, 2rem radius) holding the signature device: a photo of RAW GREEN coffee beans with a canvas on top, and moving the cursor paints the SAME spread of beans ROASTED brown along the pointer trail with a soft radial brush (~120px), the trail slowly healing back to green via destination-out decay each frame. Cover-fit the roasted image to the canvas once, stamp it through a radial gradient mask per interpolated pointer point. A mono caption row underneath: "Move your cursor: green to roast" and a lot number.
+2) An ink band with an ARCED marquee: an SVG path curving like a hill crest, display type on a textPath, "SINGLE ORIGIN · SMALL LOT · ROASTED IN JAKARTA · SHIPPED WORLDWIDE" repeated, with one phrase in ember; scroll scrubs the startOffset so the arc slides as you pass. Top corners of the band rounded 2.5rem so it docks into the hero like a tile.
+3) Still on ink: "Three islands, three profiles." with an ember underline on two words, then three origin cards (4:5 images: Gayo highlands mist, Kintamani volcanic terraces, Toraja karst mountains) with staggered vertical offsets, image zoom on hover plus a gradient veil revealing italic tasting notes, and a mono meta line (masl, process) under each.
+4) Back on paper: a wide roastery photo (16:8.5, 2rem radius) with a paper panel BITTEN into its bottom left corner, the concave joints drawn with radial-gradient corner pieces so the notch reads as one continuous carved shape. Inside the notch: "Short journeys make honest coffee." and a short direct trade paragraph.
+5) Process: "From farm gate to your door." plus four steps (Source, Roast, Rest, Ship) sitting under an ember SVG line that draws itself across the section on scroll (strokeDashoffset scrub), an ember dot at each step, and an italic ember annotation per step (14 partner farms; first crack at 196°C; valve sealed at day 6; tracked, 3 to 8 days). Below, a two column beat: a rotated (-1.2deg) roasting photo and one short quality promise paragraph.
+6) Testimonial: full bleed dark espresso pour photo with a slow vertical parallax, a centered 3 line italic serif quote in cream and a mono attribution (name, role, cafe, city).
+7) CTA band on ink, rounded top corners: "Taste the short journey." with the key phrase in ember, one line of shipping copy, a cream fuse button. Then the footer: mono link row over a hairline, a giant ARUS wordmark at 19vw clipped by the legal row, and a two item mono legal line.
+
+BEANS PAGE
+Header block with an ember mono kicker (Current lots · month year), "Four lots, nothing hiding." and a two line lede about printing farm, altitude, process and roast date on every bag. Then three editorial rows separated by hairlines, image and copy alternating sides (max two consecutive splits), each with: origin name in display, an italic ember tasting note line, one specific paragraph naming the cooperative and process, a 2x2 mono spec grid (Altitude, Process, Varietal, Roast), and a price with a fuse button. Close with a tan "Seasonal" band (2rem radius) for a limited honey processed Flores lot with its own spec grid and a bags-left count.
+
+BREW GUIDES PAGE
+Head: "Brew it the way the farm intended." plus a wide pour over photo (16:7.2, rounded). Three methods (V60, French press, Espresso), each a two column block: LEFT STICKY summary with the method name, three big numerals (ratio, water or dose, time) over mono labels, and an italic line naming which lot it suits; RIGHT four numbered steps, the numbers set huge in the deep tan ghost tone, each step a short titled paragraph with real technique (bloom weights, drawdown reads, dial-in directions).
+
+ABOUT PAGE
+A full width statement headline whose words fade from 12% to full ink as you scroll (word by word, scrubbed). Then a two column block: a hands-sorting photo and three short story paragraphs (garage start, direct relationships, staying small on purpose). Close with an ink panel "What we hold to." holding three columns split by hairlines, each with a big ember mono numeral that counts up on scroll (14 producing families, 7 harvests, 12 kg batches) and a two line explanation.
+
+MOTION RULES
+Ease cubic-bezier(.22,1,.36,1) everywhere, scrubs ease none. Headlines rise out of overflow-hidden line masks; paragraphs fade up 1.6rem; both fired once by IntersectionObserver per page visit and gated behind the loader on first load. The canvas brush, curtain, arc scrub, line draw, parallax and count-ups are the only other motion; every one has a narrative job. Do not gate anything behind prefers-reduced-motion. Never animate layout properties.
+
+IMAGERY
+Nine warm photographs, all graded into the palette (cream and brown, terracotta undertone, matte film feel): raw green beans macro and roasted beans macro shot as matching top-down spreads (the hero pair), three origin landscapes (Gayo mist, Kintamani terraces with the volcano, Toraja karst valley), a morning roastery interior with a vintage drum roaster, hands pulling a sample trier, a dark moody espresso pour, and hands sorting green beans on a rattan tray. Serve the full bleed ones at 2K.
+
+QUALITY BAR
+No AI tells: no purple, no glassmorphism, no three identical feature cards, no emoji, no em dashes anywhere, no scroll cues, no fake dashboard. Copy is specific to Indonesian coffee (real place names, real process words like wet hulled and subak abian). The file must open by double click, run 60fps on a mid laptop, be fully responsive down to 375px with no horizontal overflow, and read like a small roastery that charges what it is worth.`,
+    thumb: '/templates/arus-coffee/thumb.webp',
+    demoUrl: '/templates/arus-coffee/index.html',
+    date: '2026-07-14',
+  },
+  {
     slug: 'linehaul-ops',
     title: 'Linehaul — 3D Freight Ops Landing',
     category: 'landing',
