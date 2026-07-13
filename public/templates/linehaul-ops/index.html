@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Linehaul — AI-Driven Freight Ops</title>
+<meta name="description" content="Linehaul mobilizes verified drivers and dock crews to protect your schedule when freight volume spikes. AI-driven dispatch, terminal-grade compliance." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%2306081F'/%3E%3Cpath d='M3 3h2.4L9 8l-3.6 5H3l3.6-5z' fill='%23FF4D3D'/%3E%3Cpath d='M8 3h2.4L14 8l-3.6 5H8l3.6-5z' fill='%23D6E4EC'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --mist: #d6e4ec;
+    --mist-deep: #c3d6e2;
+    --ink: #06081f;
+    --ink-soft: #5a5c6b;
+    --paper: #fcfcfc;
+    --coral: #ff4d3d;
+    --hair: rgba(6, 8, 31, 0.12);
+    --hair-dark: rgba(214, 228, 236, 0.16);
+    --ease: cubic-bezier(0.32, 0.72, 0, 1);
+    --pad-x: clamp(20px, 3.4vw, 48px);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: auto; }
+  body {
+    font-family: 'Archivo', sans-serif;
+    background: var(--mist);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--coral); color: var(--paper); }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; background: none; border: 0; color: inherit; cursor: pointer; }
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ---------- world canvas ---------- */
+  #world {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: block;
+  }
+
+  /* ---------- header ---------- */
+  .site-head {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 14px var(--pad-x);
+  }
+  .head-nav { display: flex; gap: 4px; }
+  .head-nav a {
+    padding: 12px 14px;
+    transition: opacity 0.35s var(--ease), color 0.45s var(--ease);
+  }
+  .head-nav a:hover { opacity: 0.55; }
+  .site-head.inv .head-nav a,
+  .site-head.inv .brand { color: var(--paper); }
+  .site-head.inv .pill-ghost { background: rgba(252, 252, 252, 0.14); color: var(--paper); }
+  .site-head.inv .pill-ink { background: var(--paper); color: var(--ink); }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--ink);
+    transition: color 0.45s var(--ease);
+  }
+  .brand-word { transition: color 0.45s var(--ease); }
+  .brand svg { display: block; }
+  .brand-word {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.22em;
+  }
+  .head-cta { display: flex; justify-content: flex-end; gap: 10px; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 26px;
+    border-radius: 156px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: transform 0.45s var(--ease), background-color 0.45s var(--ease), color 0.45s var(--ease), opacity 0.45s var(--ease);
+    white-space: nowrap;
+  }
+  .pill:active { transform: scale(0.97); }
+  .pill-ghost {
+    background: rgba(6, 8, 31, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .pill-ghost:hover { background: rgba(6, 8, 31, 0.16); }
+  .pill-ink { background: var(--ink); color: var(--paper); }
+  .pill-ink:hover { opacity: 0.86; }
+  .pill-paper { background: var(--paper); color: var(--ink); }
+  .pill-paper:hover { opacity: 0.86; }
+
+  /* ---------- hero (fixed) ---------- */
+  .hero {
+    position: fixed;
+    inset: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(28px, 4vh, 48px);
+    text-align: center;
+    padding: clamp(104px, 15vh, 148px) 20px 0;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 7.6vw, 100px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .hero h1 .line { display: block; overflow: hidden; }
+  .hero h1 .line > span { display: inline-block; will-change: transform; }
+  .hero-sub {
+    font-size: clamp(17px, 1.6vw, 23px);
+    max-width: 640px;
+    line-height: 1.5;
+  }
+  .hero-sub span { display: block; }
+  .hero-sub .dim { color: var(--ink-soft); }
+  .scroll-cue {
+    position: absolute;
+    bottom: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+    white-space: nowrap;
+  }
+  .scroll-cue .cue-line {
+    width: 100%;
+    height: 1.5px;
+    background: var(--ink);
+    transform-origin: left;
+    animation: cueDraw 2.8s var(--ease) infinite;
+  }
+  @keyframes cueDraw {
+    0% { transform: scaleX(0); transform-origin: left; }
+    42% { transform: scaleX(1); transform-origin: left; }
+    58% { transform: scaleX(1); transform-origin: right; }
+    100% { transform: scaleX(0); transform-origin: right; }
+  }
+
+  /* ---------- journey (spacer + process) ---------- */
+  .journey-spacer { height: 100svh; }
+  .process { position: relative; height: 430svh; }
+  .process-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    align-items: flex-end;
+  }
+  .steps {
+    position: relative;
+    margin: 0 0 clamp(24px, 5vh, 56px) var(--pad-x);
+    width: min(640px, calc(100% - 2 * var(--pad-x)));
+    display: flex;
+    flex-direction: column;
+    padding: 18px 22px;
+    border-radius: 20px;
+    background: rgba(214, 228, 236, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+  .steps.on { opacity: 1; transform: translateY(0); }
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 7px 0;
+  }
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 12px;
+    background: rgba(6, 8, 31, 0.07);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.5s var(--ease), color 0.5s var(--ease), transform 0.5s var(--ease);
+  }
+  .step h3 {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: font-size 0.5s var(--ease), color 0.5s var(--ease);
+  }
+  .step:not(.active) .step-num { transform: scale(0.72); background: rgba(6, 8, 31, 0.05); color: var(--ink-soft); }
+  .step:not(.active) h3 { font-size: 15px; color: var(--ink-soft); }
+  .step.active .step-num { background: var(--ink); color: var(--mist); }
+  .step-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.65s var(--ease);
+  }
+  .step.active .step-body { grid-template-rows: 1fr; }
+  .step-body-clip { overflow: hidden; }
+  .step-body-inner { display: flex; gap: 20px; padding: 6px 0 18px; }
+  .step-rail {
+    width: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    justify-content: center;
+  }
+  .step-rail .track {
+    position: relative;
+    width: 2px;
+    border-radius: 2px;
+    background: rgba(6, 8, 31, 0.18);
+    overflow: hidden;
+  }
+  .step-rail .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  .step-body p {
+    max-width: 480px;
+    color: var(--ink-soft);
+    font-size: 16px;
+  }
+  .step-body p strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- shared section shell ---------- */
+  .sheet { position: relative; background: var(--paper); }
+  .section-pad { padding: clamp(96px, 12vw, 176px) var(--pad-x); }
+  h2.display {
+    font-size: clamp(34px, 4.6vw, 64px);
+    font-weight: 500;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- capabilities ---------- */
+  .caps { height: 280vh; }
+  .caps-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(48px, 7vh, 96px);
+    padding: 0 var(--pad-x);
+    overflow: hidden;
+  }
+  .caps-grid {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+  }
+  .cap {
+    flex: 1 1 0;
+    border-left: 2px solid var(--hair);
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cap .stat {
+    font-size: clamp(40px, 4vw, 58px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .cap .stat em { font-style: normal; color: var(--coral); }
+  .cap .label { color: var(--ink); }
+  .cap p { color: var(--ink-soft); font-size: 15px; max-width: 300px; }
+
+  /* ---------- dock (image + text) ---------- */
+  .dock-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(48px, 8vw, 128px);
+  }
+  .dock-media {
+    flex: 1.25 1 0;
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+  }
+  .dock-media img {
+    width: 100%;
+    height: 112%;
+    object-fit: cover;
+    display: block;
+    will-change: transform;
+  }
+  .dock-copy {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(24px, 3vw, 44px);
+    max-width: 560px;
+  }
+  .dock-copy p { color: var(--ink-soft); max-width: 46ch; }
+
+  /* ---------- faq ---------- */
+  .faq {
+    border-top: 2px solid var(--hair);
+    border-bottom: 2px solid var(--hair);
+  }
+  .faq-grid {
+    display: flex;
+    gap: clamp(32px, 4vw, 56px);
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .faq-left { flex: 1 1 0; max-width: 640px; }
+  .faq-left h2 { position: sticky; top: 120px; }
+  .faq-divider { width: 2px; background: var(--hair); }
+  .faq-right { flex: 1.15 1 0; display: flex; flex-direction: column; }
+  .qa { border-bottom: 2px solid var(--hair); }
+  .qa:last-child { border-bottom: 0; }
+  .qa-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    padding: clamp(28px, 3vw, 44px) 0;
+    text-align: left;
+  }
+  .qa-head .q { font-size: clamp(19px, 1.8vw, 24px); font-weight: 500; letter-spacing: -0.01em; }
+  .qa-chev {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--ink);
+    transition: background-color 0.4s var(--ease);
+  }
+  .qa-chev svg {
+    transition: transform 0.55s var(--ease);
+  }
+  .qa.open .qa-chev svg { transform: rotate(180deg); }
+  .qa.open .qa-chev { background: var(--coral); }
+  .qa-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.6s var(--ease);
+  }
+  .qa.open .qa-body { grid-template-rows: 1fr; }
+  .qa-body-clip { overflow: hidden; }
+  .qa-body p { color: var(--ink-soft); padding-bottom: clamp(28px, 3vw, 40px); max-width: 62ch; }
+
+  /* ---------- cta band ---------- */
+  .band {
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(32px, 4vw, 52px);
+  }
+  .band h2 {
+    font-size: clamp(36px, 5.4vw, 82px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .band h2 span { display: block; overflow: hidden; }
+  .band h2 span > i { display: inline-block; font-style: normal; }
+  .band .dim { color: rgba(252, 252, 252, 0.55); }
+
+  /* ---------- footer ---------- */
+  footer { position: relative; background: var(--ink); color: var(--paper); }
+  .foot-nav {
+    display: flex;
+    border-top: 2px solid var(--hair-dark);
+    border-bottom: 2px solid var(--hair-dark);
+    height: 200px;
+  }
+  .foot-link {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 clamp(24px, 3vw, 48px);
+    border-right: 2px solid var(--hair-dark);
+    overflow: hidden;
+  }
+  .foot-link:last-child { border-right: 0; }
+  .foot-link .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.55s var(--ease);
+  }
+  .foot-link:hover .fill { transform: scaleY(1); }
+  .foot-link .lbl {
+    position: relative;
+    font-size: clamp(24px, 2.4vw, 36px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: color 0.45s var(--ease);
+  }
+  .foot-link .arr {
+    position: relative;
+    width: 22px;
+    height: 30px;
+    overflow: hidden;
+    flex: 0 0 22px;
+  }
+  .foot-link .arr svg {
+    position: absolute;
+    top: 0;
+    width: 22px;
+    height: 30px;
+    transition: transform 0.5s var(--ease), color 0.45s var(--ease);
+    color: var(--paper);
+  }
+  .foot-link .arr svg:first-child { left: 0; }
+  .foot-link .arr svg:last-child { left: -100%; }
+  .foot-link:hover .arr svg { transform: translateX(100%); }
+  .foot-link:hover .lbl, .foot-link:hover .arr svg { color: var(--ink); }
+  .foot-mark {
+    padding: clamp(32px, 5vw, 72px) var(--pad-x) clamp(20px, 2.5vw, 36px);
+    font-size: 15.2vw;
+    font-weight: 700;
+    line-height: 0.82;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .foot-legal {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 22px;
+    padding: 0 var(--pad-x) 40px;
+    font-size: 13.5px;
+  }
+  .foot-legal .copy { color: rgba(252, 252, 252, 0.45); margin-right: auto; }
+  .foot-legal a { transition: opacity 0.35s var(--ease); }
+  .foot-legal a:hover { opacity: 0.55; }
+  .foot-legal .vix { color: rgba(252, 252, 252, 0.45); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1080px) {
+    .caps { height: auto; }
+    .caps-stage {
+      position: static;
+      height: auto;
+      padding: clamp(96px, 12vw, 176px) var(--pad-x);
+    }
+    .caps-grid { flex-direction: column; gap: 44px; }
+    .cap p { max-width: 46ch; }
+    .dock-row { flex-direction: column; align-items: flex-start; }
+    .dock-media { width: 100%; flex: none; }
+    .faq-grid { flex-direction: column; }
+    .faq-divider { display: none; }
+    .faq-left h2 { position: static; }
+  }
+  @media (max-width: 900px) {
+    .head-nav { display: none; }
+    .site-head { grid-template-columns: auto 1fr; }
+    .brand { padding-left: 0; }
+    .foot-nav { flex-direction: column; height: auto; }
+    .foot-link { height: 84px; border-right: 0; border-bottom: 2px solid var(--hair-dark); }
+    .foot-link:last-child { border-bottom: 0; }
+  }
+  @media (max-width: 600px) {
+    .pill-ghost { display: none; }
+    .pill { height: 42px; padding: 0 20px; }
+    .hero-inner { padding-top: 112px; gap: 24px; }
+    .hero-sub { max-width: 320px; }
+    .steps { margin-left: 20px; margin-right: 20px; width: auto; }
+    .step-body p { font-size: 15px; }
+    .scroll-cue .mono { font-size: 10px; letter-spacing: 0.14em; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="world" aria-hidden="true"></canvas>
+
+<header class="site-head" id="siteHead">
+  <nav class="head-nav mono">
+    <a href="#lanes">Our Lanes</a>
+    <a href="#mission">Our Mission</a>
+  </nav>
+  <a class="brand" href="#top" aria-label="Linehaul home">
+    <svg width="26" height="15" viewBox="0 0 26 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h4.4l5.5 7.5L4.4 15H0l5.5-7.5L0 0Z" fill="#FF4D3D"/>
+      <path d="M8.4 0h4.4l5.5 7.5-5.5 7.5H8.4l5.5-7.5L8.4 0Z" fill="currentColor"/>
+      <path d="M16.8 0h4.4l5.5 7.5-5.5 7.5h-4.4l5.5-7.5L16.8 0Z" fill="currentColor" opacity="0.35"/>
+    </svg>
+    <span class="brand-word">LINEHAUL</span>
+  </a>
+  <div class="head-cta">
+    <a class="pill pill-ghost" href="#apply">Apply to Drive</a>
+    <a class="pill pill-ink" href="#request">Request Capacity</a>
+  </div>
+</header>
+
+<!-- fixed hero, content scrolls over it -->
+<section class="hero" id="hero">
+  <div class="hero-inner" id="heroInner">
+    <h1>
+      <span class="line"><span>A New Tempo</span></span>
+      <span class="line"><span>in Freight Ops</span></span>
+    </h1>
+    <p class="hero-sub">
+      <span>AI-driven dispatch. Verified crews.</span>
+      <span class="dim">We keep trucks rolling and docks turning when volume spikes and schedules cannot slip.</span>
+    </p>
+  </div>
+  <div class="scroll-cue" id="scrollCue">
+    <span class="mono">Scroll to follow the route</span>
+    <span class="cue-line"></span>
+  </div>
+</section>
+
+<div id="journey">
+  <div class="journey-spacer"></div>
+
+  <section class="process" id="process" aria-label="How dispatch works">
+    <div class="process-stage">
+      <div class="steps" id="steps">
+
+        <div class="step active" data-step="0">
+          <div class="step-head">
+            <span class="step-num">01</span>
+            <h3>Dispatch, simplified</h3>
+          </div>
+          <div class="step-body"><div class="step-body-clip"><div class="step-body-inner">
+            <div class="step-rail"><span class="track"><span class="fill"></span></span></div>
+            <p>One request opens the lane. Your load count, equipment, and dock windows route straight to verified crews. <strong>No brokers, no phone trees,</strong> wheels turning in hours.</p>
+          </div></div></div>
+        </div>
+
+        <div class="step" data-step="1">
+          <div class="step-head">
+            <span class="step-num">02</span>
+            <h3>Cleared to roll</h3>
+          </div>
+          <div class="step-body"><div class="step-body-clip"><div class="step-body-inner">
+            <div class="step-rail"><span class="track"><span class="fill"></span></span></div>
+            <p>Every driver and dock hand arrives pre-cleared. <strong>Licenses, endorsements, insurance, and site badging</strong> are verified before anyone is offered to your board.</p>
+          </div></div></div>
+        </div>
+
+        <div class="step" data-step="2">
+          <div class="step-head">
+            <span class="step-num">03</span>
+            <h3>Matched to the lane</h3>
+          </div>
+          <div class="step-body"><div class="step-body-clip"><div class="step-body-inner">
+            <div class="step-rail"><span class="track"><span class="fill"></span></span></div>
+            <p>Our engine matches crews by <strong>lane history, equipment, and tempo,</strong> not by who happens to be free. The right people reach the right dock the first time.</p>
+          </div></div></div>
+        </div>
+
+        <div class="step" data-step="3">
+          <div class="step-head">
+            <span class="step-num">04</span>
+            <h3>On time, every relay</h3>
+          </div>
+          <div class="step-body"><div class="step-body-clip"><div class="step-body-inner">
+            <div class="step-rail"><span class="track"><span class="fill"></span></span></div>
+            <p>Live tracking through the last mile. We watch <strong>every relay in real time,</strong> so night shifts stay covered and hand-offs never slip.</p>
+          </div></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- capabilities -->
+<section class="sheet caps" id="lanes">
+  <div class="caps-stage">
+    <h2 class="display">Built for live freight,<br />beyond legacy brokerage.</h2>
+    <div class="caps-grid" id="capsGrid">
+      <article class="cap">
+        <div class="stat"><span data-count="4" data-suffix="h">0h</span></div>
+        <div class="label mono">Median time to dispatch</div>
+        <p>From first call to a crew rolling toward your terminal, measured across every lane we run.</p>
+      </article>
+      <article class="cap">
+        <div class="stat"><span data-count="98" data-suffix="%">0%</span></div>
+        <div class="label mono">On-time arrival</div>
+        <p>Verified crews and live relay tracking keep loads inside the dock window they were promised.</p>
+      </article>
+      <article class="cap">
+        <div class="stat"><span data-count="12" data-suffix="k">0k</span></div>
+        <div class="label mono">Verified drivers and dock hands</div>
+        <p>A standing network, cleared and rated on real performance, ready before the surge hits.</p>
+      </article>
+      <article class="cap">
+        <div class="stat"><span data-count="240" data-suffix="+">0+</span></div>
+        <div class="label mono">Active lanes</div>
+        <p>Coverage across ports, rail ramps, and regional corridors, expanding on demand.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- dock discipline -->
+<section class="sheet section-pad" id="mission">
+  <div class="dock-row">
+    <div class="dock-media" id="dockMedia">
+      <img src="section.webp" alt="Logistics crew walking between container stacks at dawn" id="dockImg" />
+    </div>
+    <div class="dock-copy">
+      <h2 class="display">Terminal-grade discipline on every dock.</h2>
+      <p>Modeled on port-terminal operations, our process enforces badge compliance, protected dock windows, and zero-error hand-offs, on every site we serve.</p>
+      <a class="pill pill-ink" href="#request">Explore Our Lanes</a>
+    </div>
+  </div>
+</section>
+
+<!-- faq -->
+<section class="sheet faq section-pad">
+  <div class="faq-grid">
+    <div class="faq-left">
+      <h2 class="display">How we work, and how freight keeps moving.</h2>
+    </div>
+    <div class="faq-divider"></div>
+    <div class="faq-right" id="faq">
+
+      <div class="qa open">
+        <button class="qa-head" aria-expanded="true">
+          <span class="q">How fast can crews be dispatched?</span>
+          <span class="qa-chev"><svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 1l6 6 6-6" stroke="#FCFCFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="qa-body"><div class="qa-body-clip">
+          <p>At the speed of your schedule. Our platform maintains a standing network of verified drivers and dock crews, which removes the days lost to broker chains. One request activates dispatch, and precision-matched crews are rolling in hours.</p>
+        </div></div>
+      </div>
+
+      <div class="qa">
+        <button class="qa-head" aria-expanded="false">
+          <span class="q">How do you verify drivers and dock crews?</span>
+          <span class="qa-chev"><svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 1l6 6 6-6" stroke="#FCFCFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="qa-body"><div class="qa-body-clip">
+          <p>With a zero-fail clearance model. Before anyone is offered to your board, the system verifies licenses, endorsements, insurance, drug screening, and site-specific badging. Anyone not fully cleared never reaches your gate.</p>
+        </div></div>
+      </div>
+
+      <div class="qa">
+        <button class="qa-head" aria-expanded="false">
+          <span class="q">What happens when a load is at risk?</span>
+          <span class="qa-chev"><svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 1l6 6 6-6" stroke="#FCFCFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="qa-body"><div class="qa-body-clip">
+          <p>We manage the last mile of every relay in real time. If a hand-off drifts, coordination is live around the clock, and replacement capacity is dispatched before the dock window closes.</p>
+        </div></div>
+      </div>
+
+      <div class="qa">
+        <button class="qa-head" aria-expanded="false">
+          <span class="q">How is Linehaul different from a broker?</span>
+          <span class="qa-chev"><svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 1l6 6 6-6" stroke="#FCFCFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <div class="qa-body"><div class="qa-body-clip">
+          <p>Brokers are reactive. Linehaul is an operations engine. Instead of calling around for whoever is free, we deploy proven crews matched by lane history and equipment, engineered for high-tempo, critical-path freight.</p>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- cta band -->
+<section class="band section-pad" id="request">
+  <h2 id="bandHead">
+    <span><i>Cover your next surge with crews</i></span>
+    <span class="dim"><i>and capacity you can rely on.</i></span>
+  </h2>
+  <a class="pill pill-paper" href="#request">Request Capacity</a>
+</section>
+
+<footer id="apply">
+  <nav class="foot-nav">
+    <a class="foot-link" href="#lanes">
+      <span class="fill"></span>
+      <span class="lbl">Our Lanes</span>
+      <span class="arr">
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <a class="foot-link" href="#mission">
+      <span class="fill"></span>
+      <span class="lbl">Our Mission</span>
+      <span class="arr">
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <a class="foot-link" href="#apply">
+      <span class="fill"></span>
+      <span class="lbl">Apply to Drive</span>
+      <span class="arr">
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 22 30" fill="none"><path d="M6 7l9 8-9 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+  </nav>
+  <div class="foot-mark">Linehaul</div>
+  <div class="foot-legal">
+    <span class="copy">© 2026 Linehaul, Inc.</span>
+    <a href="#top">Privacy Policy</a>
+    <a href="#top">Terms</a>
+    <span class="vix">A Vixlify Template</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ============================================================
+   THREE.JS WORLD: procedural low-poly freight port
+   ============================================================ */
+const canvas = document.getElementById('world');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+/* subtle vertical sky gradient (deeper up top, paler at the horizon) */
+const skyCanvas = document.createElement('canvas');
+skyCanvas.width = 2; skyCanvas.height = 512;
+{
+  const sg = skyCanvas.getContext('2d');
+  const grad = sg.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0, '#bcd4e4');
+  grad.addColorStop(0.55, '#d6e4ec');
+  grad.addColorStop(1, '#e8eff5');
+  sg.fillStyle = grad; sg.fillRect(0, 0, 2, 512);
+}
+const skyTex = new THREE.CanvasTexture(skyCanvas);
+scene.background = skyTex;
+scene.fog = new THREE.Fog(0xdde9f0, 75, 215);
+
+const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 400);
+
+scene.add(new THREE.HemisphereLight(0xf5f9fc, 0x9fbacf, 0.58));
+const sun = new THREE.DirectionalLight(0xfff3e4, 1.04);
+sun.position.set(38, 55, 22);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -70;
+sun.shadow.camera.right = 70;
+sun.shadow.camera.top = 70;
+sun.shadow.camera.bottom = -70;
+sun.shadow.camera.far = 200;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+
+const PAL = [0xcfe0ec, 0xb2cadd, 0x9ebfd4, 0x86aac6, 0xdfeaf2];
+const FRAME = 0x64839c;   // container end frames (deeper for separation)
+const DARK = 0x1d2740;    // windshields, wheels, dock doors, glass
+const PEOPLE = 0x2b3556;  // people silhouettes
+const STEEL = 0x9db4c8;   // crane structure
+/* building tones: deliberately mid + cool so volumes read against the pale ground */
+const WALL = 0xa4bed2;    // primary building wall
+const WALL_LT = 0xb7cddf; // secondary / annex wall
+const ROOF = 0xd6e5f0;    // roof caps, lighter than walls to model the volume
+const mat = c => new THREE.MeshLambertMaterial({ color: c });
+const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+/* one shared unit-cube edge set; children inherit each mesh's scale, so a single
+   geometry gives correct outlines on every box for near-zero extra cost */
+const boxEdges = new THREE.EdgesGeometry(boxGeo);
+const edgeMat = new THREE.LineBasicMaterial({ color: 0x27314c, transparent: true, opacity: 0.4 });
+function box(parent, w, h, d, color, x, y, z) {
+  const m = new THREE.Mesh(boxGeo, mat(color));
+  m.scale.set(w, h, d);
+  m.position.set(x, y, z);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  parent.add(m);
+  return m;
+}
+/* crisp ink outline on the big architectural volumes (Vectr-style low-poly edges) */
+function edged(m) { m.add(new THREE.LineSegments(boxEdges, edgeMat)); return m; }
+const rnd = (() => { let s = 42; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+
+/* ground: one big plane with the terminal's paint package drawn into a canvas
+   texture (asphalt roads, lane edges, dashed centers, direction chevrons,
+   container slot grids, gate stop line, quay edge stripe), which reads far more
+   like a working port than a flat color */
+const G_SIZE = 340, G_PX = 2048, PPU = G_PX / G_SIZE;
+const gpx = x => (x + G_SIZE / 2) * PPU;
+const gpz = z => (z + G_SIZE / 2) * PPU;
+const gCanvas = document.createElement('canvas');
+gCanvas.width = gCanvas.height = G_PX;
+{
+  const g = gCanvas.getContext('2d');
+  const grnd = (() => { let s = 137; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+  g.fillStyle = '#bfd4e3'; g.fillRect(0, 0, G_PX, G_PX);
+  // subtle tonal mottling so the concrete is not one flat value
+  for (let i = 0; i < 260; i++) {
+    g.fillStyle = grnd() < 0.5 ? 'rgba(255,255,255,0.02)' : 'rgba(90,110,140,0.016)';
+    g.beginPath(); g.arc(grnd() * G_PX, grnd() * G_PX, 30 + grnd() * 150, 0, 7); g.fill();
+  }
+  // asphalt roads (painted into the texture, replacing the old road planes)
+  g.fillStyle = '#a9c2d4';
+  g.fillRect(gpx(-22), 0, 4 * PPU, G_PX);                    // north-south service road
+  g.fillRect(gpx(-47), gpz(12), 70 * PPU, 4 * PPU);          // east-west road at z 14
+  g.fillRect(gpx(-35), gpz(-22), 58 * PPU, 4 * PPU);         // east-west road at z -20
+  // lane edge lines
+  g.strokeStyle = 'rgba(252,252,252,0.62)'; g.lineWidth = 0.16 * PPU;
+  g.beginPath();
+  g.moveTo(gpx(-22), 0); g.lineTo(gpx(-22), G_PX);
+  g.moveTo(gpx(-18), 0); g.lineTo(gpx(-18), G_PX);
+  g.moveTo(gpx(-47), gpz(12)); g.lineTo(gpx(23), gpz(12));
+  g.moveTo(gpx(-47), gpz(16)); g.lineTo(gpx(23), gpz(16));
+  g.moveTo(gpx(-35), gpz(-22)); g.lineTo(gpx(23), gpz(-22));
+  g.moveTo(gpx(-35), gpz(-18)); g.lineTo(gpx(23), gpz(-18));
+  g.stroke();
+  // dashed centerlines
+  g.setLineDash([1.1 * PPU, 1.5 * PPU]);
+  g.strokeStyle = 'rgba(252,252,252,0.38)'; g.lineWidth = 0.12 * PPU;
+  g.beginPath();
+  g.moveTo(gpx(-20), 0); g.lineTo(gpx(-20), G_PX);
+  g.moveTo(gpx(-47), gpz(14)); g.lineTo(gpx(23), gpz(14));
+  g.moveTo(gpx(-35), gpz(-20)); g.lineTo(gpx(23), gpz(-20));
+  g.stroke();
+  g.setLineDash([]);
+  // travel-direction chevrons on the north-south road, pointing into the site
+  g.fillStyle = 'rgba(252,252,252,0.3)';
+  for (let z = -34; z <= 34; z += 10) {
+    g.beginPath();
+    g.moveTo(gpx(-20), gpz(z - 0.9));
+    g.lineTo(gpx(-20.7), gpz(z + 0.4));
+    g.lineTo(gpx(-19.3), gpz(z + 0.4));
+    g.closePath(); g.fill();
+  }
+  // container slot grid under the yard stacks
+  g.strokeStyle = 'rgba(252,252,252,0.38)'; g.lineWidth = 0.09 * PPU;
+  for (let ix = 0; ix < 8; ix++) for (let iz = 0; iz < 5; iz++) {
+    g.strokeRect(gpx(ix * 4.4 - 17.4 - 1.5), gpz(iz * 3.2 + 2.4 - 0.85), 3 * PPU, 1.7 * PPU);
+  }
+  // gate stop line + pedestrian hatch just inside the barrier
+  g.fillStyle = 'rgba(252,252,252,0.55)';
+  g.fillRect(gpx(-25.2), gpz(21.6), 4.4 * PPU, 0.4 * PPU);
+  g.fillStyle = 'rgba(252,252,252,0.34)';
+  for (let i = 0; i < 6; i++) g.fillRect(gpx(-25 + i * 0.75), gpz(17.2), 0.38 * PPU, 1.5 * PPU);
+  // quay edge stripe
+  g.fillStyle = 'rgba(252,252,252,0.5)';
+  g.fillRect(gpx(23.2), gpz(-26), 0.28 * PPU, 42 * PPU);
+  // coral dispatch pad where the route ends, in front of the hub door
+  g.setLineDash([0.7 * PPU, 0.6 * PPU]);
+  g.strokeStyle = 'rgba(255,77,61,0.4)'; g.lineWidth = 0.12 * PPU;
+  g.strokeRect(gpx(-10.6), gpz(-19.2), 3.2 * PPU, 2.4 * PPU);
+  g.setLineDash([]);
+}
+const gTex = new THREE.CanvasTexture(gCanvas);
+gTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(G_SIZE, G_SIZE), new THREE.MeshLambertMaterial({ map: gTex }));
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+/* water: segmented so it can ripple, plus a foam line along the quay */
+const waterGeo = new THREE.PlaneGeometry(60, 340, 18, 100);
+const water = new THREE.Mesh(waterGeo, mat(0x7fa8c4));
+water.rotation.x = -Math.PI / 2;
+water.position.set(54, 0.09, 0);
+scene.add(water);
+const waterPos = waterGeo.attributes.position;
+const foam = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 44), mat(0xe9f3f8));
+foam.rotation.x = -Math.PI / 2;
+foam.position.set(24.3, 0.16, -5);
+scene.add(foam);
+
+/* The coral route is the freight workflow drawn on the ground, defined early so
+   objects keep a clear corridor around it. It reads as one continuous journey and
+   is routed to skirt every building footprint (no wall clipping):
+   gate intake -> yard staging -> under the cranes (loading) -> back across the
+   open apron north of the warehouse -> down to the HQ hub door (dispatch control). */
+const routeCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-22.5, 0.3, 21.3),// 01 gate intake: starts in the gate lane...
+  new THREE.Vector3(-22.8, 0.3, 18),  //    ...and slips under the barrier into the facility
+  new THREE.Vector3(-16, 0.3, 12.5),  //    turn into the facility
+  new THREE.Vector3(-7, 0.3, 9),      // 02 into the yard aisle (staging)
+  new THREE.Vector3(3, 0.3, 4.5),     //    through the yard
+  new THREE.Vector3(12, 0.3, -2.2),   //    exit toward the quay
+  new THREE.Vector3(19.5, 0.3, -5.5), //    into the crane portal, midway between the legs
+  new THREE.Vector3(21, 0.3, -10),    // 03 under the cranes (loading)
+  new THREE.Vector3(14, 0.3, -9.5),   //    curve back west, north of the warehouse
+  new THREE.Vector3(2, 0.3, -9.5),    //    across the open apron (clear of the warehouse)
+  new THREE.Vector3(-9, 0.3, -11),    //    line up with the hub, west of the warehouse
+  new THREE.Vector3(-9, 0.3, -19)     // 04 arrive at the HQ hub door (control)
+]);
+const routePts = routeCurve.getPoints(200);
+function nearRoute(x, z, r) {
+  return routePts.some(pt => (pt.x - x) * (pt.x - x) + (pt.z - z) * (pt.z - z) < r * r);
+}
+
+/* container: body + darker end frames so it reads as a real intermodal box */
+function container(parent, x, y, z, c) {
+  box(parent, 2.5, 1, 1.1, c, x, y, z);
+  box(parent, 0.09, 1.05, 1.15, FRAME, x - 1.2, y, z);
+  box(parent, 0.09, 1.05, 1.15, FRAME, x + 1.2, y, z);
+}
+
+/* container yard (stacks step aside for the route corridor) */
+const yard = new THREE.Group();
+yard.position.set(-2, 0, 8);
+for (let ix = 0; ix < 8; ix++) {
+  for (let iz = 0; iz < 5; iz++) {
+    const lx = ix * 4.4 - 15.4;
+    const lz = iz * 3.2 - 5.6 + (rnd() - 0.5) * 0.3;
+    if (rnd() < 0.15) continue; // a few empty cells
+    const stack = 1 + Math.floor(rnd() * 3); // 1..3 high
+    if (nearRoute(lx - 2, lz + 8, 2.8)) continue;
+    for (let k = 0; k < stack; k++) {
+      container(yard, lx, 0.55 + k * 1.06, lz, PAL[Math.floor(rnd() * PAL.length)]);
+    }
+  }
+}
+scene.add(yard);
+
+/* gate / intake */
+const gate = new THREE.Group();
+edged(box(gate, 2.6, 2.2, 2.6, WALL, 0, 1.1, 0));         // gatehouse
+box(gate, 2.66, 0.5, 2.66, ROOF, 0, 2.32, 0);             // gatehouse roof cap
+box(gate, 2.64, 0.55, 0.08, DARK, 0, 1.45, 1.31);         // gatehouse window band
+box(gate, 0.16, 1.1, 0.16, 0x7f97a9, 2.1, 0.55, 1.2);     // barrier post
+box(gate, 3.6, 0.14, 0.14, DARK, 3.9, 1.05, 1.2);         // barrier arm (ink; coral is reserved for the route)
+edged(box(gate, 5.8, 0.22, 2.4, ROOF, 4.0, 3.15, 1.2));   // canopy over the intake lane
+box(gate, 0.16, 3.05, 0.16, 0x7f97a9, 6.7, 1.52, 0.25);   // canopy posts
+box(gate, 0.16, 3.05, 0.16, 0x7f97a9, 6.7, 1.52, 2.15);
+gate.position.set(-27, 0, 19);
+scene.add(gate);
+
+/* truck factory: trailer + white cab with dark windshield + wheel blocks */
+function truck(x, z, rotY, c) {
+  const t = new THREE.Group();
+  box(t, 1.15, 1.3, 3.3, c, 0, 1.0, -0.55);               // trailer
+  box(t, 0.09, 1.34, 1.19, FRAME, 0, 1.0, -2.16);         // trailer rear frame
+  box(t, 1.05, 0.95, 1.15, 0xf4f8fb, 0, 0.78, 1.65);      // cab
+  box(t, 1.07, 0.36, 0.1, DARK, 0, 1.0, 2.2);             // windshield band
+  [[-0.55, 1.55], [0.55, 1.55], [-0.55, -1.25], [0.55, -1.25], [-0.55, -1.95], [0.55, -1.95]]
+    .forEach(([wx, wz]) => box(t, 0.16, 0.34, 0.34, DARK, wx, 0.17, wz));
+  t.position.set(x, 0, z);
+  t.rotation.y = rotY;
+  scene.add(t);
+  return t;
+}
+truck(-24.6, 23.7, 0.5, PAL[2]); // queueing at the gate, west of the route lane
+truck(-20.5, 23.8, 0.5, PAL[1]); // second gate lane, waiting behind the barrier
+truck(-9.5, 18.6, 1.2, PAL[4]);  // apron north of the yard, clear of the stacks
+truck(-20, 5, 0, PAL[1]);        // rolling down the north-south service road
+truck(12, -6.5, -0.7, PAL[2]);   // quay apron, clear of the route and crane legs
+truck(-17, -15.5, 2.4, PAL[4]);  // parked west of the hub, clear of hub + annex
+
+/* gantry cranes over the dock; each trolley rig slides slowly along its beam,
+   and the first one carries a container mid-lift on hoist cables */
+const trolleys = [];
+function crane(z, withLoad) {
+  const c = new THREE.Group();
+  [-5.4, 5.4].forEach(off => {
+    edged(box(c, 0.5, 7.4, 0.5, STEEL, off, 3.7, 1.4));
+    edged(box(c, 0.5, 7.4, 0.5, STEEL, off, 3.7, -1.4));
+    box(c, 0.5, 0.5, 3.2, STEEL, off, 7.2, 0);
+  });
+  edged(box(c, 12.6, 0.7, 0.9, STEEL, 0, 7.8, 0));        // main beam
+  const tr = new THREE.Group();
+  box(tr, 0.9, 1.1, 0.9, 0xff4d3d, 0, 6.9, 0);            // coral trolley
+  [[-0.32, -0.32], [0.32, -0.32], [-0.32, 0.32], [0.32, 0.32]]
+    .forEach(([cx, cz]) => box(tr, 0.05, 2.1, 0.05, DARK, cx, 5.3, cz)); // hoist cables
+  box(tr, 1.3, 0.22, 0.9, DARK, 0, 4.2, 0);               // spreader bar
+  if (withLoad) container(tr, 0, 3.55, 0, PAL[3]);        // box mid-lift
+  tr.position.x = 2.2;
+  c.add(tr);
+  trolleys.push({ g: tr, phase: z });
+  c.position.set(21, 0, z);
+  scene.add(c);
+  return c;
+}
+crane(-4, true);
+crane(-14, false);
+
+/* ship along the quay */
+const ship = new THREE.Group();
+edged(box(ship, 6.4, 2.6, 30, 0x6f93ad, 0, 1.3, 0));      // hull (deeper so it anchors the quay)
+box(ship, 5.4, 0.5, 28, 0xc4d7e6, 0, 2.85, 0);            // deck
+edged(box(ship, 2.6, 3.4, 2.6, WALL_LT, 0, 4.4, -12));    // bridge tower
+box(ship, 2.64, 0.6, 2.64, DARK, 0, 5.5, -12);            // bridge windows
+for (let i = 0; i < 8; i++) {
+  box(ship, 2.4, 1, 2.2, PAL[Math.floor(rnd() * PAL.length)], (rnd() - 0.5) * 1.6, 3.6 + Math.floor(rnd() * 2) * 1.05, i * 2.8 - 10);
+}
+ship.position.set(31.5, 0, -6);
+scene.add(ship);
+
+/* HQ hub with coral beacon */
+const hub = new THREE.Group();
+edged(box(hub, 9, 4.6, 9, WALL, 0, 2.3, 0));
+box(hub, 9.05, 0.7, 9.05, DARK, 0, 3.5, 0);               // glass band
+edged(box(hub, 9.6, 0.5, 9.6, ROOF, 0, 4.8, 0));
+const beacon = box(hub, 1.1, 1.5, 1.1, 0xff4d3d, 0, 5.7, 0); // beacon (breathes in the render loop)
+box(hub, 2.2, 1.9, 0.12, DARK, 0, 0.95, 4.53);            // entrance, where the route ends
+edged(box(hub, 5.5, 2.6, 5.5, WALL_LT, -8, 1.3, 2));      // annex (west side, clear of the route)
+box(hub, 1.3, 0.6, 0.9, 0xcfdde9, 2.6, 5.35, -2.2);       // rooftop AC units
+box(hub, 0.9, 0.5, 0.9, 0xcfdde9, 3.4, 5.3, 2.1);
+box(hub, 0.7, 0.45, 0.7, 0xcfdde9, -3.1, 5.28, 2.8);
+const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.7, 6), mat(0x7f97a9));
+mast.position.set(-2.6, 5.9, -2.6);
+hub.add(mast);
+hub.position.set(-9, 0, -24);
+scene.add(hub);
+const beaconLight = new THREE.PointLight(0xff4d3d, 0.4, 14, 2);
+beaconLight.position.set(-9, 6.6, -24);
+scene.add(beaconLight);
+
+/* warehouse block with dock doors */
+const wh = new THREE.Group();
+edged(box(wh, 14, 3, 7, WALL, 0, 1.5, 0));
+edged(box(wh, 14.4, 0.4, 7.4, ROOF, 0, 3.15, 0));
+for (let i = 0; i < 5; i++) {
+  box(wh, 1.4, 1.7, 0.1, DARK, i * 2.4 - 4.8, 0.85, 3.53);
+}
+for (let i = 0; i < 3; i++) box(wh, 1.1, 0.5, 1.3, 0xcfdde9, i * 4.2 - 4.2, 3.6, -1.2); // roof vents
+box(wh, 2.6, 0.4, 1.6, 0xc3d4e2, 2.2, 3.55, 1.6);         // rooftop HVAC block
+wh.position.set(4, 0, -16);
+scene.add(wh);
+
+/* pallet clutter waiting at the dock doors */
+[[0.6, -11.9, 0.7], [1.5, -12.0, 0.5], [6.2, -11.95, 0.65], [9.4, -12.0, 0.5]]
+  .forEach(([x, z, s]) => box(scene, s, s * 0.8, s, PAL[1], x, s * 0.4, z));
+
+/* mooring bollards along the quay edge */
+for (let i = 0; i < 6; i++) {
+  const b = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.5, 8), mat(0x37415f));
+  b.position.set(27.6, 0.25, -22 + i * 6.4);
+  b.castShadow = true;
+  scene.add(b);
+}
+
+/* tiny people, dark silhouettes so they read against the pale ground */
+function person(x, z) {
+  const p = new THREE.Group();
+  box(p, 0.3, 0.62, 0.3, PEOPLE, 0, 0.31, 0);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), mat(PEOPLE));
+  head.position.y = 0.76;
+  head.castShadow = true;
+  p.add(head);
+  p.position.set(x, 0, z);
+  scene.add(p);
+}
+[[-25, 17], [-25.8, 21], [-5, 4], [1, 11], [-8, 11], [17, -6], [19, -11.5], [-6, -17], [-12, -17], [1.5, -11.3], [8, -11], [-15, 2]].forEach(([x, z]) => person(x, z));
+
+/* light poles */
+function pole(x, z) {
+  const g = new THREE.Group();
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 3.6, 6), mat(0xa9c0d1));
+  post.position.y = 1.8;
+  g.add(post);
+  box(g, 0.5, 0.16, 0.24, 0xf4f8fb, 0.2, 3.6, 0);
+  g.position.set(x, 0, z);
+  scene.add(g);
+}
+[[-18, 12], [-2, 16], [12, 4], [16, -18], [-2, -10], [-20, -12]].forEach(([x, z]) => pole(x, z));
+
+/* dashed orbit arcs in the sky */
+function skyArc(rx, rz, y, rot) {
+  const pts = new THREE.EllipseCurve(0, 0, rx, rz, 0, Math.PI * 2).getPoints(140)
+    .map(p => new THREE.Vector3(p.x, 0, p.y));
+  const g = new THREE.BufferGeometry().setFromPoints(pts);
+  const l = new THREE.Line(g, new THREE.LineDashedMaterial({
+    color: 0x8fa9bd, dashSize: 0.9, gapSize: 1.4, transparent: true, opacity: 0.5
+  }));
+  l.computeLineDistances();
+  l.position.y = y;
+  l.rotation.y = rot;
+  scene.add(l);
+}
+skyArc(52, 34, 20, 0.4);
+skyArc(38, 26, 26, -0.8);
+
+/* coral route line (path defined above, before the yard) */
+const routeGeo = new THREE.TubeGeometry(routeCurve, 260, 0.13, 8);
+const routeIndexCount = routeGeo.index.count;
+routeGeo.setDrawRange(0, 0); // hidden at load, draws in with scroll
+const coralLinear = new THREE.Color(0xff4d3d);
+scene.add(new THREE.Mesh(routeGeo, new THREE.MeshBasicMaterial({ color: coralLinear })));
+/* rounded caps on both open ends of the truncated tube: one rides the drawing
+   head, one seals the start at the gate, so neither end ever shows its hollow
+   (torn-looking) cross-section */
+const capMat = new THREE.MeshBasicMaterial({ color: coralLinear });
+const capGeo = new THREE.SphereGeometry(0.17, 14, 14);
+const headCap = new THREE.Mesh(capGeo, capMat);
+headCap.visible = false;
+scene.add(headCap);
+const startCap = new THREE.Mesh(capGeo, capMat);
+routeCurve.getPointAt(0, startCap.position);
+startCap.visible = false;
+scene.add(startCap);
+const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 10), new THREE.MeshBasicMaterial({ color: coralLinear }));
+pulse.visible = false;
+scene.add(pulse);
+
+/* ============================================================
+   CAMERA: a follow-cam locked to the route's drawing head, so the
+   coral line always sits center-screen (hero framing blends in at
+   the top, a wide pull-back reveals the whole port at the finale)
+   ============================================================ */
+const HERO_POS = new THREE.Vector3(40, 33, 47);
+const HERO_LOOK = new THREE.Vector3(-2, 9, 0);
+const CAM_BACK = 21;   // distance behind the head, along the route tangent
+const CAM_SIDE = 9;    // sideways bias, for an isometric three-quarter feel
+const CAM_HEIGHT = 19; // camera height above the ground
+
+const cam = { p: 0 };
+const intro = { k: 0 };
+const introFrom = new THREE.Vector3(58, 48, 68);
+let introTween = null;
+const _pos = new THREE.Vector3();
+const _look = new THREE.Vector3();
+const _head = new THREE.Vector3();
+const _ahead = new THREE.Vector3();
+
+/* route reveal is mapped piecewise to the step timeline, so the head reaches
+   the gate zone during step 01, the yard by step 02, the cranes by step 03,
+   and the hub door just before the finale */
+const ROUTE_SYNC = [[0, 0], [0.25, 0.1], [0.5, 0.35], [0.75, 0.67], [0.9, 1], [1, 1]];
+function routeRevealAt(p) {
+  for (let i = 1; i < ROUTE_SYNC.length; i++) {
+    if (p <= ROUTE_SYNC[i][0]) {
+      const [a, b] = ROUTE_SYNC[i - 1];
+      const [c, d] = ROUTE_SYNC[i];
+      return b + (d - b) * ((p - a) / (c - a));
+    }
+  }
+  return 1;
+}
+
+function applyCamera() {
+  const p = Math.min(Math.max(cam.p, 0), 1);
+  const reveal = routeRevealAt(p);
+  routeGeo.setDrawRange(0, Math.floor((routeIndexCount * reveal) / 6) * 6);
+
+  // follow-cam: sit behind the drawing head along the route tangent and look
+  // at the head, so the coral line runs from the foreground up to screen center
+  // and the already-drawn trail always recedes into the distance
+  const h = Math.min(Math.max(reveal, 0.004), 0.996);
+  routeCurve.getPointAt(h, _head);
+  routeCurve.getPointAt(Math.min(1, h + 0.02), _ahead);
+
+  // keep the rounded cap on the head while the line is still drawing in,
+  // and seal the start end as soon as any of the line is visible
+  headCap.visible = reveal > 0.004 && reveal < 0.99;
+  if (headCap.visible) headCap.position.copy(_head);
+  startCap.visible = reveal > 0.004;
+  let tx = _ahead.x - _head.x, tz = _ahead.z - _head.z;
+  const tl = Math.hypot(tx, tz) || 1; tx /= tl; tz /= tl;   // forward tangent (xz)
+  const sx = -tz, sz = tx;                                   // right-hand side vector
+
+  let back = CAM_BACK, height = CAM_HEIGHT;
+  if (p > 0.85) {                    // finale: lift and pull back to reveal the port
+    const k = (p - 0.85) / 0.15;
+    back += k * k * 46;
+    height += k * k * 30;
+  }
+  _pos.set(
+    _head.x - tx * back + sx * CAM_SIDE,
+    height,
+    _head.z - tz * back + sz * CAM_SIDE
+  );
+  _look.set(_head.x, _head.y - 2.5, _head.z);
+
+  // blend from the hero overview into the follow-cam over the first beat
+  if (p < 0.16) {
+    const t = p / 0.16;
+    const e = t * t * (3 - 2 * t);
+    _pos.lerpVectors(HERO_POS, _pos, e);
+    _look.lerpVectors(HERO_LOOK, _look, e);
+    if (p === 0 && intro.k < 1) {
+      _pos.lerpVectors(introFrom, _pos, intro.k);
+    }
+  }
+  camera.position.copy(_pos);
+  camera.lookAt(_look);
+  return reveal;
+}
+
+let t0 = null;
+function tick(now) {
+  if (t0 === null) t0 = now;
+  const t = Math.max(0, now - t0) / 1000;
+  const reveal = applyCamera();
+  pulse.visible = reveal > 0.03;
+  if (pulse.visible) {
+    const u = ((t * 0.05) % 1) * reveal; // ride only the revealed portion
+    routeCurve.getPointAt(u, pulse.position);
+    pulse.position.y = 0.45;
+    const s = 1 + Math.sin(t * 4) * 0.18;
+    pulse.scale.setScalar(s);
+  }
+
+  // ambient life: trolleys slide, the ship rides a gentle swell, the water
+  // ripples, and the hub beacon breathes with its coral glow
+  trolleys.forEach(o => { o.g.position.x = 2.2 + Math.sin(t * 0.14 + o.phase) * 2.5; });
+  ship.position.y = Math.sin(t * 0.45) * 0.045;
+  ship.rotation.z = Math.sin(t * 0.32) * 0.004;
+  ship.rotation.x = Math.sin(t * 0.26 + 1.3) * 0.0035;
+  for (let i = 0; i < waterPos.count; i++) {
+    const wx = waterPos.getX(i), wy = waterPos.getY(i);
+    waterPos.setZ(i, Math.sin(wx * 0.4 + t * 0.8) * 0.03 + Math.sin(wy * 0.13 + wx * 0.21 + t * 0.55) * 0.035);
+  }
+  waterPos.needsUpdate = true;
+  waterGeo.computeVertexNormals();
+  const bs = 1 + Math.sin(t * 2.1) * 0.09;
+  beacon.scale.set(1.1 * bs, 1.5 * bs, 1.1 * bs); // box() encodes size in scale, so multiply the base
+  beaconLight.intensity = 0.42 + Math.sin(t * 2.1) * 0.28;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ============================================================
+   INTRO (completed instantly on first scrub movement)
+   ============================================================ */
+const heroWords = document.querySelectorAll('.hero h1 .line > span');
+gsap.set(heroWords, { yPercent: 110 });
+gsap.set('.hero-sub, #scrollCue, #siteHead', { opacity: 0 });
+
+introTween = gsap.timeline()
+  .to(intro, { k: 1, duration: 2.1, ease: 'power3.out' }, 0)
+  .to(heroWords, { yPercent: 0, duration: 1.1, stagger: 0.12, ease: 'power4.out' }, 0.35)
+  .to('.hero-sub', { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 0.9)
+  .to('#siteHead', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 1.0)
+  .to('#scrollCue', { opacity: 1, duration: 0.8, ease: 'power2.out' }, 1.2);
+
+/* ============================================================
+   SCROLL CHOREOGRAPHY
+   ============================================================ */
+/* master camera scrub across spacer + process */
+gsap.fromTo(cam, { p: 0 }, {
+  p: 1,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: {
+    trigger: '#journey',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 0.9,
+    onUpdate: self => {
+      if (self.progress > 0 && introTween.progress() < 1) introTween.progress(1);
+    }
+  }
+});
+
+/* hero text fades out over the spacer */
+gsap.to('#heroInner', {
+  opacity: 0,
+  yPercent: -12,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: { trigger: '.journey-spacer', start: 'top top', end: 'bottom 35%', scrub: true }
+});
+gsap.to('#scrollCue', {
+  opacity: 0,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: { trigger: '.journey-spacer', start: 'top top', end: '30% top', scrub: true }
+});
+
+/* process accordion driven by scroll */
+const steps = gsap.utils.toArray('.step');
+const fills = steps.map(s => s.querySelector('.fill'));
+const stepsPanel = document.getElementById('steps');
+
+ScrollTrigger.create({
+  trigger: '#process',
+  start: 'top 80%',
+  end: 'bottom bottom',
+  onEnter: () => stepsPanel.classList.add('on'),
+  onLeaveBack: () => stepsPanel.classList.remove('on')
+});
+
+ScrollTrigger.create({
+  trigger: '#process',
+  start: 'top top',
+  end: 'bottom bottom',
+  scrub: true,
+  onUpdate: self => {
+    const q = self.progress;
+    const idx = Math.min(3, Math.floor(q * 4));
+    const seg = Math.min(1, q * 4 - idx);
+    steps.forEach((s, i) => {
+      s.classList.toggle('active', i === idx);
+      gsap.set(fills[i], { scaleY: i < idx ? 1 : i === idx ? seg : 0 });
+    });
+  }
+});
+
+/* capabilities: pinned reveal + count-up on desktop, simple reveal on mobile */
+const mm = gsap.matchMedia();
+function bindCounters(tl, at) {
+  document.querySelectorAll('[data-count]').forEach((el, i) => {
+    const target = +el.dataset.count;
+    const suffix = el.dataset.suffix || '';
+    const obj = { v: 0 };
+    tl.to(obj, {
+      v: target,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: () => { el.textContent = Math.round(obj.v) + suffix; }
+    }, at + i * 0.14);
+  });
+}
+mm.add('(min-width: 1081px)', () => {
+  const tl = gsap.timeline({
+    scrollTrigger: { trigger: '.caps', start: 'top top', end: 'bottom bottom', scrub: 0.6 }
+  });
+  tl.fromTo('.caps-stage h2', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 0)
+    .fromTo('.cap', { opacity: 0, y: 70 }, { opacity: 1, y: 0, duration: 1, stagger: 0.18, ease: 'power2.out' }, 0.4);
+  bindCounters(tl, 0.6);
+  tl.to({}, { duration: 0.8 }); // hold at the end of the pin
+});
+mm.add('(max-width: 1080px)', () => {
+  gsap.utils.toArray('.cap').forEach((el, i) => {
+    gsap.fromTo(el, { opacity: 0, y: 44 }, {
+      opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: (i % 2) * 0.08,
+      scrollTrigger: { trigger: el, start: 'top 85%' }
+    });
+  });
+  const tl = gsap.timeline({
+    scrollTrigger: { trigger: '#capsGrid', start: 'top 80%' }
+  });
+  bindCounters(tl, 0);
+});
+
+/* dock image parallax */
+gsap.fromTo('#dockImg', { yPercent: -8 }, {
+  yPercent: 2,
+  ease: 'none',
+  immediateRender: false,
+  scrollTrigger: { trigger: '#dockMedia', start: 'top bottom', end: 'bottom top', scrub: true }
+});
+
+/* generic section reveals */
+gsap.utils.toArray('.dock-copy > *, .faq-left h2').forEach(el => {
+  gsap.fromTo(el, { opacity: 0, y: 40 }, {
+    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: 'top 86%' }
+  });
+});
+
+/* invert the fixed header over the dark band + footer */
+ScrollTrigger.create({
+  trigger: '#request',
+  start: 'top 60px',
+  endTrigger: 'footer',
+  end: 'bottom top',
+  onToggle: self => document.getElementById('siteHead').classList.toggle('inv', self.isActive)
+});
+
+/* cta band line reveal */
+gsap.fromTo('#bandHead span > i', { yPercent: 115 }, {
+  yPercent: 0, duration: 1.1, stagger: 0.14, ease: 'power4.out',
+  scrollTrigger: { trigger: '#bandHead', start: 'top 78%' }
+});
+
+/* ============================================================
+   FAQ accordion (click)
+   ============================================================ */
+document.querySelectorAll('#faq .qa-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const qa = head.closest('.qa');
+    const isOpen = qa.classList.contains('open');
+    document.querySelectorAll('#faq .qa').forEach(x => {
+      x.classList.remove('open');
+      x.querySelector('.qa-head').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      qa.classList.add('open');
+      head.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+</body>
+</html>

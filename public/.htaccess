@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve real files as-is
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # /templates and /templates/ are an app route, but a real "templates" folder
+  # also exists on disk (downloadable template assets) — force this one to
+  # index.html so it doesn't get treated as a directory listing.
+  RewriteRule ^templates/?$ index.html [L]
+
+  # Everything else that isn't a real file or folder is an SPA route
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
