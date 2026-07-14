@@ -7,13 +7,44 @@
     <meta name="description" content="Clara is a cybersecurity specialist hardening modern systems with offensive testing, threat hunting, and zero-trust architecture." />
     <meta property="og:title" content="Clara — Cyber Security Specialist" />
     <meta property="og:description" content="Offensive security, threat hunting, and zero-trust architecture for modern teams." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="./assets/index-S9Sj4iPY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-Bw6-wEil.css">
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0a0a0a; }
+      #demo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 0; display: block; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Scale shell: this demo was designed and QA'd around a ~1440-2400px CSS viewport.
+      Its type ramp uses clamp() with fixed rem caps, so on very wide viewports
+      (e.g. 4K at 100% OS scaling = 3840 CSS px) everything saturates at its cap and
+      reads small. Below BASE px this shell is a transparent passthrough; above it,
+      the demo runs inside an iframe locked to BASE px wide and is scaled up to fill
+      the window. The demo itself sees a normal viewport, so GSAP/ScrollTrigger,
+      Lenis, three.js sizing and pointer math all behave exactly as designed.
+    -->
+    <iframe id="demo" src="./demo.html" title="Clara — Cyber Security Specialist (demo)"></iframe>
+    <script>
+      (function () {
+        var BASE = 2400; // viewport width the demo is allowed to see, max
+        var frame = document.getElementById('demo');
+        function fit() {
+          var w = window.innerWidth, h = window.innerHeight;
+          if (w <= BASE) {
+            frame.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;border:0;display:block;';
+            return;
+          }
+          var s = w / BASE;
+          frame.style.cssText =
+            'position:fixed;top:0;left:0;border:0;display:block;' +
+            'width:' + BASE + 'px;height:' + (h / s) + 'px;' +
+            'transform:scale(' + s + ');transform-origin:0 0;';
+        }
+        fit();
+        window.addEventListener('resize', fit);
+        frame.addEventListener('load', function () {
+          try { frame.contentWindow.focus(); } catch (e) {}
+        });
+      })();
+    </script>
   </body>
 </html>
