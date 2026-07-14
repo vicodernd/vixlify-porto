@@ -29,6 +29,59 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'spectra',
+    title: 'Spectra — Interactive Generative Gallery',
+    category: 'interactive',
+    tags: ['framer-motion', 'Canvas', 'Generative', 'Scroll'],
+    description:
+      'A self-arranging gallery of twelve generative works, indexed along a single spectrum of light. Cards fly in from scatter to ring, unfold on scroll into a convex rainbow arc you can spin, light up under the cursor with a liquid brush reveal, and flip to their detail face on click.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade INTERACTIVE hero for a fictional generative-art gallery called "Spectra" (a curated collection of twelve generative works, indexed along a single spectrum of light). Build it as a React + Tailwind app: motion with framer-motion, generative card art on HTML canvas, no other UI libraries. Quality bar is Awwwards, not a template. The whole thing is one deliberate full-viewport "chapter" that hijacks scroll; it is the entire page.
+
+INTERPRETATION NOTE: the live result generated from this prompt is an interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the interaction to make it easier to reproduce.
+
+ART DIRECTION
+Mood: dark, cinematic, gallery-at-night. A near-black ground so the colour of the works does the talking. The organising idea (hold to it as the one controlling metaphor): the spectrum IS the structure. Every work has a position on a warm colour spectrum, and that single value drives its place on the arc, its tint, its wavelength label and its spot on the HUD. Nothing is decorative for its own sake. One warm "Solar Flare" gradient, used with restraint (the HUD track, the order of the cards, one headline word), never as a full-screen wash.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--bg: #0B0A0F (ground, near-black)
+--surface: #16131E (lifted panels, card backs)
+--surface-2: #0F0E15 (recessed, HUD track)
+--fg: #F5F3F7 (primary text)
+--muted: #9A93A6 (secondary text, mono labels)
+--line: rgba(255,255,255,0.08) (hairlines)
+Spectrum stops: --s1 #FFB020 (amber), --s2 #FF5A3C (coral), --s3 #FF2D6E (rose), --s4 #7C3AED (violet).
+--spectrum: linear-gradient(90deg,#FFB020,#FF5A3C,#FF2D6E,#7C3AED). Add a faint fixed SVG film-grain overlay at ~4 percent and one large, very soft violet-to-rose radial glow behind everything.
+
+TYPE
+Display: Clash Display (Fontshare) 500/600/700, letter-spacing -0.02em; hero wordmark at clamp(3rem, 9vw, 7rem), the last syllable filled with the --spectrum gradient (background-clip: text).
+Body: General Sans (Fontshare) 400/500 for the subline and card detail copy.
+Meta: JetBrains Mono 400/500, uppercase, letter-spacing 0.2 to 0.34em, tiny (0.6 to 0.72rem) for chrome labels, index numbers, wavelength readouts and HUD ticks.
+
+THE TWELVE WORKS (generative, drawn on canvas, no photos)
+Twelve cards, each a distinct generative composition seeded by its index so it is stable across renders. For work i (t = i / 11): compute its hue by interpolating the four spectrum stops at t. Paint on a per-card canvas: a dark vertical base gradient, two or three soft additive radial glows in the hue and its neighbours, seven faint concentric arc strokes around the brightest glow, and ~70 fine particles scattered with slight hue variation. Add a subtle inner vignette. Each card also carries: an index (01 to 12), a wavelength label that runs 590nm at amber down to 410nm at violet (real visible-light order), and an authored name and one-line descriptor (for example: Ascent, "First light breaking the field."; Rose Static, "Signal caught mid-flare."; Violet Hour, "The edge of the visible."). Card is a rounded rectangle (~150x200 at desktop) with a hairline edge tinted by its hue.
+
+THE SEQUENCE (this is the piece)
+1) Intro loader: a full-screen panel over the ground with the SPECTRA wordmark and a zero-padded mono counter climbing 000 to 100 over ~1.3s (easeInOutCubic) with a thin gradient bar. When it finishes it slides up and off, and only then does the card choreography begin (gate every reveal behind a ready flag).
+2) Self-staging: the twelve cards animate through timed phases with spring easing: scatter (random positions, rotations, faded) then a single horizontal line then a ring. On the ring each card is rotated tangentially (angle + 90) so it faces outward, with the intro copy centred inside the ring: an eyebrow ("A collection that arranges itself"), the "Spectra" wordmark, a one-line subline, and a mono hint "Scroll to unfold the arc".
+3) Morph on scroll: hijack wheel and touch into a single clamped scroll value. As it climbs 0 to 1, morph the ring into a convex rainbow arc pinned toward the lower half by lerping each card between two fully computed coordinate sets (its ring position and its arc position, both from trigonometry). The arc is one big circle whose centre is pushed far below the viewport so only the crown shows; card i sits at angle -90deg + (t - 0.5) * spread, rotated tangentially. All twelve are visible and symmetric at full unfold, amber on the left to violet on the right. The intro copy fades and blurs out as the morph climbs; a destination heading ("The spectrum, unfolded") fades in past ~70 percent.
+4) Spin: horizontal drag spins the arc a bounded amount (rotate every card's arc angle by a clamped pan value, spring-smoothed) so it feels alive but can never sweep off-screen. Axis-lock the drag: vertical intent unfolds, horizontal intent spins.
+5) Hover a card: it eases up out of the arc (scale up ~17 percent, straighten its rotation, rise, pop above its neighbours) and a LIQUID REVEAL plays on it: paint a brighter "charged" render of the SAME work (same seed, intensified core, rings and particles) along the cursor trail on a mix-blend:screen canvas, using a soft radial brush stamped through source-in of the charged art, with a small per-frame destination-out decay so the reveal heals back. Use the card-local offset coordinates so the rotated card's canvas space stays correct. Run the reveal only for the hovered card.
+6) Click a card: it flips in 3D (rotateY) to a detail back face showing its number, wavelength, name, descriptor, "Generative / canvas", three palette swatches and the hue hex. It flips back when the pointer leaves.
+HUD: a fixed bottom scrubber whose track is the --spectrum gradient with a round thumb tracking the unfold progress, and mono end labels "590nm Amber" and "Violet 410nm". Fixed mono chrome in the corners (wordmark and volume, work count, an interaction hint).
+
+MOTION RULES
+Ease cubic-bezier(0.22,1,0.36,1); spring-smooth the scroll value, the pan and every per-card lift by lerping toward a target each frame. Nothing autoplays past the intro; scroll and pointer drive everything. Do not gate motion behind prefers-reduced-motion (scroll and hover are user-controlled). Push per-card transforms to the DOM every frame from the smoothed values; keep it at 60fps with twelve cards. Never animate layout properties, only transform, opacity and canvas.
+
+LAYOUT AND RESPONSIVENESS
+Root font fluid via clamp so the piece scales proportionally. On phones, keep the ring but tighten it, and make the arc a more curved, more compact fan whose ends clip off the screen edges (spin brings them in); shrink the headline. No horizontal page scroll at any width; disable text selection so dragging never highlights card text.
+
+QUALITY BAR
+No AI-slop tells: no three identical feature cards, no emoji, no gradient-blob hero, no lorem ipsum, no em dashes anywhere. The colour is meaningful (it is the index), the copy is specific and authored, and the interaction is the point. It must run at 60fps on a mid laptop, be responsive down to 375px, and read like a real generative-art gallery, quiet and expensive, that arranges itself.`,
+    thumb: '/templates/spectra/thumb.webp',
+    demoUrl: '/templates/spectra/index.html',
+    date: '2026-07-14',
+  },
+  {
     slug: 'arus-coffee',
     title: 'Arus — Indonesian Roastery Site',
     category: 'site',

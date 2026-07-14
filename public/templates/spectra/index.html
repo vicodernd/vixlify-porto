@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Spectra — A Generative Index</title>
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0B0A0F;
+    --surface:#16131E;
+    --surface-2:#0F0E15;
+    --fg:#F5F3F7;
+    --muted:#9A93A6;
+    --line:rgba(255,255,255,.08);
+    --s1:#FFB020; --s2:#FF5A3C; --s3:#FF2D6E; --s4:#7C3AED;
+    --spectrum:linear-gradient(90deg,#FFB020 0%,#FF5A3C 34%,#FF2D6E 67%,#7C3AED 100%);
+    --ease:cubic-bezier(.22,1,.36,1);
+    --font-display:"Clash Display",sans-serif;
+    --font-body:"General Sans",sans-serif;
+    --font-mono:"JetBrains Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg)}
+  body{font-family:var(--font-body);-webkit-font-smoothing:antialiased;touch-action:none;-webkit-user-select:none;user-select:none}
+
+  /* film grain */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ambient glow behind everything */
+  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .ambient::before{
+    content:"";position:absolute;left:50%;top:44%;width:120vmax;height:120vmax;transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 50% 50%,rgba(124,58,237,.10),rgba(255,45,110,.05) 32%,transparent 60%);
+  }
+
+  /* ===== LOADER ===== */
+  #loader{
+    position:fixed;inset:0;z-index:100;background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+    transition:transform 1s var(--ease);
+  }
+  #loader.done{transform:translateY(-101%)}
+  .loader-mark{font-family:var(--font-display);font-weight:600;letter-spacing:.02em;font-size:clamp(1.6rem,3vw,2.4rem)}
+  .loader-mark span{background:var(--spectrum);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .loader-bar{width:min(60vw,320px);height:1px;background:var(--line);position:relative;overflow:hidden}
+  .loader-bar i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:var(--spectrum)}
+  .loader-count{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.28em;color:var(--muted)}
+  #loader .fade{transition:opacity .5s var(--ease)}
+  #loader.done .fade{opacity:0}
+
+  /* ===== STAGE ===== */
+  #stage{position:fixed;inset:0;z-index:10;overflow:hidden;cursor:grab}
+  #stage.dragging{cursor:grabbing}
+
+  /* meta chrome */
+  .chrome{position:fixed;z-index:40;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;pointer-events:none;opacity:0;transition:opacity .8s var(--ease)}
+  .ready .chrome{opacity:1}
+  .chrome.tl{top:2rem;left:2rem;line-height:1.9}
+  .chrome.tl b{color:var(--fg);font-weight:500}
+  .chrome.tr{top:2rem;right:2rem;text-align:right;line-height:1.9}
+  .chrome.bl{bottom:2rem;left:2rem}
+
+  /* center copy */
+  .copy{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;text-align:center;pointer-events:none;width:min(90vw,760px)}
+  .copy .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.34em;color:var(--muted);text-transform:uppercase;margin-bottom:1.2rem;opacity:0}
+  .ready .copy .eyebrow{opacity:1;transition:opacity .8s var(--ease) .2s}
+  .copy h1{font-family:var(--font-display);font-weight:600;font-size:clamp(3rem,9vw,7rem);line-height:.94;letter-spacing:-.02em}
+  .copy h1 .grad{background:var(--spectrum);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .copy .sub{margin-top:1.4rem;color:var(--muted);font-size:clamp(.95rem,1.6vw,1.1rem);max-width:34rem;margin-left:auto;margin-right:auto}
+  .copy .hint{margin-top:2rem;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.28em;color:var(--muted);text-transform:uppercase;display:inline-flex;align-items:center;gap:.7rem}
+  .copy .hint .dot{width:5px;height:5px;border-radius:50%;background:var(--s2);animation:pulse 1.8s var(--ease) infinite}
+  @keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+
+  /* destination copy (fades in after morph) */
+  .dest{position:fixed;left:50%;top:20%;transform:translate(-50%,-50%);z-index:30;text-align:center;pointer-events:none;opacity:0;width:min(90vw,760px)}
+  .dest h2{font-family:var(--font-display);font-weight:600;font-size:clamp(1.8rem,4.5vw,3rem);letter-spacing:-.01em;line-height:1}
+  .dest .sub{margin-top:.8rem;color:var(--muted);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.28em;text-transform:uppercase}
+
+  /* cards */
+  #cards{position:absolute;inset:0;z-index:20}
+  .card{position:absolute;left:0;top:0;width:150px;height:200px;will-change:transform;opacity:0;perspective:1100px}
+  .ready .card{opacity:1}
+  .flipper{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s var(--ease)}
+  .card.flipped .flipper{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;border-radius:14px;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 22px 55px -22px rgba(0,0,0,.85)}
+  .art,.reveal{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .reveal{z-index:1;mix-blend-mode:screen;pointer-events:none}
+  .veil{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(11,10,15,.9),rgba(11,10,15,0) 55%);pointer-events:none}
+  .idx{position:absolute;top:10px;left:12px;z-index:3;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.2em;color:rgba(245,243,247,.75);pointer-events:none}
+  .wl{position:absolute;top:10px;right:12px;z-index:3;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:rgba(245,243,247,.55);pointer-events:none}
+  .name{position:absolute;left:12px;bottom:12px;z-index:3;font-family:var(--font-display);font-weight:500;font-size:.98rem;letter-spacing:-.01em;pointer-events:none}
+  .edge{position:absolute;inset:0;z-index:4;border-radius:14px;border:1px solid rgba(255,255,255,.09);pointer-events:none}
+  .card.hot .edge{border-color:rgba(255,255,255,.22)}
+  /* back face */
+  .back{transform:rotateY(180deg);background:linear-gradient(160deg,#1b1726,#100D17);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;padding:14px}
+  .bk-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.16em;color:var(--muted)}
+  .bk-name{font-family:var(--font-display);font-weight:600;font-size:1.1rem;letter-spacing:-.01em;line-height:1;margin-bottom:.5rem}
+  .bk-desc{font-size:.74rem;line-height:1.4;color:var(--muted)}
+  .bk-foot{display:flex;align-items:center;justify-content:space-between}
+  .bk-sw{display:flex;gap:4px}
+  .bk-sw i{width:12px;height:12px;border-radius:3px;display:block}
+  .bk-hex{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;color:var(--muted)}
+  .bk-med{font-family:var(--font-mono);font-size:.56rem;letter-spacing:.16em;color:rgba(154,147,166,.7);text-transform:uppercase;margin-top:.4rem}
+
+  /* ===== HUD ===== */
+  #hud{position:fixed;left:50%;bottom:2rem;transform:translateX(-50%);z-index:45;width:min(80vw,560px);opacity:0;transition:opacity .8s var(--ease)}
+  .ready #hud{opacity:1}
+  .hud-track{position:relative;height:3px;border-radius:3px;background:var(--surface-2);overflow:visible}
+  .hud-fill{position:absolute;inset:0;border-radius:3px;background:var(--spectrum);transform-origin:left;transform:scaleX(0)}
+  .hud-thumb{position:absolute;top:50%;left:0;width:12px;height:12px;border-radius:50%;background:var(--fg);transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(11,10,15,.9),0 0 18px rgba(255,90,60,.6)}
+  .hud-labels{display:flex;justify-content:space-between;margin-top:.8rem;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+  .hud-labels b{color:var(--fg);font-weight:500}
+
+  @media (max-width:640px){
+    .chrome.tl,.chrome.tr{top:1.2rem}
+    .chrome.tl{left:1.2rem}.chrome.tr{right:1.2rem}
+    .chrome.bl{display:none}
+    #hud{bottom:1.4rem;width:86vw}
+    .copy h1{font-size:clamp(2.4rem,15vw,3.4rem)}
+    .copy .sub{font-size:.9rem;max-width:20rem}
+    .copy .eyebrow{font-size:.6rem;letter-spacing:.24em}
+    .dest h2{font-size:clamp(1.5rem,7vw,2rem)}
+  }
+</style>
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-mark fade">SPEC<span>TRA</span></div>
+    <div class="loader-bar fade"><i id="loaderBar"></i></div>
+    <div class="loader-count fade"><span id="loaderCount">000</span></div>
+  </div>
+
+  <!-- CHROME -->
+  <div class="chrome tl"><b>SPECTRA</b><br/>Generative Index</div>
+  <div class="chrome tr">Vol. 01<br/>12 Works</div>
+  <div class="chrome bl">Scroll to unfold · drag to spin</div>
+
+  <!-- STAGE -->
+  <div id="stage">
+    <div id="cards"></div>
+  </div>
+
+  <!-- COPY -->
+  <div class="copy" id="introCopy">
+    <div class="eyebrow">A collection that arranges itself</div>
+    <h1>Spec<span class="grad">tra</span></h1>
+    <div class="sub">Twelve generative works, indexed along a single spectrum of light.</div>
+    <div class="hint"><span class="dot"></span>Scroll to unfold the arc</div>
+  </div>
+
+  <div class="dest" id="destCopy">
+    <h2>The spectrum, unfolded</h2>
+    <div class="sub">Drag sideways to spin the spectrum</div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-track">
+      <div class="hud-fill" id="hudFill"></div>
+      <div class="hud-thumb" id="hudThumb"></div>
+    </div>
+    <div class="hud-labels"><span>590nm <b>Amber</b></span><span>Index</span><span><b>Violet</b> 410nm</span></div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- config ----------
+  const N = 12;
+  const MAX = 900;                // scroll value for a full ring->arc unfold
+  const PAN_MAX = 0.14;           // radians the arc can be spun by horizontal drag
+  const STOPS = [[255,176,32],[255,90,60],[255,45,110],[124,58,237]];
+  const NAMES = ["Ascent","Ember Field","Solar Drift","Coral Bloom","Halehaven","Rose Static",
+                 "Dusk Signal","Orchid Flux","Ion","Prism VII","Nightshade","Violet Hour"];
+  const DESCS = ["First light breaking the field.","Heat held in suspension.","A slow burn across the frame.",
+                 "Structure blooming under pressure.","Warmth pooled at the center.","Signal caught mid-flare.",
+                 "The last transmission of the day.","Petals of interference.","Charge with nowhere to rest.",
+                 "Refraction, seventh study.","Deep violet, quiet current.","The edge of the visible."];
+
+  // ---------- helpers ----------
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const lerp = (a,b,t)=>a+(b-a)*t;
+  const easeInOut = t => t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+  function spectrum(t){ // t 0..1 -> [r,g,b]
+    t=clamp(t,0,1); const seg=t*(STOPS.length-1); let i=Math.floor(seg); if(i>=STOPS.length-1)i=STOPS.length-2;
+    const f=seg-i, A=STOPS[i], B=STOPS[i+1];
+    return [Math.round(lerp(A[0],B[0],f)),Math.round(lerp(A[1],B[1],f)),Math.round(lerp(A[2],B[2],f))];
+  }
+  const rgb=(c,a=1)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  const hex=c=>"#"+c.map(v=>clamp(v,0,255).toString(16).padStart(2,"0")).join("").toUpperCase();
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+  // ---------- generative card art ----------
+  // charged=false -> the resting piece; charged=true -> the "lit" version painted
+  // in by LiquidReveal on hover. Same seed keeps the composition identical so the
+  // reveal reads as the SAME work charging up, not a different image.
+  function drawArt(cv, W, H, t, seed, charged){
+    const dpr=Math.min(devicePixelRatio||1,2);
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0);
+    g.clearRect(0,0,W,H);
+    const rnd=mulberry32(seed*2654435761>>>0);
+    const hue=spectrum(t), hueLo=spectrum(clamp(t-.16,0,1)), hueHi=spectrum(clamp(t+.16,0,1));
+    const boost=charged?1.9:1;
+
+    // base
+    let bg=g.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,"#171320"); bg.addColorStop(1,"#0C0A12");
+    g.fillStyle=bg; g.fillRect(0,0,W,H);
+
+    // soft glows (additive)
+    g.globalCompositeOperation="lighter";
+    const glows=[[.5+(rnd()-.5)*.5,.32,.9,hue],[.3+rnd()*.4,.7+rnd()*.2,.6,hueHi],[.7-rnd()*.3,.5,.5,hueLo]];
+    glows.forEach(([gx,gy,str,col])=>{
+      const cx=gx*W, cy=gy*H, r=(.5+rnd()*.5)*W*1.1;
+      const rg=g.createRadialGradient(cx,cy,0,cx,cy,r);
+      rg.addColorStop(0,rgb(col,.55*str*boost)); rg.addColorStop(.4,rgb(col,.18*str*boost)); rg.addColorStop(1,rgb(col,0));
+      g.fillStyle=rg; g.fillRect(0,0,W,H);
+    });
+
+    const fx=glows[0][0]*W, fy=glows[0][1]*H;
+    // charged: a bright core at the focus
+    if(charged){
+      const cr=g.createRadialGradient(fx,fy,0,fx,fy,W*0.5);
+      cr.addColorStop(0,rgb(hueHi,.9)); cr.addColorStop(.25,rgb(hue,.5)); cr.addColorStop(1,rgb(hue,0));
+      g.fillStyle=cr; g.fillRect(0,0,W,H);
+    }
+
+    // concentric arc strokes near the hue focus
+    for(let i=0;i<7;i++){
+      g.beginPath(); g.arc(fx,fy,(i+1)*(W*0.13)+rnd()*4,0,Math.PI*2);
+      g.strokeStyle=rgb(hue,(charged?0.24:0.10)-i*0.011); g.lineWidth=charged?1.4:1; g.stroke();
+    }
+
+    // fine particle scatter along the spectrum
+    const pc=charged?130:70;
+    for(let i=0;i<pc;i++){
+      const px=rnd()*W, py=rnd()*H, pr=rnd()*1.3+.2;
+      const pt=clamp(t+(rnd()-.5)*.4,0,1);
+      g.fillStyle=rgb(spectrum(pt),(charged?0.8:0.5)*rnd()+.1);
+      g.beginPath(); g.arc(px,py,pr,0,Math.PI*2); g.fill();
+    }
+
+    // vignette (base only; charged stays bright)
+    if(!charged){
+      g.globalCompositeOperation="source-over";
+      const vg=g.createRadialGradient(W/2,H*0.45,W*0.2,W/2,H*0.5,H*0.85);
+      vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(6,5,9,.55)");
+      g.fillStyle=vg; g.fillRect(0,0,W,H);
+    }
+    g.globalCompositeOperation="source-over";
+  }
+  const scratch=document.createElement("canvas");
+
+  // ---------- build cards ----------
+  const stage=document.getElementById("stage");
+  const cardsWrap=document.getElementById("cards");
+  const cards=[];
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);
+    const wl=Math.round(lerp(590,410,t)); // wavelength amber->violet
+    const num=String(i+1).padStart(2,"0");
+    const hue=spectrum(t), hueLo=spectrum(clamp(t-.16,0,1)), hueHi=spectrum(clamp(t+.16,0,1));
+    const el=document.createElement("div"); el.className="card"; el.style.zIndex=i;
+    el.innerHTML=`<div class="flipper">
+      <div class="face front">
+        <canvas class="art"></canvas><canvas class="reveal"></canvas>
+        <div class="veil"></div>
+        <div class="idx">${num}</div><div class="wl">λ ${wl}nm</div>
+        <div class="name">${NAMES[i]}</div>
+        <div class="edge" style="box-shadow:inset 0 0 26px ${rgb(hue,.20)}"></div>
+      </div>
+      <div class="face back">
+        <div class="bk-row"><span>${num} / 12</span><span>λ ${wl}nm</span></div>
+        <div>
+          <div class="bk-name">${NAMES[i]}</div>
+          <div class="bk-desc">${DESCS[i]}</div>
+          <div class="bk-med">Generative · canvas</div>
+        </div>
+        <div class="bk-foot">
+          <div class="bk-sw"><i style="background:${hex(hueLo)}"></i><i style="background:${hex(hue)}"></i><i style="background:${hex(hueHi)}"></i></div>
+          <span class="bk-hex">${hex(hue)}</span>
+        </div>
+      </div>
+    </div>`;
+    cardsWrap.appendChild(el);
+    const c={el,t,seed:i+7,idx:i,
+      art:el.querySelector(".art"), reveal:el.querySelector(".reveal"),
+      artB:document.createElement("canvas"),
+      cw:150,ch:200,dpr:Math.min(devicePixelRatio||1,2),
+      lift:0,liftTarget:0, pts:[], lastPt:null, active:false,
+      scatter:{}, line:{}, ring:{}, arc:{}};
+    c.rctx=c.reveal.getContext("2d");
+    cards.push(c);
+    wireCard(c);
+  }
+
+  // ---------- layout (recomputed on resize) ----------
+  let W=0,H=0,CW=150,CH=200,cx=0,cy=0;
+  let ringR=0, arcR=0, arcCY=0, arcSpread=0;
+  function layout(){
+    W=innerWidth; H=innerHeight;
+    // responsive card size
+    const s = clamp(Math.min(W,H)/900,0.62,1.15);
+    CW=Math.round(150*s); CH=Math.round(200*s);
+    cx=W/2; cy=H/2;
+    ringR = Math.min(W,H)*0.30;
+    const mob = W<720;
+    arcSpread = mob ? 1.9 : 1.16;                // radians fanned across the crown
+    arcR = mob ? Math.max(W*1.1, H*0.6) : Math.max(W*0.72, H*1.12);
+    const apexY = (mob ? 0.46 : 0.46) * H;       // where the top of the arc sits
+    arcCY = apexY + arcR;                        // circle center pushed far below
+    cards.forEach((c,i)=>{
+      c.el.style.width=CW+"px"; c.el.style.height=CH+"px";
+      const t=i/(N-1);
+      // ring
+      const ra = (i/N)*Math.PI*2 - Math.PI/2;
+      c.ring={ x:cx+Math.cos(ra)*ringR, y:cy+Math.sin(ra)*ringR, rot:(ra*180/Math.PI)+90, sc:0.9 };
+      // arc (big circle, only crown visible)
+      const aa = -Math.PI/2 + (t-0.5)*arcSpread;
+      c.arc={ x:cx+Math.cos(aa)*arcR, y:arcCY+Math.sin(aa)*arcR, rot:(aa*180/Math.PI)+90, sc:1.0, baseAngle:aa };
+      // line (row)
+      const gap=CW*0.62, total=(N-1)*gap;
+      c.line={ x:cx-total/2+i*gap, y:cy, rot:0, sc:0.82 };
+      // scatter (seeded random)
+      const rnd=mulberry32((i+31)*99991>>>0);
+      c.scatter={ x:cx+(rnd()-.5)*W*0.9, y:cy+(rnd()-.5)*H*0.9, rot:(rnd()-.5)*120, sc:0.6 };
+      // resize + repaint art to new size
+      resizeCard(c);
+    });
+  }
+
+  // ---------- per-card sizing / paint ----------
+  function resizeCard(c){
+    c.cw=CW; c.ch=CH; c.dpr=Math.min(devicePixelRatio||1,2);
+    drawArt(c.art, CW, CH, c.t, c.seed, false);
+    drawArt(c.artB, CW, CH, c.t, c.seed, true);
+    c.reveal.width=Math.round(CW*c.dpr); c.reveal.height=Math.round(CH*c.dpr);
+    c.rctx.setTransform(c.dpr,0,0,c.dpr,0,0);
+    c.rctx.clearRect(0,0,CW,CH);
+    c.lastPt=null; c.pts.length=0;
+  }
+
+  // ---------- hover / flip / LiquidReveal wiring ----------
+  let hovered=-1;
+  function wireCard(c){
+    c.el.addEventListener("pointerenter",()=>{ if(!armed||dragging)return;
+      hovered=c.idx; c.liftTarget=1; c.active=true; c.el.classList.add("hot");
+      c.el.style.zIndex=100; c.lastPt=null; });
+    c.el.addEventListener("pointermove",e=>{ if(!armed||dragging||!c.active)return;
+      c.pts.push({x:e.offsetX,y:e.offsetY}); if(c.pts.length>24)c.pts.shift(); });
+    c.el.addEventListener("pointerleave",()=>{ if(hovered===c.idx)hovered=-1;
+      c.liftTarget=0; c.active=false; c.el.classList.remove("hot","flipped");
+      c.el.style.zIndex=c.idx; });
+  }
+  // decay + stamp the charged art along the pointer trail (Lumora recipe)
+  function updateReveal(c){
+    const g=c.rctx, W=c.cw, H=c.ch;
+    g.globalCompositeOperation="destination-out";
+    g.fillStyle="rgba(0,0,0,0.028)"; g.fillRect(0,0,W,H);
+    g.globalCompositeOperation="source-over";
+    if(!c.pts.length)return;
+    const r=Math.max(W,H)*0.34;
+    scratch.width=Math.round(W*c.dpr); scratch.height=Math.round(H*c.dpr);
+    const s=scratch.getContext("2d"); s.setTransform(c.dpr,0,0,c.dpr,0,0);
+    const stamp=(x,y)=>{
+      s.clearRect(0,0,W,H); s.globalCompositeOperation="source-over";
+      const rg=s.createRadialGradient(x,y,0,x,y,r);
+      rg.addColorStop(0,"rgba(255,255,255,0.95)"); rg.addColorStop(1,"rgba(255,255,255,0)");
+      s.fillStyle=rg; s.fillRect(0,0,W,H);
+      s.globalCompositeOperation="source-in"; s.drawImage(c.artB,0,0,W,H);
+      g.drawImage(scratch,0,0,W,H);
+    };
+    for(const p of c.pts){
+      if(c.lastPt){ const dx=p.x-c.lastPt.x, dy=p.y-c.lastPt.y, d=Math.hypot(dx,dy);
+        const steps=Math.min(Math.ceil(d/(r*0.28)),20);
+        for(let i=1;i<=steps;i++) stamp(c.lastPt.x+dx*i/steps, c.lastPt.y+dy*i/steps);
+      } else stamp(p.x,p.y);
+      c.lastPt=p;
+    }
+    c.pts.length=0;
+  }
+
+  // ---------- phase intro (scatter -> line -> ring) ----------
+  // phaseMix: 0 at scatter, 1 at line, 2 at ring. animated by time after ready.
+  let phase=0;               // 0..2 continuous
+  let introStart=0, introRunning=false;
+  const P1=520, P2=1300;     // ms: reach line at P1, reach ring at P1+? ; we use timeline below
+  function startIntro(ts){ introStart=ts; introRunning=true; }
+
+  function currentPhasePos(c){
+    // interpolate scatter->line->ring by `phase`
+    if(phase<=1){ const t=easeInOut(clamp(phase,0,1)); return blend(c.scatter,c.line,t); }
+    const t=easeInOut(clamp(phase-1,0,1)); return blend(c.line,c.ring,t);
+  }
+  function blend(a,b,t){return {x:lerp(a.x,b.x,t),y:lerp(a.y,b.y,t),rot:lerp(a.rot,b.rot,t),sc:lerp(a.sc,b.sc,t)};}
+
+  // ---------- inputs ----------
+  // Two decoupled axes: vertical intent (wheel / vertical drag) unfolds the arc
+  // (morph); horizontal drag spins it a bounded amount (pan). Nothing can sweep
+  // the crown off-screen because pan is clamped and morph is a fixed lerp.
+  let target=0, cur=0;         // morph scroll
+  let panTarget=0, panCur=0;   // arc spin (radians)
+  let armed=false;             // enabled once the ring has formed
+  function addScroll(d){ if(!armed)return; target=clamp(target+d,0,MAX); }
+
+  addEventListener("wheel",e=>{ if(armed){e.preventDefault(); addScroll(e.deltaY);} },{passive:false});
+
+  // unified pointer drag with axis lock (works for mouse, pen and touch)
+  let dragging=false,sx=0,sy=0,lx=0,ly=0,axis=null,downT=0;
+  stage.addEventListener("pointerdown",e=>{ if(!armed)return; dragging=true;axis=null;downT=performance.now();
+    sx=lx=e.clientX; sy=ly=e.clientY; stage.classList.add("dragging"); stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener("pointermove",e=>{ if(!dragging)return;
+    const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+    if(!axis && (Math.abs(e.clientX-sx)>7||Math.abs(e.clientY-sy)>7))
+      axis = Math.abs(e.clientX-sx) > Math.abs(e.clientY-sy) ? "x" : "y";
+    if(axis==="y") addScroll(-dy*3.4);
+    else if(axis==="x") panTarget=clamp(panTarget - dx*0.0016, -PAN_MAX, PAN_MAX);
+  });
+  function onUp(e){
+    // a tap (no axis lock, short press) on a card flips it to its detail face
+    if(dragging && !axis && performance.now()-downT<350){
+      const el=document.elementFromPoint(e.clientX,e.clientY);
+      const card=el&&el.closest(".card");
+      if(card) card.classList.toggle("flipped");
+    }
+    dragging=false;axis=null;stage.classList.remove("dragging");
+  }
+  stage.addEventListener("pointerup",onUp); stage.addEventListener("pointercancel",onUp);
+
+  // mouse parallax
+  let mpx=0,mpy=0,tmpx=0,tmpy=0;
+  addEventListener("pointermove",e=>{ tmpx=(e.clientX/W-0.5); tmpy=(e.clientY/H-0.5); });
+
+  // ---------- copy refs ----------
+  const introCopy=document.getElementById("introCopy");
+  const destCopy=document.getElementById("destCopy");
+  const hudFill=document.getElementById("hudFill");
+  const hudThumb=document.getElementById("hudThumb");
+
+  // ---------- main loop ----------
+  function applyCards(morph, pan){
+    mpx=lerp(mpx,tmpx,0.06); mpy=lerp(mpy,tmpy,0.06);
+    const par = morph; // parallax only once arc is forming
+    cards.forEach((c,i)=>{
+      let pos;
+      if(!armed){
+        pos=currentPhasePos(c);
+      }else{
+        // ring -> arc lerp by morph; then rotate arc by pan
+        const aa=c.arc.baseAngle+pan;
+        const arcX=cx+Math.cos(aa)*arcR, arcY=arcCY+Math.sin(aa)*arcR, arcRot=(aa*180/Math.PI)+90;
+        pos={
+          x:lerp(c.ring.x,arcX,morph),
+          y:lerp(c.ring.y,arcY,morph),
+          rot:lerp(c.ring.rot,arcRot,morph),
+          sc:lerp(c.ring.sc,c.arc.sc,morph)
+        };
+      }
+      const lift=c.lift;
+      const sc=pos.sc*(1+0.17*lift);
+      const rot=pos.rot*(1-0.55*lift);
+      const px=pos.x + mpx*54*par, py=pos.y + mpy*28*par - 42*lift;
+      c.el.style.transform=`translate(${px-CW/2}px,${py-CH/2}px) rotate(${rot}deg) scale(${sc})`;
+    });
+  }
+
+  let last=0;
+  function frame(ts){
+    if(!last)last=ts;
+    const dt=Math.min((ts-last)/1000,0.05); last=ts;
+
+    // intro timeline
+    if(introRunning){
+      const el=ts-introStart;
+      // reach line at P1, ring at P2
+      if(el<P1){ phase=el/P1; }
+      else if(el<P2){ phase=1+(el-P1)/(P2-P1); }
+      else { phase=2; introRunning=false; armed=true; }
+    }
+
+    // spring toward targets
+    if(armed){ cur=lerp(cur,target,0.12); }
+    panCur=lerp(panCur,panTarget,0.10);
+    const morph=easeInOut(clamp(cur/MAX,0,1));
+    for(const c of cards) c.lift=lerp(c.lift,c.liftTarget,0.16);
+    applyCards(morph, panCur);
+    if(hovered>=0) updateReveal(cards[hovered]);
+
+    // copy crossfade
+    const introOp=clamp(1-morph*1.3,0,1);
+    introCopy.style.opacity=introOp;
+    introCopy.style.filter=`blur(${(1-introOp)*6}px)`;
+    introCopy.style.transform=`translate(-50%,-50%) translateY(${-morph*40}px)`;
+    const destOp=clamp((morph-0.72)/0.28,0,1);
+    destCopy.style.opacity=destOp;
+    destCopy.style.transform=`translate(-50%,-50%) translateY(${(1-destOp)*20}px)`;
+
+    // hud
+    const prog=cur/MAX;
+    hudFill.style.transform=`scaleX(${prog})`;
+    hudThumb.style.left=(prog*100)+"%";
+
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- loader ----------
+  function runLoader(){
+    const bar=document.getElementById("loaderBar");
+    const count=document.getElementById("loaderCount");
+    const dur=1300; let s=null;
+    function step(ts){ if(!s)s=ts; const p=easeInOut(clamp((ts-s)/dur,0,1));
+      bar.style.transform=`scaleX(${p})`; count.textContent=String(Math.round(p*100)).padStart(3,"0");
+      if(p<1) requestAnimationFrame(step);
+      else setTimeout(()=>{
+        const loader=document.getElementById("loader");
+        loader.classList.add("done");
+        document.body.classList.add("ready");
+        // start intro on next frame using rAF timestamp (avoid perf.now drift)
+        requestAnimationFrame(t=>startIntro(t));
+      },220);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- boot ----------
+  layout();
+  addEventListener("resize",layout);
+  requestAnimationFrame(frame);
+  runLoader();
+})();
+</script>
+</body>
+</html>
