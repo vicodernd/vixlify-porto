@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS — Architecture Studio</title>
+  <meta name="description" content="NEXUS is an award-winning architecture studio crafting spaces where vision meets structure." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css?v=3" />
+</head>
+<body>
+
+  <!-- ================= PRELOADER ================= -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <div class="preloader__logo">
+        <span class="preloader__char">N</span>
+        <span class="preloader__char">E</span>
+        <span class="preloader__char">X</span>
+        <span class="preloader__char">U</span>
+        <span class="preloader__char">S</span>
+      </div>
+      <div class="preloader__counter"><span id="loader-count">0</span></div>
+      <div class="preloader__bar"><span id="loader-bar"></span></div>
+    </div>
+  </div>
+
+  <!-- ================= CUSTOM CURSOR ================= -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"><span class="cursor-follower__label"></span></div>
+
+  <!-- ================= NAV ================= -->
+  <header class="nav" id="nav">
+    <a href="#hero" class="nav__logo" data-magnetic>NEXUS<sup>®</sup></a>
+    <div class="nav__meta">
+      <span class="nav__meta-item">JAKARTA — <span id="local-time">00:00</span></span>
+    </div>
+    <button class="nav__toggle" id="menu-toggle" data-magnetic aria-label="Menu">
+      <span class="nav__toggle-label">MENU</span>
+      <span class="nav__toggle-lines"><i></i><i></i></span>
+    </button>
+  </header>
+
+  <!-- ================= MENU OVERLAY ================= -->
+  <nav class="menu" id="menu">
+    <div class="menu__bg"></div>
+    <div class="menu__content">
+      <ul class="menu__list">
+        <li class="menu__item"><a href="#hero" class="menu__link" data-menu-link><span class="menu__index">01</span><span class="menu__word">Home</span></a></li>
+        <li class="menu__item"><a href="#manifesto" class="menu__link" data-menu-link><span class="menu__index">02</span><span class="menu__word">Studio</span></a></li>
+        <li class="menu__item"><a href="#works" class="menu__link" data-menu-link><span class="menu__index">03</span><span class="menu__word">Works</span></a></li>
+        <li class="menu__item"><a href="#services" class="menu__link" data-menu-link><span class="menu__index">04</span><span class="menu__word">Expertise</span></a></li>
+        <li class="menu__item"><a href="#contact" class="menu__link" data-menu-link><span class="menu__index">05</span><span class="menu__word">Contact</span></a></li>
+      </ul>
+      <div class="menu__footer">
+        <div class="menu__col">
+          <span class="menu__label">Studio</span>
+          <p>Jl. Senopati No.88<br/>Jakarta Selatan, ID</p>
+        </div>
+        <div class="menu__col">
+          <span class="menu__label">Inquiries</span>
+          <p>hello@nexus.studio<br/>+62 21 5550 8800</p>
+        </div>
+        <div class="menu__col">
+          <span class="menu__label">Social</span>
+          <p>Instagram — Behance<br/>LinkedIn — Awwwards</p>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="smooth-content">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+      <div class="hero__media">
+        <video class="hero__video" id="hero-video" autoplay muted loop playsinline poster="assets/hero.jpg">
+          <source src="assets/hero.mp4" type="video/mp4" />
+        </video>
+        <div class="hero__overlay"></div>
+      </div>
+      <canvas class="hero__particles" id="hero-particles"></canvas>
+
+      <div class="hero__content">
+        <p class="hero__eyebrow"><span class="line-mask"><span class="line">Architecture & Spatial Design Studio — Est. 2012</span></span></p>
+        <h1 class="hero__title" aria-label="NEXUS">
+          <span class="hero__char">N</span><span class="hero__char">E</span><span class="hero__char">X</span><span class="hero__char">U</span><span class="hero__char">S</span>
+        </h1>
+        <div class="hero__bottom">
+          <p class="hero__tagline"><span class="line-mask"><span class="line">We shape structures.</span></span><span class="line-mask"><span class="line">Structures shape you.</span></span></p>
+          <div class="hero__scroll" data-magnetic>
+            <span>SCROLL</span>
+            <svg width="12" height="40" viewBox="0 0 12 40" fill="none"><path d="M6 0V38M6 38L1 33M6 38L11 33" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MANIFESTO ================= -->
+    <section class="manifesto" id="manifesto">
+      <div class="manifesto__inner">
+        <span class="section-tag"><i></i>02 — Studio</span>
+        <p class="manifesto__text" id="manifesto-text">
+          Nexus is a collective of architects, engineers and dreamers. We believe a building is never just concrete and glass — it is a quiet dialogue between light, material and the people who move through it. Every line we draw begins with a question: how should this space make you feel?
+        </p>
+        <div class="manifesto__cta">
+          <a href="#works" class="btn-circle" data-magnetic>
+            <span>OUR<br/>WORK</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THREE.JS STRUCTURE ================= -->
+    <section class="structure" id="structure">
+      <div class="structure__sticky">
+      <canvas id="structure-canvas"></canvas>
+      <div class="structure__content">
+        <h2 class="structure__title">
+          <span class="line-mask"><span class="line">FORM</span></span>
+          <span class="line-mask"><span class="line outline-text">FOLLOWS</span></span>
+          <span class="line-mask"><span class="line">VISION</span></span>
+        </h2>
+        <p class="structure__hint">— drag your cursor, the structure listens</p>
+      </div>
+      </div>
+    </section>
+
+    <!-- ================= WORKS (HORIZONTAL) ================= -->
+    <section class="works" id="works">
+      <div class="works__pin">
+        <div class="works__header">
+          <span class="section-tag"><i></i>03 — Selected Works</span>
+          <h2 class="works__heading">PROJECTS<sup>(4)</sup></h2>
+        </div>
+        <div class="works__track" id="works-track">
+          <article class="work" data-cursor="VIEW">
+            <div class="work__media"><img src="assets/project-1.jpg" alt="Monolith Cultural Pavilion" /></div>
+            <div class="work__info">
+              <span class="work__num">001</span>
+              <h3 class="work__name">Monolith Pavilion</h3>
+              <p class="work__meta">Cultural — Bandung, 2024</p>
+            </div>
+          </article>
+          <article class="work" data-cursor="VIEW">
+            <div class="work__media"><img src="assets/project-2.jpg" alt="Silva Forest Retreat" /></div>
+            <div class="work__info">
+              <span class="work__num">002</span>
+              <h3 class="work__name">Silva Retreat</h3>
+              <p class="work__meta">Hospitality — Ubud, 2023</p>
+            </div>
+          </article>
+          <article class="work" data-cursor="VIEW">
+            <div class="work__media"><img src="assets/project-3.jpg" alt="Horizon Cliff Villa" /></div>
+            <div class="work__info">
+              <span class="work__num">003</span>
+              <h3 class="work__name">Horizon Villa</h3>
+              <p class="work__meta">Residential — Uluwatu, 2024</p>
+            </div>
+          </article>
+          <article class="work" data-cursor="VIEW">
+            <div class="work__media"><img src="assets/project-4.jpg" alt="Flux Tower" /></div>
+            <div class="work__info">
+              <span class="work__num">004</span>
+              <h3 class="work__name">Flux Tower</h3>
+              <p class="work__meta">Commercial — Jakarta, 2025</p>
+            </div>
+          </article>
+          <div class="work work--end">
+            <a href="#contact" class="btn-circle btn-circle--lg" data-magnetic><span>ALL<br/>PROJECTS</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PHILOSOPHY ================= -->
+    <section class="philosophy" id="philosophy">
+      <div class="philosophy__grid">
+        <div class="philosophy__media reveal-img">
+          <img src="assets/about.jpg" alt="Light through concrete atrium" />
+        </div>
+        <div class="philosophy__copy">
+          <span class="section-tag"><i></i>Philosophy</span>
+          <h2 class="philosophy__title">
+            <span class="line-mask"><span class="line">Light is our</span></span>
+            <span class="line-mask"><span class="line">first material.</span></span>
+          </h2>
+          <p class="philosophy__text">Before concrete is poured or steel is raised, we study how the sun will move through a space — at dawn, at noon, in the last hour of the day. Architecture, for us, is the art of capturing time.</p>
+          <ul class="philosophy__stats">
+            <li><span class="stat-num" data-count="140">0</span><span class="stat-label">Projects Completed</span></li>
+            <li><span class="stat-num" data-count="27">0</span><span class="stat-label">Design Awards</span></li>
+            <li><span class="stat-num" data-count="12">0</span><span class="stat-label">Countries</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section class="services" id="services">
+      <span class="section-tag"><i></i>04 — Expertise</span>
+      <ul class="services__list">
+        <li class="service" data-img="assets/project-1.jpg" data-cursor="→">
+          <span class="service__num">01</span>
+          <h3 class="service__name">Architecture</h3>
+          <span class="service__desc">Concept to construction</span>
+        </li>
+        <li class="service" data-img="assets/about.jpg" data-cursor="→">
+          <span class="service__num">02</span>
+          <h3 class="service__name">Interior Design</h3>
+          <span class="service__desc">Spaces that breathe</span>
+        </li>
+        <li class="service" data-img="assets/project-2.jpg" data-cursor="→">
+          <span class="service__num">03</span>
+          <h3 class="service__name">Masterplanning</h3>
+          <span class="service__desc">Cities of tomorrow</span>
+        </li>
+        <li class="service" data-img="assets/project-4.jpg" data-cursor="→">
+          <span class="service__num">04</span>
+          <h3 class="service__name">Research</h3>
+          <span class="service__desc">Material & climate labs</span>
+        </li>
+      </ul>
+      <div class="services__preview" id="service-preview"><img src="" alt="" /></div>
+    </section>
+
+    <!-- ================= MARQUEE ================= -->
+    <div class="marquee" id="marquee">
+      <div class="marquee__inner">
+        <span>BUILD BEYOND — NEXUS — BUILD BEYOND — NEXUS — BUILD BEYOND — NEXUS — </span>
+        <span>BUILD BEYOND — NEXUS — BUILD BEYOND — NEXUS — BUILD BEYOND — NEXUS — </span>
+      </div>
+    </div>
+
+    <!-- ================= CONTACT / FOOTER ================= -->
+    <footer class="contact" id="contact">
+      <div class="contact__inner">
+        <span class="section-tag"><i></i>05 — Contact</span>
+        <h2 class="contact__title">
+          <span class="line-mask"><span class="line">LET'S BUILD</span></span>
+          <span class="line-mask"><span class="line outline-text">SOMETHING</span></span>
+          <span class="line-mask"><span class="line">TIMELESS</span></span>
+        </h2>
+        <a href="mailto:hello@nexus.studio" class="contact__mail" data-magnetic data-cursor="✉">hello@nexus.studio</a>
+        <div class="contact__bottom">
+          <div class="contact__col">
+            <span class="menu__label">Studio</span>
+            <p>Jl. Senopati No.88, Jakarta Selatan</p>
+          </div>
+          <div class="contact__col">
+            <span class="menu__label">Follow</span>
+            <p><a href="#" data-magnetic>Instagram</a> · <a href="#" data-magnetic>Behance</a> · <a href="#" data-magnetic>LinkedIn</a></p>
+          </div>
+          <div class="contact__col contact__col--right">
+            <p>© 2026 Nexus Studio<br/>All rights reserved</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact__big-logo" aria-hidden="true">NEXUS</div>
+    </footer>
+
+  </main>
+
+  <!-- ================= LIBS ================= -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script type="module" src="js/three-scene.js"></script>
+  <script src="js/main.js?v=2"></script>
+</body>
+</html>

@@ -29,6 +29,102 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'clara-cyber-security',
+    title: 'Clara — Offensive Security Portfolio',
+    category: 'interactive',
+    tags: ['GSAP', 'three.js', 'Bento grid', 'Custom cursor'],
+    description:
+      'A personal portfolio for a fictional offensive-security specialist: a magnetic-cursor hero with a pointer-revealed unmasked photo, a bento grid of five animated capability schematics, a stacking "case file" dossier deck for past engagements, a live 3D attack globe, and a redacted-file contact form.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade personal portfolio for a fictional offensive-security specialist called "Clara" (red-team engagements, threat hunting, zero-trust cloud architecture, incident response). Build it as a React + Tailwind app: motion with framer-motion, a custom cursor and lightweight three.js for a single 3D globe. Quality bar is Awwwards, not a template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is an interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the interaction to make it easier to reproduce.
+
+ART DIRECTION
+Mood: black-ops tech, dossier-and-terminal, never cartoonish "hacker". Near-black ground so a single hot accent reads as a warning light, not decoration.
+Palette (CSS custom properties / Tailwind tokens): --bg #0A0A0A (page ground), --surface #0C0C0C (cards), --surface-2 #141414 (chips, pills), --border #222222 (hairlines), --ink #F5F5F5 (primary text), --ink-dim #888888 (secondary/meta text), --accent #FF4500 (the one warning-light orange, used for kickers, CTAs, active nav pill, glows and hover states), --accent-hot #FF8A3D (secondary blip/glow tone used only inside the schematics). A soft radial accent glow (rgba(255,69,0,0.16-0.18)) sits behind the hero and the contact footer, nowhere else.
+Type: Bebas Neue (display, condensed, uppercase, all headlines) at fontWeight 400 with tight or negative letter-spacing; Space Grotesk (400-700) for body and UI labels; IBM Plex Mono (400-500) for every kicker, meta label, stat caption and form label, always uppercase with wide letter-spacing (0.15-0.25em).
+
+STRUCTURE (one page, five sections after a fixed nav)
+NAV: fixed top bar, three columns. Left a square icon-button "home" mark; center a pill-shaped segmented nav (Main / Services / Work / Contact) where the active section's pill fills solid accent-orange; right a light pill "Hire Me" button. Bar gains a translucent blurred dark background once scrolled.
+
+1) HERO. Full viewport. A three-column grid: left column a small accent kicker ("Cyber Security Specialist"), a short mono promise line, two CTAs (a solid orange pill "Book a call" and an outline pill "See case files", both magnetic — they nudge toward the cursor within a small radius), a hairline-framed "Est. 2018 / 7 Yrs" row, and a pulsing green dot "Available for projects". Center column: a portrait photo masked to a soft vertical fade, with a SECOND hidden version of the same portrait (subtly unmasked/different lighting) revealed only inside a small circle that follows the cursor when hovering the photo, like a torch revealing a second read. Behind everything, a faint field of thin connecting lines and small square nodes (a constellation of dots joined by hairline strokes) drifting almost imperceptibly. Right column: a short bio paragraph under an "/ Bio" kicker, plus two stat cards (e.g. "120+ Audits shipped", "0 Breaches on watch"). A massive condensed headline ("CLARA / SECURE.", the slash in accent orange) is pinned along the bottom of the hero, sized with clamp() to nearly full width, entrance-animated as masked units sliding up line by line. A bottom meta strip lists the five specialties in mono caps separated by middots. Entrance choreography: photo fades/scales in first, side columns rise and fade in, then the headline units slide up staggered, then the bottom strip fades up — all chained, no scroll needed.
+
+2) CAPABILITIES ("What I Do"). A kicker + huge condensed heading, plus a short mono line ("Five live modules, one operator."). Below, an asymmetric bento grid (one large 2x2 tile, two medium tiles, two small tiles, one wide accent-filled CTA tile) of capability cards: Offensive Security (a rotating targeting-reticle SVG with concentric dashed rings and corner brackets), Threat Hunting (a radar sweep conic-gradient with random blipping dots), Zero-Trust Cloud (three expanding pulse rings behind a small shield-check glyph), Incident Response (an animated EKG waveform line that continuously draws and redraws), Security Audits (fake redacted text bars with a vertical scanline sweeping down). Each card has a number, title, one-line description, and small tag pills; hovering intensifies its schematic's animation speed and lifts the card slightly with a warmer border. The final tile is solid accent-orange, inviting an off-menu request, and is itself a CTA to the contact section. Cards fade/rise in staggered as the grid scrolls into view.
+
+3) CASE FILES ("Work"). A kicker + heading, then a vertical stack of "declassified dossier" cards for 3 past engagements (e.g. codenames like GLASS FORTRESS / QUIET STORM / BLACK TIDE), each styled as a redacted case file: a classification header bar ("Case File — 001", "Top Secret // NOFORN" in accent orange, fiscal year), a grayscale evidence photo that colorizes and zooms slightly on hover with a scanline overlay and a rotated "DECLASSIFIED" stamp that fades in on hover, and a body with a client name that appears to "redact-reveal" on hover (a solid orange bar retracts to reveal the text), sector, a one-paragraph summary, three big stat numbers with mono captions, and technique tag pills. As the user scrolls, each card sticks and the next card scales/dims the previous one slightly before covering it (a subtle stacked-deck depth effect, desktop only). Close with a centered heading ("Your stack could be next.") and an outline CTA pill that inverts to solid orange on hover.
+
+4) LIVE THREAT MAP (interlude band). A very faint, heavily subdued ambient video/texture background. Left: a pulsing "Live Threat Map" kicker, a two-line headline ("The world is the perimeter.", the last word in accent orange), a short paragraph, then a small stats row: a continuously ticking-up live counter ("events analyzed today", incrementing only while the section is in view) and a static "24/7 coverage" stat, plus four small region pills (AMER/EMEA/APAC/LATAM). Right: a rotating 3D wireframe/dotted globe (Fibonacci-sphere point cloud in accent orange with a soft fresnel atmosphere glow) with a handful of animated arcing "attack" lines connecting real city coordinates across its surface, auto-rotating slowly. Below the whole band, a continuous horizontal marquee of security tool names (Burp Suite, Metasploit, Wireshark, Splunk, CrowdStrike, Terraform, Kubernetes, MITRE ATT&CK, Ghidra, Nmap) in huge condensed type, pausing on hover.
+
+5) CONTACT / FOOTER. Left: a kicker, a two-line huge headline ("Secure by design.", second line in accent orange), a short paragraph, and a solid-orange magnetic email pill CTA. Right: a minimal form (name, email, a "what do you need secured" textarea) with underline-only inputs that light up orange on focus, and a submit button whose label swaps through idle to "Encrypting & sending…" doing "✓ Received" states. Below the form, a meta row of four columns (a live local-time clock, location, availability status, response time). A social link row and copyright line follow. The footer closes with a giant edge-to-edge outlined wordmark marquee ("CLARA SECURE · AVAILABLE FOR WORK · ZERO BREACHES · BOOK A CALL") in huge condensed hollow (stroke-only) type that fills solid accent-orange on hover, separated by a diamond glyph.
+
+INTERACTION DETAILS
+Custom cursor: replace the system cursor with a small dot plus a trailing ring that expands and shows a short mono label ("reveal", "work", "hire", "hover to declassify") whenever it passes over an interactive element; shrinks slightly on click.
+Magnetic buttons: primary CTAs and nav icons pull a few pixels toward the cursor within a small radius and spring back on leave.
+All section headings animate in as masked character/word units sliding up from below (not simple fades).
+
+MOTION RULES
+Ease power3/power4-out for entrances, linear for marquees and scrubs. Stagger related elements (grid tiles, headline units, tags) rather than animating them together. Scroll-triggered reveals fire once per element the first time they cross roughly 75-80% of the viewport. Do not gate any motion behind prefers-reduced-motion (this audience expects a live, restless interface). Keep every animation at 60fps; only animate transform/opacity plus the schematic SVGs and canvas globe.
+
+IMAGERY
+One portrait subject in two lighting/reveal states for the hero torch effect, and three moody evidence-style photographs (a zero-trust network diagram or server room, a red-team operations shot, a forensics/incident-response scene) desaturated by default. Serve full-bleed imagery at 2K.
+
+QUALITY BAR
+No AI-slop tells: no three identical feature cards (the bento grid must be genuinely asymmetric), no emoji, no gradient-blob hero, no lorem ipsum, no em dashes anywhere. Copy is specific to real security work (real tool names, real frameworks like MITRE ATT&CK, SOC 2, ISO 27001, CIS). Must run at 60fps on a mid laptop, be fully responsive down to 375px, and read like a specialist who is quietly, seriously good rather than performing "hacker aesthetic".`,
+    thumb: '/templates/clara-cyber-security/thumb.webp',
+    demoUrl: '/templates/clara-cyber-security/index.html',
+    date: '2026-07-14',
+  },
+  {
+    slug: 'nexus-architecture',
+    title: 'Nexus — Architecture Studio Landing',
+    category: 'landing',
+    tags: ['GSAP', 'ScrollTrigger', 'three.js', 'Lenis'],
+    description:
+      'A cinematic one-page site for a fictional architecture studio: a video hero with kinetic typography and WebGL embers, a scroll-and-cursor-reactive 3D wireframe tower, a pinned horizontal project gallery, and a floating-image-preview services list.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade one-page website for a fictional architecture studio called "Nexus" (a collective of architects, engineers and dreamers, est. 2012, based in Jakarta). Build it as a React + Tailwind app: motion with framer-motion, smooth scrolling, and three.js for two lightweight WebGL moments (hero embers, a wireframe tower). Quality bar is Awwwards, not a template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is an interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the interaction to make it easier to reproduce.
+
+ART DIRECTION
+Mood: quiet architectural confidence, warm and grounded rather than cold-corporate. A near-black ground with a warm bronze accent used sparingly, like light through a window.
+Palette (CSS custom properties / Tailwind tokens): --bg #0B0B0A (ground), --bg-2 #121110 (raised panels, previews), --ink #E9E4DA (primary text, warm off-white not pure white), --ink-dim #8A857C (secondary/meta text), --accent #D98E4A (warm bronze/amber, used only for the section-tag dash, one outlined headline word per section, and hover states), --line rgba(233,228,218,0.14) (hairlines).
+Type: Clash Display (Fontshare) for every headline, condensed and confident, occasionally rendered as outline-only (stroke, transparent fill) for a second contrasting word in a heading; Archivo (300-600) for body copy and UI labels; JetBrains Mono (300-400) uppercase with wide letter-spacing for section tags ("01 — Studio"), navigation meta, stat labels and footer columns.
+
+STRUCTURE (one page, fixed header + full-screen menu overlay + six sections)
+HEADER: fixed, transparent over the hero, three-part: left a small wordmark ("NEXUS" with a superscript registration mark) that is itself a magnetic link home; center a live local-time readout ("JAKARTA — HH:MM"); right a "MENU" button with two short lines that morph into an X. Clicking it opens a full-screen dark menu overlay: a large numbered link list (01 Home, 02 Studio, 03 Works, 04 Expertise, 05 Contact) with big hover-underline links, and a footer row of three columns (studio address, inquiries email/phone, social links).
+
+1) HERO. Full-bleed looping background video (a moody architectural exterior at dusk) with a dark gradient overlay, plus a canvas of drifting ember/dust particles reacting subtly to the mouse. Content: a small eyebrow line revealed via a sliding line-mask ("Architecture & Spatial Design Studio — Est. 2012"), a huge kinetic wordmark "NEXUS" built from individually animated characters that rise into place, a two-line tagline (also line-masked) at the bottom, and a magnetic "SCROLL" indicator with an animated downward arrow. All text is choreographed in with staggered masked reveals right after a brief preloader (a curtain with a climbing 0 to 100 counter and progress bar over the studio wordmark) finishes.
+
+2) MANIFESTO. A short, centered editorial paragraph (word-by-word scroll-scrubbed opacity, each word brightening as it passes a scroll threshold) stating the studio's philosophy, with a section tag ("02 — Studio") and a circular magnetic "OUR WORK" button beside it.
+
+3) 3D STRUCTURE (pinned). The section pins full-height while a procedural wireframe tower or lattice structure rendered in three.js twists and responds live to cursor position and scroll progress (drag/scroll and it visibly "listens"). Overlaid: a three-line stacked headline ("FORM / FOLLOWS / VISION", the middle word rendered outline-only) and a small hint line ("— drag your cursor, the structure listens").
+
+4) WORKS (pinned horizontal gallery). The section pins while normal vertical scroll is translated into horizontal movement through a track of project cards (large image, index number, project name, one-line meta of type/city/year) for four fictional projects (a cultural pavilion, a forest retreat, a cliffside villa, a commercial tower), ending on a large circular "ALL PROJECTS" CTA. Cursor shows a "VIEW" label over any card.
+
+5) PHILOSOPHY. A two-column split: a tall reveal-clipped photograph (a light-filled concrete atrium) on one side, and on the other a section tag, a two-line headline ("Light is our first material."), a short paragraph, and a row of three count-up stats (e.g. 140 Projects Completed, 27 Design Awards, 12 Countries) that animate their numbers up once scrolled into view.
+
+6) SERVICES. A vertical list of four expertise rows (Architecture, Interior Design, Masterplanning, Research), each with a number, name and short descriptor; hovering any row swaps a floating image preview that follows the cursor near that row, cross-fading between each service's representative photo. A cursor arrow label appears while hovering the list.
+
+MARQUEE + CONTACT/FOOTER. A full-bleed marquee band repeats the studio's mantra in huge type ("BUILD BEYOND — NEXUS —"), scrolling continuously. The footer/contact section: a section tag, a three-line huge headline ("LET'S BUILD / SOMETHING / TIMELESS", middle word outline-only), a large magnetic email link, then a three-column row (studio address, social links, copyright), closing with an enormous edge-to-edge clipped "NEXUS" wordmark as a graphic footer element.
+
+INTERACTION DETAILS
+Custom cursor: a small dot plus a labeled follower ring that shows short verbs ("VIEW", "→", "✉") over interactive elements, and grows/shrinks appropriately.
+Magnetic elements: the menu toggle, scroll indicator, circular CTAs and social links all pull gently toward the cursor within a small radius.
+Smooth scroll (Lenis-style inertia) drives every scroll-linked animation so parallax and pinning feel fluid rather than stepped.
+
+MOTION RULES
+Ease power3/power4 for entrances, linear for marquees, none/linear for scrubbed effects. Every heading reveals via an overflow-hidden line-mask sliding up, never a plain fade. Preloader must gate the hero choreography on first load only. Do not gate motion behind prefers-reduced-motion; scroll and cursor are the whole point. Keep pinned sections performant: only animate transform/opacity and the two three.js canvases, never layout properties.
+
+IMAGERY
+One moody dusk exterior for the hero video/poster, four project photographs (cultural pavilion, forest retreat, cliffside villa, commercial tower) in a warm architectural palette, and one light-filled interior atrium shot for the philosophy section. Serve full-bleed stills at 2K.
+
+QUALITY BAR
+No AI-slop tells: no three identical feature cards, no emoji, no gradient-blob hero, no lorem ipsum, no em dashes anywhere. Copy reads like a real studio (specific project types, cities, award counts), never generic corporate-speak. Must run at 60fps on a mid laptop, be fully responsive down to 375px (pinned/horizontal sections degrading gracefully to normal vertical flow on mobile), and read as quietly prestigious, not flashy for its own sake.`,
+    thumb: '/templates/nexus-architecture/thumb.webp',
+    demoUrl: '/templates/nexus-architecture/index.html',
+    date: '2026-07-14',
+  },
+  {
     slug: 'spectra',
     title: 'Spectra — Interactive Generative Gallery',
     category: 'interactive',
