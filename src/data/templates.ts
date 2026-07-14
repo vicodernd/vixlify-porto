@@ -29,6 +29,55 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'resonance',
+    title: 'Resonance — Kinetic Type Hero',
+    category: 'hero',
+    tags: ['Variable fonts', 'Kinetic type', 'Canvas', 'framer-motion'],
+    description:
+      'A sound design studio hero where the headline is the instrument. The cursor is a playhead: letters swell in weight and width like EQ bars as it passes, a live waveform pumps underneath, and a cobalt timecode line tracks every move. On touch devices the name plays itself.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade HERO SECTION for a fictional sound design studio called "Resonance" (sonic identity, product sound and score, based in Jakarta). Build it as a React + Tailwind app: motion with framer-motion (useAnimationFrame for the per-frame loop), the waveform on an HTML canvas, no other UI libraries. Quality bar is Awwwards, not a template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is a React + Tailwind interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the interaction to make it easier to reproduce.
+
+THE CONTROLLING METAPHOR (hold to it, it is the whole piece)
+Typography IS sound. The giant headline behaves like an equalizer: the cursor is a playhead, and every letter swells as the playhead passes it. Nothing on the page decorates; everything plays.
+
+ART DIRECTION
+Mood: warm, bright, editorial, precise. A quiet bone-paper ground so the kinetic type carries everything. One electric accent used only for signal: the playhead, the timecode, the hottest letters, underlines and hover states. Generous whitespace, a mono "studio console" meta layer in the corners.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--bone: #F3EFE6 (page ground)
+--paper: #FAF8F2 (raised surfaces, footer band)
+--ink: #171612 (primary text)
+--muted: #6E6A5E (secondary text, mono labels)
+--cobalt: #2337FF (the one accent: playhead, timecode, hot letters, hovers)
+--line: rgba(23,22,18,0.13) (hairlines)
+Selection color: cobalt background, bone text.
+
+TYPE
+Display and body: Roboto Flex (Google Fonts, variable) loaded with axes opsz 8..144, wdth 25..151, wght 100..1000, GRAD -200..150. At rest the headline sits near wght 380 / wdth 88 / GRAD -20 with opsz 144; at full swell a letter reaches wght 1000 / wdth 148 / GRAD 100. Animated through extreme axis travel it stops reading as Roboto and becomes an instrument.
+Meta: Inconsolata (variable, wdth 50..200), uppercase, letter-spacing 0.22em, tiny (0.68rem), for nav links, corner readouts, kickers, index numbers and the timecode.
+
+STRUCTURE
+1) Fixed header: wordmark RESONANCE with a small raised cobalt dot; mono nav (Work, Studio, Contact) where links stretch their width axis and turn cobalt on hover; an ink pill button "Start a project" with a cobalt dot that turns cobalt on hover. Header gains a blurred bone backdrop and hairline once scrolled.
+2) The stage (100svh hero): corner meta top-left ("Sonic identity studio / Est. 2019, Jakarta") and top-right ("48 kHz / 24 bit / stereo / Nearfield monitoring") in mono. Centered kicker "Move the cursor. Play the name." flanked by hairlines. The headline RESONANCE at clamp(3.1rem, 13.2vw, 14.5rem), one span per letter, single line, tight tracking. Below it a full-width waveform canvas strip (about 100px tall, max 1180px). Bottom row: left, a 34ch sub paragraph ("Sound reaches you before sight does. We design sonic identity, product sound and score for teams who sweat the last decibel." with the first sentence in ink, the rest muted); right, the pill CTA plus a mono ghost link with a cobalt underline that draws to full width on hover. Hide the native cursor over the stage on pointer devices; the playhead replaces it.
+3) THE INTERACTION (per-frame loop): track a smoothed playhead x that eases toward the pointer (lerp factor about 0.22). For each letter compute a gaussian of the distance from its center to the playhead (sigma about 11.5 percent of viewport width), add a small idle breathing sine per letter (phase offset by index), multiply by an energy value that rises with pointer speed and relaxes back. Run the result through an audio envelope: fast attack (lerp 0.3 when rising), slow release (0.08 when falling). Map the enveloped value to the font axes (wght 380 to 1000, wdth 88 to 148, GRAD -20 to 100), a slight upward translateY (up to -9 percent), and tint the hottest letters (value above 0.52) from ink toward cobalt. Set font-variation-settings and transform directly on the letter spans every frame.
+4) The waveform: thin rounded bars (3px wide, 7px step) mirrored around a center hairline. Each bar = a layered sine noise base plus a gaussian bump under the playhead scaled by energy. Bars within a few steps of the playhead are solid cobalt; the rest are ink at low alpha, darkening near the bump. A 1px cobalt playhead line spans the whole stage at the playhead x with a small dot at top, and a mono cobalt timecode (mm:ss.cs, mapped from playhead position across a fake 04:12 reel) floats just above the waveform beside the line, flipping to the left side near the right edge.
+5) Entrance: letters rise in staggered (65ms per letter) from wght 100, narrow width, translateY 42 percent and opacity 0, easing out over 850ms; the waveform amplitude grows in over 1.4s. Gate the loop on fonts ready. No preloader.
+6) Auto-play: before the first mouse move, after 4 seconds idle, and always on touch devices, the playhead sweeps itself slowly across the name (sine at about 0.55 rad/s, eased chase) so the hero is alive even when nobody moves. A click or tap fires a pulse that kicks the letters and bars around the tap point.
+7) Scroll decay: as the hero scrolls away, all amplitudes fade toward flat (multiply targets by 1 minus scroll progress), like a fader pulled down.
+8) Below the fold, two short support beats: a manifesto section (eyebrow "01 / Why sound" with a hairline, then a 22ch statement at clamp(1.7rem,3.6vw,3.4rem): "Half a second before the screen loads, before a hand touches glass, a product has already spoken. We design that half second." with the words "Half", "second" and "half second." in cobalt) that reveals word by word on scroll into view (opacity, y and blur, 28ms stagger). Then a services list ("02 / What we tune"): four full-width hairline rows (Sonic identity / Product sound / Score and film / Spatial audio), each with a mono index, a display title, a one-line muted description and an arrow; on hover the row lifts to paper, the index turns cobalt, the title stretches its width axis and the arrow slides in. Footer on a paper band: eyebrow "03 / New business", a giant mailto link hello@resonance.studio that stretches and turns cobalt on hover, and a mono meta row (Jakarta coordinates, studio hours in WIB, copyright).
+
+MOTION RULES
+Ease cubic-bezier(0.22,1,0.36,1) for all CSS transitions. The kinetic loop runs every frame from smoothed values; read letter rects first, then write styles. Do not gate motion behind prefers-reduced-motion (the pointer drives it). Never animate layout properties outside the variable-font axes; everything else is transform, opacity and canvas.
+
+QUALITY BAR
+No AI-slop tells: no gradient blobs, no emoji, no three identical feature cards, no lorem ipsum, no em dashes in copy. The one accent is meaningful (it is the signal), the copy is authored and specific, and the interaction is the point. 60fps on a mid laptop, responsive down to 375px (on touch the name plays itself and a tap pulses it), and it must feel like a studio that sweats the last decibel.`,
+    thumb: '/templates/resonance/thumb.webp',
+    demoUrl: '/templates/resonance/index.html',
+    date: '2026-07-14',
+  },
+  {
     slug: 'clara-cyber-security',
     title: 'Clara — Offensive Security Portfolio',
     category: 'interactive',

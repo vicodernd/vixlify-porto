@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resonance — Sound Design Studio</title>
+<meta name="description" content="Resonance is a sound design studio. Sonic identity, product sound and score for teams who sweat the last decibel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght,GRAD@8..144,25..151,100..1000,-200..150&family=Inconsolata:wdth,wght@50..200,200..900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#F3EFE6;
+    --paper:#FAF8F2;
+    --ink:#171612;
+    --muted:#6E6A5E;
+    --cobalt:#2337FF;
+    --line:rgba(23,22,18,.13);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{background:var(--bone);color:var(--ink)}
+  body{
+    font-family:"Roboto Flex",system-ui,sans-serif;
+    font-variation-settings:"opsz" 18,"wdth" 100,"wght" 430;
+    font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--cobalt);color:var(--bone)}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:2px}
+  .mono{
+    font-family:"Inconsolata",monospace;
+    font-variation-settings:"wdth" 100,"wght" 500;
+    font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+  }
+
+  /* ---------- header ---------- */
+  .hd{
+    position:fixed;inset:0 0 auto 0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.15rem clamp(1.1rem,3vw,2.6rem);
+    transition:background .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .hd.solid{background:rgba(243,239,230,.82);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+  .brand{
+    display:flex;align-items:baseline;gap:.5rem;
+    font-variation-settings:"opsz" 40,"wdth" 118,"wght" 780;
+    letter-spacing:-.01em;font-size:1.02rem;
+  }
+  .brand i{font-style:normal;color:var(--cobalt);font-size:.6em;transform:translateY(-.5em);display:inline-block}
+  .hd nav{display:flex;gap:1.9rem;align-items:center}
+  .hd nav a:not(.pill){position:relative;padding:.2rem 0;transition:color .3s var(--ease),font-variation-settings .45s var(--ease)}
+  .hd nav a:not(.pill):hover{color:var(--cobalt);font-variation-settings:"wdth" 160,"wght" 700}
+  .pill{
+    display:inline-flex;align-items:center;gap:.7rem;
+    background:var(--ink);color:var(--bone);
+    padding:.78rem 1.75rem;border-radius:99px;border:1px solid var(--ink);
+    font-family:"Inconsolata",monospace;font-variation-settings:"wdth" 100,"wght" 600;
+    font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+    transition:background .35s var(--ease),color .35s var(--ease);
+    cursor:pointer;
+  }
+  .pill:hover{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:var(--cobalt);transition:background .35s var(--ease)}
+  .pill:hover .dot{background:#fff}
+  @media (max-width:760px){.hd nav a:not(.pill){display:none}.hd nav{gap:.8rem}}
+
+  /* ---------- stage (hero) ---------- */
+  .stage{
+    position:relative;min-height:100svh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:clamp(4.6rem,9vh,7rem) clamp(1.1rem,3vw,2.6rem) clamp(1.4rem,4vh,3rem);
+    cursor:none;
+  }
+  @media (hover:none){.stage{cursor:auto}}
+  .meta{position:absolute;color:var(--muted);line-height:1.85;z-index:5}
+  .meta b{color:var(--ink);font-weight:inherit}
+  .m-tl{top:5.4rem;left:clamp(1.1rem,3vw,2.6rem)}
+  .m-tr{top:5.4rem;right:clamp(1.1rem,3vw,2.6rem);text-align:right}
+  @media (max-width:760px){.m-tr{display:none}.m-tl{top:4.6rem}}
+
+  .center{position:relative;z-index:3;margin-top:auto;margin-bottom:auto}
+  .kicker{color:var(--muted);margin-bottom:clamp(.9rem,2.2vh,1.6rem);display:flex;align-items:center;gap:.9rem;justify-content:center}
+  .kicker::before,.kicker::after{content:"";height:1px;width:2.4rem;background:var(--line)}
+
+  .hl{
+    display:flex;justify-content:center;align-items:baseline;
+    font-size:clamp(3.1rem,13.2vw,14.5rem);
+    line-height:.94;letter-spacing:-.035em;
+    user-select:none;white-space:nowrap;
+    contain:layout style;
+  }
+  .hl span{
+    display:inline-block;will-change:transform,font-variation-settings;
+    font-variation-settings:"opsz" 144,"wdth" 88,"wght" 380,"GRAD" -20;
+    opacity:0;
+  }
+
+  .wavewrap{
+    position:relative;margin:clamp(1.2rem,3.2vh,2.4rem) auto 0;
+    width:min(100%,1180px);height:clamp(64px,11vh,120px);
+  }
+  #wave{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+  .bottom{
+    position:relative;z-index:3;
+    display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;
+    margin-top:clamp(1.6rem,4.5vh,3.4rem);
+  }
+  .sub{
+    max-width:34ch;color:var(--muted);
+    font-size:clamp(.95rem,1.15vw,1.12rem);line-height:1.55;
+    font-variation-settings:"opsz" 18,"wdth" 100,"wght" 430;
+  }
+  .sub b{color:var(--ink);font-weight:inherit;font-variation-settings:"opsz" 18,"wdth" 105,"wght" 620}
+  .ctas{display:flex;align-items:center;gap:1.6rem;flex-shrink:0}
+  .ghost{
+    position:relative;padding-bottom:.25rem;
+    font-family:"Inconsolata",monospace;font-variation-settings:"wdth" 100,"wght" 600;
+    font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .ghost::after{
+    content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
+    background:var(--cobalt);transform:scaleX(.28);transform-origin:left;
+    transition:transform .5s var(--ease);
+  }
+  .ghost:hover::after{transform:scaleX(1)}
+  @media (max-width:760px){
+    .bottom{flex-direction:column;align-items:flex-start;gap:1.4rem}
+  }
+
+  /* playhead */
+  #ph{
+    position:absolute;top:0;bottom:0;width:1px;background:var(--cobalt);
+    opacity:0;z-index:2;pointer-events:none;
+  }
+  #ph::before{
+    content:"";position:absolute;top:0;left:-3px;width:7px;height:7px;
+    border-radius:50%;background:var(--cobalt);
+  }
+  #readout{
+    position:absolute;transform:translate(.65rem,0);top:-1.55rem;
+    font-family:"Inconsolata",monospace;font-variation-settings:"wdth" 100,"wght" 600;
+    font-size:.66rem;letter-spacing:.14em;color:var(--cobalt);
+    opacity:0;z-index:2;pointer-events:none;white-space:nowrap;
+  }
+
+  /* ---------- second beat: manifesto ---------- */
+  .beat{
+    position:relative;
+    padding:clamp(5rem,14vh,10rem) clamp(1.1rem,3vw,2.6rem);
+    max-width:1180px;margin:0 auto;
+  }
+  .eyebrow{color:var(--muted);display:flex;align-items:center;gap:.9rem;margin-bottom:2.2rem}
+  .eyebrow::after{content:"";height:1px;flex:1;background:var(--line)}
+  .eyebrow em{font-style:normal;color:var(--cobalt)}
+  .mani{
+    font-size:clamp(1.7rem,3.6vw,3.4rem);line-height:1.18;letter-spacing:-.02em;
+    font-variation-settings:"opsz" 60,"wdth" 96,"wght" 560;
+    max-width:22ch;font-weight:inherit;
+  }
+  .mani .w{display:inline-block;opacity:0;transform:translateY(.55em);filter:blur(4px);
+    transition:opacity .7s var(--ease),transform .7s var(--ease),filter .7s var(--ease)}
+  .mani.in .w{opacity:1;transform:none;filter:none}
+  .mani .hot{color:var(--cobalt)}
+
+  /* ---------- services ---------- */
+  .services{max-width:1180px;margin:0 auto;padding:0 clamp(1.1rem,3vw,2.6rem) clamp(5rem,12vh,9rem)}
+  .row{
+    display:grid;grid-template-columns:4rem 1fr 1.1fr 2.6rem;gap:1.4rem;align-items:center;
+    padding:1.7rem .6rem;border-top:1px solid var(--line);
+    transition:background .4s var(--ease);position:relative;
+  }
+  .row:last-of-type{border-bottom:1px solid var(--line)}
+  .row:hover{background:var(--paper)}
+  .row .ix{color:var(--muted);transition:color .3s var(--ease)}
+  .row:hover .ix{color:var(--cobalt)}
+  .row h3{
+    font-size:clamp(1.25rem,2.3vw,2rem);letter-spacing:-.015em;font-weight:inherit;
+    font-variation-settings:"opsz" 40,"wdth" 96,"wght" 620;
+    transition:font-variation-settings .55s var(--ease);
+  }
+  .row:hover h3{font-variation-settings:"opsz" 40,"wdth" 122,"wght" 740}
+  .row p{color:var(--muted);font-size:.95rem;max-width:44ch}
+  .row .arw{
+    justify-self:end;color:var(--cobalt);opacity:0;transform:translateX(-8px);
+    transition:opacity .4s var(--ease),transform .4s var(--ease);
+    font-size:1.15rem;
+  }
+  .row:hover .arw{opacity:1;transform:none}
+  @media (max-width:760px){
+    .row{grid-template-columns:2.6rem 1fr 1.6rem;gap:.9rem}
+    .row p{display:none}
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);background:var(--paper);
+    padding:clamp(4rem,10vh,7rem) clamp(1.1rem,3vw,2.6rem) 2rem;
+  }
+  .ft-in{max-width:1180px;margin:0 auto}
+  .mail{
+    display:inline-block;margin-top:1.6rem;
+    font-size:clamp(1.7rem,5.4vw,4.6rem);letter-spacing:-.03em;
+    font-variation-settings:"opsz" 100,"wdth" 96,"wght" 640;
+    transition:font-variation-settings .55s var(--ease),color .35s var(--ease);
+  }
+  .mail:hover{color:var(--cobalt);font-variation-settings:"opsz" 100,"wdth" 116,"wght" 760}
+  .ft-meta{
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+    margin-top:clamp(3rem,8vh,5.5rem);color:var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="hd" id="hd">
+  <a class="brand" href="#">RESONANCE<i>&#9679;</i></a>
+  <nav class="mono">
+    <a href="#services">Work</a>
+    <a href="#why">Studio</a>
+    <a href="#contact">Contact</a>
+    <a class="pill" href="#contact"><span class="dot"></span>Start a project</a>
+  </nav>
+</header>
+
+<main>
+  <section class="stage" id="stage">
+    <div class="meta mono m-tl"><b>Sonic identity studio</b><br>Est. 2019, Jakarta</div>
+    <div class="meta mono m-tr">48 kHz / 24 bit / stereo<br>Nearfield monitoring</div>
+
+    <div class="center">
+      <p class="kicker mono">Move the cursor. Play the name.</p>
+      <h1 class="hl" id="hl" aria-label="Resonance"></h1>
+      <div class="wavewrap"><canvas id="wave"></canvas><div id="readout">00:00.00</div></div>
+    </div>
+
+    <div class="bottom">
+      <p class="sub"><b>Sound reaches you before sight does.</b> We design sonic identity, product sound and score for teams who sweat the last decibel.</p>
+      <div class="ctas">
+        <a class="pill" href="#contact"><span class="dot"></span>Start a project</a>
+        <a class="ghost" href="#services">Explore the studio</a>
+      </div>
+    </div>
+
+    <div id="ph"></div>
+  </section>
+
+  <section class="beat" id="why">
+    <p class="eyebrow mono"><em>01</em>&nbsp;&nbsp;Why sound</p>
+    <h2 class="mani" id="mani">Half a second before the screen loads, before a hand touches glass, a product has already spoken. We design that half second.</h2>
+  </section>
+
+  <section class="services" id="services">
+    <p class="eyebrow mono"><em>02</em>&nbsp;&nbsp;What we tune</p>
+    <a class="row" href="#contact">
+      <span class="ix mono">01</span>
+      <h3>Sonic identity</h3>
+      <p>A logo you can hum. Marks, mnemonics and palettes of sound that survive a noisy feed.</p>
+      <span class="arw">&#8599;</span>
+    </a>
+    <a class="row" href="#contact">
+      <span class="ix mono">02</span>
+      <h3>Product sound</h3>
+      <p>Clicks, alerts and haptics tuned so software feels engineered, not assembled.</p>
+      <span class="arw">&#8599;</span>
+    </a>
+    <a class="row" href="#contact">
+      <span class="ix mono">03</span>
+      <h3>Score and film</h3>
+      <p>Original music for brand film, trailers and docs. Written to picture, mixed to move.</p>
+      <span class="arw">&#8599;</span>
+    </a>
+    <a class="row" href="#contact">
+      <span class="ix mono">04</span>
+      <h3>Spatial audio</h3>
+      <p>Rooms, retail and AR that sound as considered as they look.</p>
+      <span class="arw">&#8599;</span>
+    </a>
+  </section>
+</main>
+
+<footer id="contact">
+  <div class="ft-in">
+    <p class="eyebrow mono"><em>03</em>&nbsp;&nbsp;New business</p>
+    <a class="mail" href="mailto:hello@resonance.studio?subject=Project%20inquiry">hello@resonance.studio</a>
+    <div class="ft-meta mono">
+      <span>Jakarta &nbsp;6.20&deg;S 106.81&deg;E</span>
+      <span>Mon to Fri, 09.00 to 18.00 WIB</span>
+      <span>&copy; 2026 Resonance</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ---------- setup ---------- */
+  const WORD = 'RESONANCE';
+  const hl = document.getElementById('hl');
+  const stage = document.getElementById('stage');
+  const wave = document.getElementById('wave');
+  const wctx = wave.getContext('2d');
+  const ph = document.getElementById('ph');
+  const readout = document.getElementById('readout');
+  const hd = document.getElementById('hd');
+
+  const letters = WORD.split('').map(ch => {
+    const s = document.createElement('span');
+    s.textContent = ch;
+    hl.appendChild(s);
+    return { el: s, cur: 0, intro: 0 };
+  });
+
+  /* palette as rgb for lerp */
+  const INK = [23, 22, 18], COBALT = [35, 55, 255];
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  const mixColor = t =>
+    `rgb(${Math.round(lerp(INK[0], COBALT[0], t))},${Math.round(lerp(INK[1], COBALT[1], t))},${Math.round(lerp(INK[2], COBALT[2], t))})`;
+
+  /* ---------- pointer / playhead model ---------- */
+  const isTouch = matchMedia('(hover: none)').matches;
+  let px = innerWidth * 0.5;         // smoothed playhead x (viewport space)
+  let targetX = px;
+  let pointerLive = false;           // has the mouse moved yet
+  let lastMove = 0;
+  let energy = 0.55;                 // pump strength, rises with pointer speed
+  let prevX = px, prevT = 0;
+  let tapPulse = 0, tapX = 0;        // tap accent
+
+  stage.addEventListener('pointermove', e => {
+    if (e.pointerType === 'touch') return;
+    targetX = e.clientX;
+    pointerLive = true;
+    lastMove = performance.now();
+    const dt = Math.max(8, e.timeStamp - prevT);
+    const speed = Math.abs(e.clientX - prevX) / dt;   // px per ms
+    energy = Math.min(1, Math.max(energy, 0.55 + speed * 0.55));
+    prevX = e.clientX; prevT = e.timeStamp;
+  });
+  stage.addEventListener('pointerdown', e => {
+    tapPulse = 1; tapX = e.clientX;
+    targetX = e.clientX;
+    lastMove = performance.now();
+  });
+
+  /* ---------- canvas sizing ---------- */
+  let W = 0, H = 0, DPR = 1, waveLeft = 0;
+  function sizeCanvas() {
+    DPR = Math.min(2, devicePixelRatio || 1);
+    const r = wave.getBoundingClientRect();
+    W = r.width; H = r.height; waveLeft = r.left;
+    wave.width = Math.round(W * DPR);
+    wave.height = Math.round(H * DPR);
+    wctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  addEventListener('resize', sizeCanvas);
+
+  /* ---------- header + scroll ---------- */
+  let scrollAmp = 1;
+  function onScroll() {
+    hd.classList.toggle('solid', scrollY > 24);
+    const h = stage.offsetHeight || innerHeight;
+    scrollAmp = 1 - clamp01(scrollY / (h * 0.85));
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---------- manifesto word reveal ---------- */
+  const mani = document.getElementById('mani');
+  const HOT = new Set(['half', 'second.', 'second']);
+  mani.innerHTML = mani.textContent.trim().split(/\s+/).map((w, i) =>
+    `<span class="w${HOT.has(w.toLowerCase()) ? ' hot' : ''}" style="transition-delay:${i * 28}ms">${w}</span>`
+  ).join(' ');
+  new IntersectionObserver((es, io) => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: 0.35 }).observe(mani);
+
+  /* ---------- the loop ---------- */
+  const DURATION = 252;              // fake reel length, seconds
+  const fmt = s => {
+    const m = String(Math.floor(s / 60)).padStart(2, '0');
+    const sec = String(Math.floor(s % 60)).padStart(2, '0');
+    const cs = String(Math.floor((s * 100) % 100)).padStart(2, '0');
+    return `${m}:${sec}.${cs}`;
+  };
+
+  let t0 = null;
+  let fontsIn = false;
+  document.fonts.ready.then(() => { fontsIn = true; });
+
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (!fontsIn) return;
+    if (t0 === null) { t0 = now; sizeCanvas(); onScroll(); }
+    const t = (now - t0) / 1000;
+
+    /* --- playhead target --- */
+    const idleFor = now - lastMove;
+    const auto = isTouch || !pointerLive || idleFor > 4200;
+    if (auto) {
+      targetX = innerWidth * (0.5 + 0.42 * Math.sin(t * 0.55));
+      energy = Math.max(energy, 0.62);
+    }
+    px += (targetX - px) * (auto ? 0.045 : 0.22);
+    energy += ((auto ? 0.62 : 0.55) - energy) * 0.03;   // relax toward base
+    tapPulse *= 0.94;
+
+    /* --- letters (read rects first, then write) --- */
+    const sigma = innerWidth * 0.115;
+    const introEnv = easeOutCubic(clamp01((now - t0 - 250) / 1400));
+    const rects = letters.map(L => L.el.getBoundingClientRect());
+    for (let i = 0; i < letters.length; i++) {
+      const L = letters[i];
+      const cx = rects[i].left + rects[i].width / 2;
+      const dx = cx - px;
+      const g = Math.exp(-(dx * dx) / (2 * sigma * sigma));
+      const idle = 0.05 + 0.05 * (Math.sin(t * 1.25 + i * 0.9) + 1) / 2;
+      const tap = tapPulse * Math.exp(-Math.pow(cx - tapX, 2) / (2 * sigma * sigma));
+      const target = clamp01((idle + g * energy + tap) * scrollAmp);
+      /* audio envelope: fast attack, slow release */
+      L.cur += (target - L.cur) * (target > L.cur ? 0.3 : 0.08);
+      L.intro = easeOutCubic(clamp01((now - t0 - i * 65) / 850));
+
+      const iv = L.cur;
+      const wght = Math.round(lerp(100, 380 + 620 * iv, L.intro));
+      const wdth = Math.round(lerp(75, Math.min(151, 88 + 60 * iv), L.intro) * 10) / 10;
+      const grad = Math.round(lerp(-100, -20 + 120 * iv, L.intro));
+      const ty = (1 - L.intro) * 42 - iv * 9;
+      L.el.style.fontVariationSettings = `"opsz" 144,"wdth" ${wdth},"wght" ${wght},"GRAD" ${grad}`;
+      L.el.style.transform = `translateY(${ty}%)`;
+      L.el.style.opacity = L.intro.toFixed(3);
+      const hot = Math.max(0, (iv - 0.52) / 0.48);
+      L.el.style.color = hot > 0 ? mixColor(hot) : '';
+    }
+
+    /* --- waveform --- */
+    if (W > 0) {
+      wctx.clearRect(0, 0, W, H);
+      const mid = H / 2;
+      wctx.fillStyle = 'rgba(23,22,18,.14)';
+      wctx.fillRect(0, mid - 0.5, W, 1);
+
+      const step = 7, bw = 3;
+      const pxLocal = px - waveLeft;
+      const bump = W * 0.055;
+      const amp = introEnv * scrollAmp;
+      for (let x = step / 2; x < W; x += step) {
+        const u = x / W;
+        const n = (Math.sin(u * 21 + t * 1.6) + Math.sin(u * 47 - t * 1.05) * 0.6 + Math.sin(u * 89 + t * 2.3) * 0.35) / 1.95;
+        const base = 0.16 + 0.11 * (n + 1) / 2;
+        const dxp = x - pxLocal;
+        const g = Math.exp(-(dxp * dxp) / (2 * bump * bump));
+        const tap = tapPulse * Math.exp(-Math.pow(x - (tapX - waveLeft), 2) / (2 * bump * bump));
+        const hgt = Math.max(2, (base + (g * energy + tap) * 0.8) * H * 0.92 * amp);
+        const near = Math.abs(dxp) < step * 2.6;
+        wctx.fillStyle = near
+          ? 'rgb(35,55,255)'
+          : `rgba(23,22,18,${(0.2 + g * 0.5).toFixed(3)})`;
+        const y = mid - hgt / 2;
+        wctx.beginPath();
+        wctx.roundRect(x - bw / 2, y, bw, hgt, 1.5);
+        wctx.fill();
+      }
+    }
+
+    /* --- playhead line + readout --- */
+    const showPh = introEnv > 0.5 && scrollAmp > 0.05;
+    ph.style.opacity = showPh ? (0.55 * scrollAmp).toFixed(3) : '0';
+    readout.style.opacity = showPh ? scrollAmp.toFixed(3) : '0';
+    ph.style.left = px.toFixed(1) + 'px';
+    const flip = px > innerWidth - 130;
+    readout.style.left = (px - waveLeft).toFixed(1) + 'px';
+    readout.style.transform = flip ? 'translate(calc(-100% - .65rem),0)' : 'translate(.65rem,0)';
+    readout.textContent = fmt(clamp01(px / innerWidth) * DURATION);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
