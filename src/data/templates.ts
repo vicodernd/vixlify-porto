@@ -29,6 +29,63 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'fathom',
+    title: 'Fathom — Real-Time Signal Analytics',
+    category: 'landing',
+    tags: ['WebGL', 'GSAP', 'ScrollTrigger', 'Shader'],
+    description:
+      'A real-time signal analytics SaaS landing where one metaphor runs the whole page: the signal. A WebGL shader bloom breathes behind the hero, a live product dashboard assembles on scroll, a self-drawing line threads Ingest to Detect to Act, and a single dark proof band streams the event firehose behind a giant counting stat.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade LANDING PAGE for a fictional B2B SaaS called "Fathom" (real-time product signal analytics: it turns raw product events into live signals, detects the shifts that matter, and routes them to the owner in the same second). Build it as a React + Tailwind app: scroll animation with GSAP + ScrollTrigger (via useGSAP), the hero background as a raw WebGL fragment shader on a single fullscreen canvas (no three.js needed; a shaderMaterial in @react-three/fiber is an acceptable alternative), small UI motion with framer-motion. Fonts: Satoshi (Fontshare) for display and UI, Martian Mono (Google) for the metric and label layer. Quality bar is Awwwards, not a template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is a React + Tailwind interpretation of the demo, not a pixel-exact copy (a bespoke WebGL shader will not regenerate identically). Keep the full quality; do not simplify the shader or the scroll choreography to make them easier to reproduce.
+
+THE CONTROLLING METAPHOR (hold to it, it is the anti-slop spine)
+"The signal." It appears in exactly three forms and nowhere else: (1) the hero shader is a signal bloom breathing on a light ground; (2) the product dashboard's live line chart is the signal read in real time; (3) the process section is one self-drawing line that IS the signal travelling from ingest to action. The teal accent only ever marks the signal (the live pulse, the drawn line, the anomaly, the active state). Everything else is quiet.
+
+ART DIRECTION
+Mood: clean, cool, engineered, calm-under-load. A near-white technical ground with enormous whitespace so a single teal accent reads as "live". Indigo and violet appear ONLY inside gradients (the shader bloom, the chart fills, the one big stat), never as UI chrome. One deliberate dark beat (the proof band) breaks the light run for rhythm and makes the teal pop.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--canvas #F6F7F5 (page ground)
+--surface #FFFFFF (cards, dashboard, tiers)
+--ink #101317 (primary text)
+--muted #666D75 (secondary text, mono labels)
+--line rgba(16,19,23,.10) / --line-2 rgba(16,19,23,.06) (hairlines)
+--teal #12C7A6 with --teal-deep #0E9E85 (THE accent: live pulse, drawn line, anomaly, active state, one highlighted price tier)
+Shader / chart / big-stat gradient only: teal to indigo #3B4CF0 to violet #7B5CF5.
+Selection: teal background, near-black text.
+
+TYPE
+Display and UI: Satoshi 400/500/700/900. Headlines at 900 with tight tracking (about -0.032em), clamp-scaled; body 500.
+Metric/label layer: Martian Mono 400/500, uppercase, letter-spacing 0.14 to 0.24em, tiny (0.6 to 0.72rem), for kickers, dashboard labels, stat captions, pill timestamps, footer column heads.
+
+MOTION PRINCIPLE
+The shader breathes continuously (the ONE ambient autoplay). Everything else assembles on scroll and then rests. Ease cubic-bezier(0.22,1,0.36,1) for CSS. CRITICAL for scrubbed timelines: never use .from() on staggered elements inside a scrub (it records a wrong end value and can leave elements stuck at opacity 0 at scroll end). Always gsap.set() the explicit start state, then .to() inside the scrubbed timeline.
+
+STRUCTURE (7 sections after a fixed header)
+HEADER: fixed, transparent at top, gains a blurred canvas-tint backdrop + hairline once scrolled. Left: a small chevron-signal mark (a tiny line-chart glyph) + "Fathom" wordmark + a pulsing teal dot. Center: mono-ish nav (Product, Signals, Pricing). Right: a ghost "Docs" pill and a solid ink "Start free" pill with a teal dot that inverts to a teal fill on hover.
+
+1) HERO (100svh). A 00 to 100 intro gate (~700ms count on a bottom progress bar) then a curtain lifts and the hero copy reveals staggered. Background: the WebGL signal-bloom shader (domain-warped fbm flow noise, a teal-to-indigo-to-violet bloom concentrated lower-right, most of the frame left as clean light whitespace, faint grain to kill banding). Two-tier headline "Catch the signal / the moment it moves." with the word "signal" in teal-deep. A 44ch sub, dual CTA (solid pill + a textlink with a teal underline that draws on hover), and a small mono kicker row (left "Real-time signal analytics", right "SOC2 / streaming / sub-second"). Bottom-right: a frosted "Live throughput" chip with a pulsing dot, a ticking events/sec number and a moving sparkline.
+
+2) PRODUCT REVEAL. Centered lead copy ("Your product's pulse, read in real time."), then a "Live monitor" dashboard that assembles on scroll-scrub: the frame scales up from 0.9 with a slight rotateX that flattens to 0, the chart line draws via stroke-dashoffset, the area fills in, and the sidebar nav / stat tiles / event rows / anomaly card stagger in (all via set + to, per the motion rule). Real UI, not lorem: a sidebar (Signals active in teal, Streams, Alerts, Sources), a headline metric (checkout_conversion 3.42% with a teal delta pill), three tiles (events/sec live-ticking, p99 12ms, 38 sources), an event stream with colored dots, and a teal-tinted anomaly alert ("checkout.error up 240% in 90s, routed to #oncall"). A pulsing "now" marker sits at the chart head; a subtle cursor-parallax tilt on the whole frame.
+
+3) BENTO CAPABILITIES (heading "Everything reacts the instant data moves."). Four deliberately-varied cells, each with real live motion, never three identical cards: A (wide) "Real-time streams" with a continuously drawing canvas sparkline; B (tall) "Alerts that learn" with a canvas line inside a learned teal band that auto-fires a "routed" chip when it breaches; C "Detection latency" with a 0 to 12ms p99 count-up on scroll-in; D "Unify every source" with an SVG node graph (warehouse / stream / webhook / sdk / db feeding a pulsing core "fathom" node with animated teal signal flows along the edges).
+
+4) SIGNAL-FLOW PROCESS ("How the signal moves", heading "From raw event to the right person, in one unbroken line."). The metaphor's third form: one signal wave drawn as an SVG path spans the width; a faint grey rail shows the full path and a teal line draws along it left to right, scroll-scrubbed, with a teal head dot at the drawing tip. Three nodes sit exactly on the wave (compute their y from the same wave function so they land on the curve): 01 Ingest, 02 Detect, 03 Act. As the drawing head passes each node it flips from a grey ring to a solid teal dot and emits a single expanding ping ring, and its step card below reveals (teal top border, teal mono number). On mobile the horizontal wave is hidden and becomes a vertical left rail with dots that light in sequence. IMPORTANT: a scroll-scrubbed section this close to the bottom needs enough content BELOW it to reach progress 1, otherwise the last node never lights.
+
+5) PROOF BAND (the single DARK section, bg about #0C0E13). Two streaming rows of event pills (the firehose: order.completed, checkout.error, deploy.released, latency.spike, etc. with colored dots and mono metadata) scrolling in opposite directions as seamless GSAP marquees (duplicate the row content and animate xPercent; fade the row edges with a CSS mask). Center: a mono kicker "Running in production", a giant number "4.2B" filled with the teal-to-indigo-to-violet gradient (background-clip text, the one allowed headline gradient moment) that counts up 0 to 4.2 on scroll-enter, a caption, and three mini stats (38ms median event to alert, 99.98% uptime, 600+ teams). A short teal rule, then one authored testimonial and a mono attribution.
+
+6) PRICING ("Start free. Scale when the signal does."). Three tiers on white cards, the middle one featured (teal border, soft teal glow, a "Most popular" badge, a solid teal-dot CTA, and it jumps to the top on mobile): Starter $0 (up to 1M events, 3 sources, 7-day retention, email alerts), Scale $290 (up to 250M events, unlimited sources, 90-day retention, adaptive alerts, Slack/PagerDuty/webhook routing, priority support), Enterprise Custom (unlimited volume, SSO/SAML, custom retention, 99.99% SLA, dedicated engineer). Feature rows use small teal check glyphs; usage-based, no seat tax.
+
+7) CLOSING CTA + FOOTER. A bordered CTA panel with a soft radial teal/indigo glow from the top and a faint teal signal wave stroked along its bottom edge (closing the metaphor): kicker "Five minutes to your first signal", headline "See your product move the moment it does.", a sub, and dual CTA. Then a dark footer (ink ground): brand line + tagline, three link columns (Product / Company / Resources), a bottom bar with copyright and a pulsing "All systems operational" status, and a giant ghosted "FATHOM" wordmark (very low-alpha white) clipped at the bottom edge that rises into place on scroll.
+
+QUALITY BAR
+No AI-slop tells: no gradient blobs as decoration, no emoji rows, no three identical feature cards, no lorem ipsum, no em dashes in copy. The teal accent is meaningful everywhere (it is always the signal). The dashboard, pills, alerts and stats are specific and internally consistent (the same numbers recur). 60fps on a mid laptop, responsive to 375px, and the whole page must read like a real real-time analytics product, calm and precise under load.`,
+    thumb: '/templates/fathom/thumb.webp',
+    demoUrl: '/templates/fathom/index.html',
+    date: '2026-07-14',
+  },
+  {
     slug: 'resonance',
     title: 'Resonance — Kinetic Type Hero',
     category: 'hero',
