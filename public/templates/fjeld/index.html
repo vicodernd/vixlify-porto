@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FJELD · Mountain Lodge, Øvre Bergsdalen, Norway</title>
+<meta name="description" content="A nine-room mountain lodge at 987 metres above Sognefjorden. The road ends here. So does the noise.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23131810'/%3E%3Cpath d='M6 24 L16 8 L26 24 Z' fill='%23B4CBA4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=gambetta@400,401,500&f[]=switzer@300,400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sometype+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ FJELD design tokens ============ */
+:root{
+  --fog:#ECEFEA;          /* ground */
+  --paper:#F7F8F5;        /* raised surfaces */
+  --fog-dim:#DFE4DC;      /* recessed surfaces */
+  --ink:#131810;          /* pine ink */
+  --ink-2:#242B21;        /* soft ink */
+  --muted:#5C655A;        /* secondary text (AA on fog) */
+  --moss:#4A6741;         /* accent on light */
+  --moss-deep:#3C5535;
+  --moss-bright:#B4CBA4;  /* accent on ink */
+  --line:rgba(19,24,16,.16);
+  --line-soft:rgba(19,24,16,.09);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --serif:'Gambetta',Georgia,serif;
+  --sans:'Switzer',system-ui,sans-serif;
+  --mono:'Sometype Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:auto}
+/* Lumora rem shell: proportional scale on wide viewports (incl. 4K) */
+@media (min-width:1024px){ html{font-size:1.1111vw} }
+body{
+  background:var(--fog);color:var(--ink);
+  font-family:var(--sans);font-weight:400;
+  font-size:1.0625rem;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;background:none;border:0;cursor:pointer;color:inherit}
+::selection{background:var(--moss);color:var(--fog)}
+:focus-visible{outline:2px solid var(--moss);outline-offset:3px;border-radius:2px}
+.site-foot :focus-visible,[data-dark] :focus-visible{outline-color:var(--moss-bright)}
+
+.skip{position:fixed;left:1rem;top:-4rem;z-index:300;background:var(--ink);color:var(--fog);
+  padding:.6rem 1.1rem;border-radius:99px;font-family:var(--mono);font-size:.8rem;transition:top .3s var(--ease)}
+.skip:focus-visible{top:1rem}
+
+/* type helpers */
+.kicker{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--moss)}
+[data-dark] .kicker{color:var(--moss-bright)}
+.meta{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.04;letter-spacing:-.015em}
+.measure{max-width:36rem}
+
+.wrap{padding-left:clamp(1.25rem,4vw,4.5rem);padding-right:clamp(1.25rem,4vw,4.5rem)}
+section{position:relative}
+
+/* ============ loader ============ */
+.loader{position:fixed;inset:0;z-index:200;background:var(--fog);display:flex;align-items:center;justify-content:center}
+.loader-in{text-align:center}
+.loader-alt{font-family:var(--mono);font-size:.8rem;letter-spacing:.3em;color:var(--muted);display:block;margin-bottom:1rem}
+.loader-mark{font-family:var(--serif);font-size:3.4rem;letter-spacing:.34em;text-indent:.34em;color:var(--ink)}
+.loader-line{width:8.5rem;height:1px;background:var(--line);margin:1.4rem auto 0;position:relative;overflow:hidden}
+.loader-line i{position:absolute;inset:0;background:var(--moss);transform:scaleX(0);transform-origin:left}
+
+/* ============ fog veil (page transition) ============ */
+.veil{position:fixed;inset:-6vh 0;z-index:150;display:none;pointer-events:none;
+  background:linear-gradient(180deg,var(--paper),var(--fog) 30%,var(--fog) 70%,var(--paper));}
+.veil::before,.veil::after{content:"";position:absolute;left:-10%;right:-10%;height:12vh;
+  background:inherit;border-radius:50%}
+.veil::before{top:-6vh}
+.veil::after{bottom:-6vh}
+.veil-meta{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+
+/* ============ header ============ */
+.site-head{position:fixed;inset:0 0 auto;z-index:100;transition:background .4s var(--ease),box-shadow .4s var(--ease)}
+.site-head .head-in{display:flex;align-items:center;gap:2.2rem;
+  padding:1.1rem clamp(1.25rem,4vw,4.5rem)}
+.site-head.scrolled{background:color-mix(in srgb,var(--fog) 82%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line-soft)}
+.brand{font-family:var(--serif);font-size:1.28rem;letter-spacing:.3em;text-indent:.3em;font-weight:500}
+.head-nav{display:flex;gap:1.6rem;margin-left:auto}
+.head-nav a{font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-2);padding:.35rem .1rem;position:relative}
+.head-nav a::after{content:"";position:absolute;left:0;right:100%;bottom:.1rem;height:1px;background:var(--moss);transition:right .35s var(--ease)}
+.head-nav a:hover::after,.head-nav a[aria-current="page"]::after{right:0}
+.head-nav a[aria-current="page"]{color:var(--moss)}
+.head-temp{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--muted);white-space:nowrap}
+.btn-book{display:inline-flex;align-items:center;gap:.55rem;background:var(--ink);color:var(--fog);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.72rem 1.35rem;border-radius:99px;position:relative;overflow:hidden;isolation:isolate;min-height:2.4rem}
+.btn-book::before{content:"";position:absolute;inset:0;background:var(--moss-deep);z-index:-1;
+  transform:translateY(101%);transition:transform .4s var(--ease)}
+.btn-book:hover::before{transform:translateY(0)}
+.btn-book .dot{width:.42rem;height:.42rem;border-radius:50%;background:var(--moss-bright);flex:none}
+/* inverted header over dark sections */
+.site-head.inverted{--head-c:var(--fog)}
+.site-head.inverted .brand,.site-head.inverted .head-nav a{color:var(--fog)}
+.site-head.inverted .head-nav a[aria-current="page"]{color:var(--moss-bright)}
+.site-head.inverted .head-temp{color:rgba(236,239,234,.66)}
+.site-head.inverted.scrolled{background:color-mix(in srgb,var(--ink) 72%,transparent);box-shadow:0 1px 0 rgba(236,239,234,.08)}
+.site-head.inverted .btn-book{background:var(--fog);color:var(--ink)}
+.site-head.inverted .btn-book .dot{background:var(--moss)}
+
+@media (max-width:760px){
+  .site-head .head-in{flex-wrap:wrap;gap:.7rem 1.2rem;padding-block:.85rem}
+  .brand{font-size:1.1rem}
+  .head-temp{display:none}
+  .head-nav{order:3;width:100%;margin:0;overflow-x:auto;scrollbar-width:none;gap:1.3rem}
+  .head-nav::-webkit-scrollbar{display:none}
+  .btn-book{margin-left:auto;padding:.55rem 1rem}
+}
+
+/* ============ hero (home) ============ */
+.hero{height:265vh}
+.hero-stage{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center}
+.hero-frame{position:absolute;inset:0;overflow:hidden;will-change:clip-path}
+.hero-frame img{width:100%;height:100%;object-fit:cover;will-change:transform}
+.hero-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(19,24,16,0) 46%,rgba(19,24,16,.42))}
+.hero-corner{position:absolute;font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;z-index:2}
+.hero-corner.tl{top:5.4rem;left:clamp(1.25rem,4vw,4.5rem)}
+.hero-corner.tr{top:5.4rem;right:clamp(1.25rem,4vw,4.5rem);text-align:right}
+.hero-corner.bl{bottom:2rem;left:clamp(1.25rem,4vw,4.5rem)}
+.hero-corner.br{bottom:2rem;right:clamp(1.25rem,4vw,4.5rem);text-align:right}
+.hero-hl{position:relative;z-index:3;text-align:center;color:var(--fog);
+  font-family:var(--serif);font-weight:400;font-size:clamp(3rem,8.4vw,8.2rem);line-height:.98;letter-spacing:-.02em;
+  text-shadow:0 .1rem 3rem rgba(19,24,16,.45);padding:0 1rem;transform:translateY(6%)}
+.hero-hl .hl-line{display:block;overflow:hidden}
+.hero-hl .hl-in{display:block}
+.hero-hl em{font-style:italic;font-weight:401}
+.hero-cap{position:absolute;z-index:4;left:clamp(1.25rem,4vw,4.5rem);bottom:2.2rem;max-width:26rem;color:var(--fog)}
+.hero-cap p{font-size:1.02rem;line-height:1.55;color:rgba(247,248,245,.92);margin:.4rem 0 1.1rem}
+.hero-cap .meta{color:rgba(247,248,245,.72)}
+.hero-cap .btn-book{background:var(--fog);color:var(--ink)}
+.hero-cap .btn-book .dot{background:var(--moss)}
+.hero-scrollcue{position:absolute;z-index:4;right:clamp(1.25rem,4vw,4.5rem);bottom:2.2rem;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;color:rgba(247,248,245,.75);text-transform:uppercase;
+  display:flex;align-items:center;gap:.7rem}
+.hero-scrollcue i{display:block;width:1px;height:2.6rem;background:rgba(247,248,245,.5);position:relative;overflow:hidden}
+.hero-scrollcue i::after{content:"";position:absolute;inset:0;background:var(--fog);animation:cue 2.2s var(--ease) infinite}
+@keyframes cue{0%{transform:translateY(-100%)}55%{transform:translateY(0)}100%{transform:translateY(100%)}}
+@media (max-width:640px){
+  .hero-corner.bl,.hero-corner.br{display:none}
+  .hero-cap{right:1.25rem}
+}
+
+/* ============ manifesto ============ */
+.manifesto{padding-block:11rem 9rem}
+.manifesto .kicker{display:block;margin-bottom:2.4rem}
+.manifesto p{font-family:var(--serif);font-size:clamp(1.7rem,3.6vw,3.4rem);line-height:1.22;letter-spacing:-.01em;max-width:58rem}
+.manifesto .w{opacity:.14}
+.manifesto em{font-style:italic;color:var(--moss)}
+.manifesto .aside{margin-top:3rem;max-width:24rem;color:var(--muted);font-size:.95rem}
+
+/* ============ rooms list (home) ============ */
+.rooms-list{padding-block:7rem 9rem;border-top:1px solid var(--line-soft)}
+.rooms-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:1.5rem;margin-bottom:3.6rem}
+.rooms-head h2{font-size:clamp(2.4rem,5vw,4.6rem)}
+.rooms-head .meta{padding-bottom:.8rem}
+.room-row{display:grid;grid-template-columns:5rem 1fr auto auto;align-items:center;gap:2rem;
+  padding:2.1rem 0;border-top:1px solid var(--line);position:relative;transition:padding .4s var(--ease)}
+.room-row:last-of-type{border-bottom:1px solid var(--line)}
+.room-row .idx{font-family:var(--mono);font-size:.78rem;color:var(--muted);letter-spacing:.18em}
+.room-row .name{font-family:var(--serif);font-size:clamp(1.9rem,3.6vw,3.2rem);letter-spacing:.01em;line-height:1;transition:color .3s var(--ease),transform .45s var(--ease)}
+.room-row .spec{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:right}
+.room-row .arrow{width:2.6rem;height:2.6rem;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;transition:background .35s var(--ease),border-color .35s var(--ease)}
+.room-row .arrow svg{width:1rem;height:1rem;stroke:var(--ink);transition:stroke .35s var(--ease),transform .35s var(--ease)}
+.room-row:hover .name{color:var(--moss);transform:translateX(.6rem)}
+.room-row:hover .arrow{background:var(--moss);border-color:var(--moss)}
+.room-row:hover .arrow svg{stroke:var(--fog);transform:rotate(45deg)}
+.room-row .thumb{display:none}
+@media (hover:none){
+  .room-row{grid-template-columns:4.4rem 1fr auto}
+  .room-row .arrow{display:none}
+  .room-row .thumb{display:block;grid-column:1/-1;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:.35rem;margin-top:.6rem}
+}
+@media (max-width:640px){
+  .room-row{grid-template-columns:3rem 1fr;gap:1rem}
+  .room-row .spec{grid-column:2;text-align:left}
+  .room-row .arrow{display:none}
+}
+.room-preview{position:fixed;z-index:90;width:19rem;aspect-ratio:3/2;pointer-events:none;opacity:0;
+  border-radius:.4rem;overflow:hidden;top:0;left:0;box-shadow:0 2.2rem 4rem rgba(19,24,16,.28)}
+.room-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s var(--ease)}
+.room-preview img.on{opacity:1}
+
+/* ============ scatter days (home) ============ */
+.days{padding-block:10rem 12rem;overflow:clip}
+.days-grid{position:relative;min-height:126rem}
+.days-copy{position:sticky;top:calc(50svh - 9rem);z-index:5;max-width:26rem;margin:0 auto;text-align:center}
+.days-copy::before{content:"";position:absolute;inset:-6rem -9rem;z-index:-1;border-radius:50%;
+  background:radial-gradient(closest-side,var(--fog) 48%,rgba(236,239,234,.86) 72%,rgba(236,239,234,0) 100%)}
+.days-copy h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:1.2rem 0 1.2rem}
+.days-copy p{color:var(--muted)}
+.link-plain{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.6rem;font-family:var(--mono);
+  font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--moss);border-bottom:1px solid var(--moss);padding-bottom:.3rem}
+.link-plain:hover{color:var(--moss-deep);border-color:var(--moss-deep)}
+.days-fig{position:absolute;width:24rem;max-width:56vw}
+.days-fig img{border-radius:.35rem;aspect-ratio:4/5;object-fit:cover;width:100%}
+.days-fig.wide img{aspect-ratio:3/2}
+.days-fig figcaption{margin-top:.7rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.days-fig.f1{left:2%;top:6rem;width:21rem}
+.days-fig.f2{right:3%;top:32rem;width:24rem}
+.days-fig.f3{left:5%;bottom:32rem;width:19rem}
+.days-fig.f4{right:3%;bottom:2rem;width:24rem}
+@media (max-width:760px){
+  .days-grid{min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .days-copy{position:static;grid-column:1/-1;padding:0 0 2.5rem}
+  .days-fig{position:static;width:100%!important;max-width:none}
+}
+
+/* ============ guestbook band (home) ============ */
+.guestbook{color:var(--fog);padding:12rem 0;background:var(--ink)}
+.guestbook .bg{position:absolute;inset:0;overflow:hidden}
+.guestbook .bg img{width:100%;height:112%;object-fit:cover;opacity:.44}
+.guestbook .bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(19,24,16,.86),rgba(19,24,16,.55) 50%,rgba(19,24,16,.92))}
+.guestbook .in{position:relative;z-index:2;max-width:56rem}
+.guestbook blockquote{font-family:var(--serif);font-size:clamp(1.8rem,4vw,3.6rem);line-height:1.18;letter-spacing:-.01em;margin:2rem 0 1.4rem}
+.guestbook cite{font-family:var(--mono);font-style:normal;font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,239,234,.66)}
+.gb-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:6rem;border-top:1px solid rgba(236,239,234,.16);padding-top:2.6rem;position:relative;z-index:2}
+.gb-stat .num{font-family:var(--serif);font-size:clamp(2.6rem,5.4vw,5rem);line-height:1;color:var(--moss-bright)}
+.gb-stat .lbl{margin-top:.6rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,239,234,.6)}
+@media (max-width:640px){.gb-stats{grid-template-columns:1fr;gap:2.4rem}}
+
+/* ============ journal teaser ============ */
+.journal-teaser{padding-block:9rem}
+.journal-teaser .rooms-head{margin-bottom:3rem}
+.jt-row{display:grid;grid-template-columns:11rem 1fr 2.6rem;gap:2rem;align-items:center;
+  padding:1.9rem 0;border-top:1px solid var(--line)}
+.jt-row:last-of-type{border-bottom:1px solid var(--line)}
+.jt-row time{font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.jt-row .t{font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,2.2rem);transition:color .3s}
+.jt-row:hover .t{color:var(--moss)}
+.jt-row svg{width:1.1rem;height:1.1rem;stroke:var(--muted);transition:transform .35s var(--ease)}
+.jt-row:hover svg{transform:translateX(.4rem);stroke:var(--moss)}
+@media (max-width:640px){.jt-row{grid-template-columns:1fr 2rem;row-gap:.3rem}.jt-row time{grid-column:1/-1}}
+
+/* ============ cta band ============ */
+.cta{padding-block:11rem 12rem;text-align:center;border-top:1px solid var(--line-soft)}
+.cta h2{font-size:clamp(2.2rem,5vw,4.4rem);max-width:44rem;margin:1.4rem auto 2.6rem}
+.cta h2 em{font-style:italic;color:var(--moss)}
+.cta .meta{display:block;margin-top:1.6rem}
+.cta a.mail{border-bottom:1px solid var(--line);transition:color .3s,border-color .3s}
+.cta a.mail:hover{color:var(--moss);border-color:var(--moss)}
+
+/* ============ page headers (inner pages) ============ */
+.page-head{padding-block:11.5rem 4.5rem}
+.page-head h1{font-size:clamp(2.8rem,7vw,6.4rem);letter-spacing:-.02em;max-width:56rem;margin-top:1.4rem}
+.page-head .lede{max-width:34rem;color:var(--muted);margin-top:2rem;font-size:1.05rem}
+
+/* ============ rooms page ============ */
+.room-block{padding-block:5rem;border-top:1px solid var(--line-soft);display:grid;
+  grid-template-columns:7fr 5fr;gap:clamp(2rem,5vw,6rem);align-items:center}
+.room-block.rev{grid-template-columns:5fr 7fr}
+.room-block.rev .rb-media{order:2}
+.rb-media{overflow:hidden;border-radius:.4rem;aspect-ratio:4/3}
+.rb-media img{width:100%;height:116%;object-fit:cover}
+.rb-body .idx{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;color:var(--moss)}
+.rb-body h2{font-size:clamp(2.4rem,4.6vw,4.2rem);margin:.9rem 0 1.4rem}
+.rb-body p{color:var(--muted);max-width:28rem}
+.rb-specs{margin:2rem 0;border-top:1px solid var(--line)}
+.rb-specs div{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding:.72rem 0;border-bottom:1px solid var(--line)}
+.rb-specs dt{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.rb-specs dd{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.rb-price{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap}
+.rb-price .p{font-family:var(--serif);font-size:1.5rem}
+.rb-price .p span{font-size:.9rem;color:var(--muted);font-family:var(--sans)}
+@media (max-width:860px){.room-block,.room-block.rev{grid-template-columns:1fr}.room-block.rev .rb-media{order:0}}
+
+.divider-photo{height:64vh;min-height:26rem;position:relative;overflow:hidden;margin:4rem 0 0}
+.divider-photo img{width:100%;height:118%;object-fit:cover}
+.divider-photo figcaption{position:absolute;left:clamp(1.25rem,4vw,4.5rem);bottom:1.6rem;z-index:2;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;color:var(--fog);text-transform:uppercase;
+  text-shadow:0 1px 1.2rem rgba(19,24,16,.6)}
+.included{padding-block:8rem 9rem}
+.included h2{font-size:clamp(2rem,4vw,3.4rem);margin-bottom:3rem}
+.included ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+.included li{border-top:1px solid var(--line);padding-top:1.4rem}
+.included li .n{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--moss);display:block;margin-bottom:.8rem}
+.included li p{color:var(--muted);font-size:.95rem;max-width:18rem}
+.included li strong{display:block;font-family:var(--serif);font-weight:400;font-size:1.4rem;margin-bottom:.5rem;letter-spacing:0}
+@media (max-width:760px){.included ul{grid-template-columns:1fr}}
+
+/* ============ experience page ============ */
+.scrub{margin:2rem 0 0;position:relative}
+.scrub-hint{position:absolute;top:-2.4rem;right:clamp(1.25rem,4vw,4.5rem);font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.scrub-wrap{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;cursor:crosshair}
+.scrub-wrap::-webkit-scrollbar{display:none}
+.scrub-track{display:flex;gap:1.6rem;padding:0 clamp(1.25rem,4vw,4.5rem);width:max-content}
+.scrub-card{flex:none}
+.scrub-card img{height:56vh;min-height:22rem;width:auto;border-radius:.4rem;object-fit:cover}
+.scrub-card figcaption{margin-top:.8rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.exp-blocks{padding-block:8rem 3rem;display:grid;gap:5.5rem}
+.exp-block{display:grid;grid-template-columns:4rem 5fr 4fr;gap:clamp(1.5rem,4vw,4rem);border-top:1px solid var(--line-soft);padding-top:3rem}
+.exp-block .n{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;color:var(--moss)}
+.exp-block h2{font-size:clamp(1.9rem,3.4vw,3rem);margin-bottom:1.1rem}
+.exp-block p{color:var(--muted);max-width:30rem}
+.exp-block img{border-radius:.35rem;aspect-ratio:3/2;object-fit:cover;width:100%}
+@media (max-width:860px){.exp-block{grid-template-columns:1fr}.exp-block .n{order:-1}}
+.rhythm{padding-block:7rem 10rem}
+.rhythm h2{font-size:clamp(2rem,4vw,3.4rem);margin-bottom:3.4rem}
+.rhythm ol{list-style:none;border-left:1px solid var(--line);max-width:40rem}
+.rhythm li{position:relative;padding:0 0 2.6rem 2.6rem}
+.rhythm li:last-child{padding-bottom:0}
+.rhythm li::before{content:"";position:absolute;left:-.28rem;top:.42rem;width:.52rem;height:.52rem;border-radius:50%;
+  background:var(--fog);border:1px solid var(--moss)}
+.rhythm time{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;color:var(--moss);display:block;margin-bottom:.3rem}
+.rhythm p{color:var(--muted);max-width:26rem}
+.rhythm strong{font-family:var(--serif);font-weight:400;font-size:1.3rem;letter-spacing:0}
+
+/* ============ journal page ============ */
+.letter{display:grid;grid-template-columns:5fr 7fr;gap:clamp(2rem,5vw,6rem);padding-block:4rem 8rem;align-items:start}
+.letter .portrait{border-radius:.4rem;overflow:hidden;aspect-ratio:3/4;position:sticky;top:6rem}
+.letter .portrait img{width:100%;height:100%;object-fit:cover}
+.letter .portrait figcaption{margin-top:.8rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.letter-body p{font-family:var(--serif);font-size:clamp(1.25rem,2vw,1.7rem);line-height:1.5;margin-bottom:1.6em;max-width:34rem}
+.letter-body p:first-of-type::first-letter{font-size:2.2em;line-height:1;padding-right:.08em;color:var(--moss)}
+.letter-body .sig{font-family:var(--serif);font-style:italic;font-size:1.4rem;color:var(--moss)}
+@media (max-width:860px){.letter{grid-template-columns:1fr}.letter .portrait{position:static;max-width:22rem}}
+.entries{padding-block:2rem 6rem}
+.entry{border-top:1px solid var(--line);padding:3.2rem 0;display:grid;grid-template-columns:11rem 1fr;gap:clamp(1.5rem,4vw,4rem)}
+.entry time{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;padding-top:.5rem}
+.entry h2{font-size:clamp(1.7rem,3vw,2.6rem);margin-bottom:1rem}
+.entry p{color:var(--muted);max-width:36rem}
+@media (max-width:640px){.entry{grid-template-columns:1fr;gap:.6rem}}
+.getting{padding-block:6rem 10rem;border-top:1px solid var(--line-soft)}
+.getting h2{font-size:clamp(2rem,4vw,3.4rem);margin-bottom:3rem}
+.getting ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;counter-reset:step}
+.getting li{border-top:1px solid var(--line);padding-top:1.4rem}
+.getting li .n{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--moss);display:block;margin-bottom:.8rem}
+.getting li strong{display:block;font-family:var(--serif);font-weight:400;font-size:1.4rem;margin-bottom:.5rem}
+.getting li p{color:var(--muted);font-size:.95rem}
+.getting .coords{margin-top:4.5rem;font-family:var(--mono);font-size:.78rem;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
+@media (max-width:760px){.getting ol{grid-template-columns:1fr}}
+
+/* ============ footer ============ */
+.site-foot{background:var(--ink);color:var(--fog);overflow:hidden;position:relative}
+.foot-in{display:grid;grid-template-columns:1fr auto;gap:3rem;
+  padding:7rem clamp(1.25rem,4vw,4.5rem) 4rem}
+.foot-nav{display:grid;gap:.4rem;justify-items:start}
+.foot-nav a{font-family:var(--serif);font-size:clamp(2rem,4.4vw,3.8rem);line-height:1.16;position:relative;color:rgba(236,239,234,.88)}
+.foot-nav a::after{content:"";position:absolute;left:0;bottom:.24em;width:100%;height:.06em;background:var(--moss-bright);
+  transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease)}
+.foot-nav a:hover{color:var(--moss-bright)}
+.foot-nav a:hover::after{transform:scaleX(1);transform-origin:left}
+.foot-meta{display:grid;gap:1.7rem;align-content:start;text-align:right;font-family:var(--mono);
+  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(236,239,234,.62)}
+.foot-meta a:hover{color:var(--moss-bright)}
+.foot-meta .grp span{display:block;color:rgba(236,239,234,.38);margin-bottom:.35rem;font-size:.64rem}
+.foot-mark{font-family:var(--serif);font-weight:500;text-align:center;line-height:.72;
+  font-size:clamp(6rem,24vw,24rem);letter-spacing:.08em;text-indent:.08em;color:rgba(236,239,234,.055);
+  transform:translateY(18%);user-select:none;pointer-events:none}
+.foot-legal{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:1.4rem clamp(1.25rem,4vw,4.5rem);border-top:1px solid rgba(236,239,234,.09);
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(236,239,234,.4)}
+@media (max-width:760px){.foot-in{grid-template-columns:1fr}.foot-meta{text-align:left}}
+
+/* page visibility */
+.page[hidden]{display:none}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-in">
+    <span class="loader-alt" id="loaderAlt">ALT 0 M</span>
+    <div class="loader-mark">FJELD</div>
+    <div class="loader-line"><i id="loaderBar"></i></div>
+  </div>
+</div>
+
+<div class="veil" id="veil" aria-hidden="true"><span class="veil-meta" id="veilMeta">FJELD</span></div>
+
+<header class="site-head" id="siteHead">
+  <div class="head-in">
+    <a class="brand" href="#/" data-route>FJELD</a>
+    <nav class="head-nav" aria-label="Main">
+      <a href="#/" data-route data-page="home">Stay</a>
+      <a href="#/rooms" data-route data-page="rooms">Rooms</a>
+      <a href="#/experience" data-route data-page="experience">Days</a>
+      <a href="#/journal" data-route data-page="journal">Journal</a>
+    </nav>
+    <span class="head-temp" aria-hidden="true">61.63°N · −4°C · FOG</span>
+    <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ==================== HOME ==================== -->
+<section class="page" id="page-home">
+  <div class="hero" id="hero">
+    <div class="hero-stage">
+      <div class="hero-frame" id="heroFrame">
+        <img id="heroImg" src="img/hero-lodge.webp" alt="The FJELD lodge at blue hour, warm windows glowing beneath a misty peak" fetchpriority="high">
+      </div>
+      <span class="hero-corner tl" id="hcTL">61.63°N&nbsp;&nbsp;8.31°E</span>
+      <span class="hero-corner tr" id="hcTR">987 M O.H.</span>
+      <span class="hero-corner bl" id="hcBL">EST. 1962 · REBUILT 2021</span>
+      <span class="hero-corner br" id="hcBR">TODAY: FOG, −4°</span>
+      <h1 class="hero-hl" id="heroHl">
+        <span class="hl-line"><span class="hl-in">Above</span></span>
+        <span class="hl-line"><span class="hl-in"><em>the weather.</em></span></span>
+      </h1>
+      <div class="hero-cap" id="heroCap">
+        <span class="kicker" style="color:var(--moss-bright)">Øvre Bergsdalen · Norway</span>
+        <p>FJELD is a nine-room lodge at 987 metres. The road ends here. So does the noise.</p>
+        <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+      </div>
+      <div class="hero-scrollcue" id="heroCue" aria-hidden="true">Scroll<i></i></div>
+    </div>
+  </div>
+
+  <section class="manifesto wrap" aria-label="About the lodge">
+    <span class="kicker">01 · The idea</span>
+    <p data-words>We built nothing the mountain did not ask for. Nine rooms. One long table. A sauna facing the valley. <em>The fog handles the rest.</em></p>
+    <p class="aside">No lobby playlist, no minibar upsell. A lodge, in the old sense of the word, with very good bedding.</p>
+  </section>
+
+  <section class="rooms-list wrap" aria-label="The rooms">
+    <div class="rooms-head">
+      <div>
+        <span class="kicker">02 · The rooms</span>
+        <h2>Sleep at altitude.</h2>
+      </div>
+      <span class="meta">Nine rooms · three shapes · from €210</span>
+    </div>
+    <a class="room-row" href="#/rooms" data-route data-preview="0">
+      <span class="idx">R.01</span>
+      <span class="name">Vindu</span>
+      <span class="spec">28 m² · sleeps 2 · valley</span>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
+      <img class="thumb" src="img/room-vindu.webp" alt="" loading="lazy">
+    </a>
+    <a class="room-row" href="#/rooms" data-route data-preview="1">
+      <span class="idx">R.02</span>
+      <span class="name">Ask</span>
+      <span class="spec">24 m² · sleeps 2 · forest</span>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
+      <img class="thumb" src="img/room-ask.webp" alt="" loading="lazy">
+    </a>
+    <a class="room-row" href="#/rooms" data-route data-preview="2">
+      <span class="idx">R.03</span>
+      <span class="name">Bre</span>
+      <span class="spec">34 m² · sleeps 3 · sky</span>
+      <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></span>
+      <img class="thumb" src="img/room-bre.webp" alt="" loading="lazy">
+    </a>
+  </section>
+
+  <section class="days wrap" aria-label="Days at the lodge">
+    <div class="days-grid">
+      <figure class="days-fig f1" data-speed="0.82">
+        <img src="img/sauna.webp" alt="The sauna's panoramic window over a fog-filled valley" loading="lazy">
+        <figcaption>Sauna · 90°C</figcaption>
+      </figure>
+      <figure class="days-fig f2 wide" data-speed="1.16">
+        <img src="img/dining.webp" alt="Cured arctic char plated on rough ceramic" loading="lazy">
+        <figcaption>Kitchen · one seating</figcaption>
+      </figure>
+      <div class="days-copy">
+        <span class="kicker">03 · The days</span>
+        <h2>Slow is a skill.</h2>
+        <p>Heat, food, silence. We keep the programme short so the valley can keep it long.</p>
+        <a class="link-plain" href="#/experience" data-route>Plan your days</a>
+      </div>
+      <figure class="days-fig f3" data-speed="0.7">
+        <img src="img/fireplace.webp" alt="A leather armchair beside the stone fireplace" loading="lazy">
+        <figcaption>Lounge · always lit</figcaption>
+      </figure>
+      <figure class="days-fig f4 wide" data-speed="1.3">
+        <img src="img/winter-landscape.webp" alt="Snowed-in spruce trees fading into fog" loading="lazy">
+        <figcaption>Outside · unsupervised</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="guestbook" data-dark aria-label="From the guestbook">
+    <div class="bg" aria-hidden="true"><img src="img/fjord-aerial.webp" alt="" loading="lazy" id="gbBg"></div>
+    <div class="wrap">
+      <div class="in">
+        <span class="kicker">From the guestbook</span>
+        <blockquote>&ldquo;We came for two nights and stayed for six. I have no memory of my&nbsp;phone.&rdquo;</blockquote>
+        <cite>E. Hartmann, Berlin · March 2026</cite>
+      </div>
+      <div class="gb-stats">
+        <div class="gb-stat"><span class="num" data-count="987">0</span><span class="lbl">metres above the sea</span></div>
+        <div class="gb-stat"><span class="num" data-count="9">0</span><span class="lbl">rooms, never more</span></div>
+        <div class="gb-stat"><span class="num" data-count="1962">0</span><span class="lbl">first guests checked in</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="journal-teaser wrap" aria-label="Journal">
+    <div class="rooms-head">
+      <div>
+        <span class="kicker">04 · The journal</span>
+        <h2>Notes from 987 metres.</h2>
+      </div>
+      <span class="meta">Written by the keeper, weather permitting</span>
+    </div>
+    <a class="jt-row" href="#/journal" data-route>
+      <time datetime="2026-02-12">12 Feb 2026</time>
+      <span class="t">The first proper dump</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+    </a>
+    <a class="jt-row" href="#/journal" data-route>
+      <time datetime="2025-10-28">28 Oct 2025</time>
+      <span class="t">What the fog takes</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+    </a>
+    <a class="jt-row" href="#/journal" data-route>
+      <time datetime="2025-07-06">06 Jul 2025</time>
+      <span class="t">A recipe for cured char</span>
+      <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+    </a>
+  </section>
+
+  <section class="cta wrap">
+    <span class="kicker">Booking</span>
+    <h2>The valley is patient. <em>Your calendar is not.</em></h2>
+    <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+    <span class="meta">or write to <a class="mail" href="mailto:stay@fjeld.no">stay@fjeld.no</a> · we answer between 08:00 and the sauna</span>
+  </section>
+</section>
+
+<!-- ==================== ROOMS ==================== -->
+<section class="page" id="page-rooms" hidden>
+  <header class="page-head wrap">
+    <span class="kicker">The rooms</span>
+    <h1>Three kinds of quiet.</h1>
+    <p class="lede">Nine rooms across two floors, each one of three shapes. All of them face the weather; none of them face each other.</p>
+  </header>
+
+  <article class="room-block wrap">
+    <div class="rb-media"><img src="img/room-vindu.webp" alt="Vindu: pale ash room with a three-metre window over the foggy valley" data-parallax loading="lazy"></div>
+    <div class="rb-body">
+      <span class="idx">R.01 · VINDU</span>
+      <h2>The one with the window.</h2>
+      <p>A single pane, three metres wide, and the valley doing whatever it likes on the far side. Pale ash, undyed linen, and nothing on the walls, because the wall that matters is glass.</p>
+      <dl class="rb-specs">
+        <div><dt>Area</dt><dd>28 m²</dd></div>
+        <div><dt>Sleeps</dt><dd>2</dd></div>
+        <div><dt>Faces</dt><dd>Valley · south</dd></div>
+        <div><dt>Bath</dt><dd>Rain shower</dd></div>
+      </dl>
+      <div class="rb-price">
+        <span class="p">€240 <span>/ night, breakfast included</span></span>
+        <a class="link-plain" href="mailto:stay@fjeld.no?subject=Vindu%20·%20request%20for%20dates">Request dates</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="room-block rev wrap">
+    <div class="rb-media"><img src="img/room-ask.webp" alt="Ask: smoked-oak room with layered wool and a warm bedside lamp" data-parallax loading="lazy"></div>
+    <div class="rb-body">
+      <span class="idx">R.02 · ASK</span>
+      <h2>Dark timber, deep sleep.</h2>
+      <p>Smoked oak, wool in three weights, and the smell of the fire next door. Ask is the room people choose in January, and the one they argue over in February.</p>
+      <dl class="rb-specs">
+        <div><dt>Area</dt><dd>24 m²</dd></div>
+        <div><dt>Sleeps</dt><dd>2</dd></div>
+        <div><dt>Faces</dt><dd>Forest · east</dd></div>
+        <div><dt>Bath</dt><dd>Soak tub</dd></div>
+      </dl>
+      <div class="rb-price">
+        <span class="p">€210 <span>/ night, breakfast included</span></span>
+        <a class="link-plain" href="mailto:stay@fjeld.no?subject=Ask%20·%20request%20for%20dates">Request dates</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="room-block wrap">
+    <div class="rb-media"><img src="img/room-bre.webp" alt="Bre: attic loft with a skylight full of falling snow" data-parallax loading="lazy"></div>
+    <div class="rb-body">
+      <span class="idx">R.03 · BRE</span>
+      <h2>The attic, the sky.</h2>
+      <p>Lie down, look up: the skylight does the entertaining. In October it is auroras, in February it is snow, and in July it forgets to get dark at all.</p>
+      <dl class="rb-specs">
+        <div><dt>Area</dt><dd>34 m²</dd></div>
+        <div><dt>Sleeps</dt><dd>3</dd></div>
+        <div><dt>Faces</dt><dd>Sky · due north</dd></div>
+        <div><dt>Bath</dt><dd>Shower + tub</dd></div>
+      </dl>
+      <div class="rb-price">
+        <span class="p">€290 <span>/ night, breakfast included</span></span>
+        <a class="link-plain" href="mailto:stay@fjeld.no?subject=Bre%20·%20request%20for%20dates">Request dates</a>
+      </div>
+    </div>
+  </article>
+
+  <figure class="divider-photo">
+    <img src="img/winter-landscape.webp" alt="Snow-covered spruce forest dissolving into fog" data-parallax loading="lazy">
+    <figcaption>The view from Ask, last February</figcaption>
+  </figure>
+
+  <section class="included wrap">
+    <h2>Every stay includes</h2>
+    <ul>
+      <li><span class="n">01</span><strong>Breakfast, properly</strong><p>At the long table, from 07:30. Bread from the night before, char from the lake, coffee without apology.</p></li>
+      <li><span class="n">02</span><strong>A private sauna hour</strong><p>Booked at check-in. Ninety degrees, one bucket, and the entire valley through one window.</p></li>
+      <li><span class="n">03</span><strong>The last 40 minutes</strong><p>We collect you from Otta station. The road up is ours, and it is the best trailer for the stay.</p></li>
+    </ul>
+  </section>
+
+  <section class="cta wrap">
+    <span class="kicker">Booking</span>
+    <h2>Rooms are answered <em>in the order the fog allows.</em></h2>
+    <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+    <span class="meta">or write to <a class="mail" href="mailto:stay@fjeld.no">stay@fjeld.no</a></span>
+  </section>
+</section>
+
+<!-- ==================== EXPERIENCE ==================== -->
+<section class="page" id="page-experience" hidden>
+  <header class="page-head wrap">
+    <span class="kicker">The days</span>
+    <h1>The programme is the absence of one.</h1>
+    <p class="lede">Heat, food, silence, weather. Everything else is optional, and most of it is downhill.</p>
+  </header>
+
+  <section class="scrub" aria-label="Gallery">
+    <span class="scrub-hint" aria-hidden="true">Move the mouse, or scroll sideways</span>
+    <div class="scrub-wrap" id="scrubWrap" tabindex="0" role="group" aria-label="A day at FJELD, in six photographs">
+      <div class="scrub-track" id="scrubTrack">
+        <figure class="scrub-card"><img src="img/sauna.webp" alt="Sauna benches facing a panoramic window of fog" loading="lazy"><figcaption>01 · Sauna, 16:00</figcaption></figure>
+        <figure class="scrub-card"><img src="img/dining.webp" alt="Cured char with dill and juniper on ceramic" loading="lazy"><figcaption>02 · The table, one seating</figcaption></figure>
+        <figure class="scrub-card"><img src="img/fireplace.webp" alt="Fire burning low beside a leather armchair" loading="lazy"><figcaption>03 · The lounge, always lit</figcaption></figure>
+        <figure class="scrub-card"><img src="img/winter-landscape.webp" alt="Spruce trees in deep snow and fog" loading="lazy"><figcaption>04 · Outside, unsupervised</figcaption></figure>
+        <figure class="scrub-card"><img src="img/fjord-aerial.webp" alt="The fjord under a lid of morning cloud" loading="lazy"><figcaption>05 · The fjord, twenty minutes down</figcaption></figure>
+        <figure class="scrub-card"><img src="img/hero-lodge.webp" alt="The lodge at blue hour, windows glowing" loading="lazy"><figcaption>06 · Home, whenever</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <div class="exp-blocks wrap">
+    <article class="exp-block">
+      <span class="n">01</span>
+      <div>
+        <h2>Heat</h2>
+        <p>The sauna holds ninety degrees and four people, in that order of importance. One bucket, one ladle, one window the size of the view. Cold water is provided by Norway.</p>
+      </div>
+      <img src="img/sauna.webp" alt="" loading="lazy">
+    </article>
+    <article class="exp-block">
+      <span class="n">02</span>
+      <div>
+        <h2>The table</h2>
+        <p>Dinner is one seating and one menu, written at noon when the kitchen sees what the valley sent up. Cured char, mountain lamb, cloudberries when we are lucky. Wine list short and opinionated.</p>
+      </div>
+      <img src="img/dining.webp" alt="" loading="lazy">
+    </article>
+    <article class="exp-block">
+      <span class="n">03</span>
+      <div>
+        <h2>Silence</h2>
+        <p>No spa menu, no activity board, no speaker in the ceiling. The lounge has a fire, a wall of maps and a policy: whoever falls asleep in the armchair owns it until dinner.</p>
+      </div>
+      <img src="img/fireplace.webp" alt="" loading="lazy">
+    </article>
+  </div>
+
+  <section class="rhythm wrap">
+    <h2>A day, roughly.</h2>
+    <ol>
+      <li><time>07:30</time><strong>Breakfast at the long table</strong><p>Bread, char, brown cheese, eggs from the farm below the fog line.</p></li>
+      <li><time>09:00</time><strong>Trailheads</strong><p>Maps at the door, a thermos if you ask nicely. Four routes, zero queues.</p></li>
+      <li><time>16:00</time><strong>Sauna hours begin</strong><p>Your booked hour. The valley performs on the other side of the glass.</p></li>
+      <li><time>19:30</time><strong>Dinner, one seating</strong><p>What the valley sent up, cooked with restraint.</p></li>
+      <li><time>22:00</time><strong>The fire gets quiet</strong><p>So does everyone else. Bre guests: check the skylight before you sleep.</p></li>
+    </ol>
+  </section>
+
+  <section class="cta wrap">
+    <span class="kicker">Booking</span>
+    <h2>Bring a book. <em>Expect to lose your place in it.</em></h2>
+    <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+    <span class="meta">or write to <a class="mail" href="mailto:stay@fjeld.no">stay@fjeld.no</a></span>
+  </section>
+</section>
+
+<!-- ==================== JOURNAL ==================== -->
+<section class="page" id="page-journal" hidden>
+  <header class="page-head wrap">
+    <span class="kicker">The journal</span>
+    <h1>Notes from 987 metres.</h1>
+    <p class="lede">Written by the keeper, on paper first, weather permitting. Typed up when the fog is too thick to work outside.</p>
+  </header>
+
+  <section class="letter wrap" aria-label="A letter from the keeper">
+    <figure class="portrait">
+      <img src="img/host-portrait.webp" alt="Nils Fjærland, keeper of FJELD, at the lodge doorway" loading="lazy">
+      <figcaption>Nils Fjærland · keeper since 2019</figcaption>
+    </figure>
+    <div class="letter-body">
+      <p>Dear guest. The lodge was my grandfather's, and for forty years it slept nine hikers a night on bunks that forgave nothing. We rebuilt it in 2021 with more glass and fewer opinions.</p>
+      <p>People ask what there is to do here. I keep a straight face and say: the weather. It changes every twenty minutes and it has never once repeated itself. Everything else we offer (the sauna, the table, the armchairs) is just a good seat for watching it work.</p>
+      <p>Come tired. Leave slowly.</p>
+      <p class="sig">Nils Fjærland, keeper</p>
+    </div>
+  </section>
+
+  <section class="entries wrap" aria-label="Journal entries">
+    <article class="entry">
+      <time datetime="2026-02-12">12 Feb 2026</time>
+      <div>
+        <h2>The first proper dump</h2>
+        <p>Sixty centimetres in a night. The plough driver arrived at six looking personally offended. Bre's skylight held a metre of blue light until noon, and the guests who were booked to leave on Tuesday are, as of this writing, still here. Nobody has complained, least of all the kitchen.</p>
+      </div>
+    </article>
+    <article class="entry">
+      <time datetime="2025-10-28">28 Oct 2025</time>
+      <div>
+        <h2>What the fog takes</h2>
+        <p>A guest asked for a refund on the view. Fair. The valley had been a white wall for two days. Then at four the fog dropped below the sauna window in one slow curtain, and the whole slope lit up amber, and the same guest asked if he could extend. The fog takes, the fog gives back doubled. We do not negotiate with it.</p>
+      </div>
+    </article>
+    <article class="entry">
+      <time datetime="2025-07-06">06 Jul 2025</time>
+      <div>
+        <h2>A recipe for cured char</h2>
+        <p>Salt, sugar, dill, juniper you crushed yourself. Forty-eight hours under a weight, sliced thin enough to read through. Serve to someone who claims they do not like fish and enjoy the silence that follows. The lake is twelve minutes down the west trail; the recipe is older than the lodge.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="getting wrap">
+    <h2>Getting here</h2>
+    <ol>
+      <li><span class="n">01 · FLY</span><strong>Oslo, OSL</strong><p>Then forget the airport immediately. It is the last crowd you will see.</p></li>
+      <li><span class="n">02 · TRAIN</span><strong>Oslo S → Otta</strong><p>3 h 24 min up the Gudbrandsdalen line. Sit on the left, thank us later.</p></li>
+      <li><span class="n">03 · WE DRIVE</span><strong>The last 40 minutes</strong><p>Ours, and the best trailer for the stay. Tell us your train and we are there.</p></li>
+    </ol>
+    <p class="coords">61.63°N&nbsp;&nbsp;8.31°E · ØVRE BERGSDALEN · 987 M O.H.</p>
+  </section>
+
+  <section class="cta wrap">
+    <span class="kicker">Booking</span>
+    <h2>The next entry <em>could mention you.</em></h2>
+    <a class="btn-book" href="mailto:stay@fjeld.no?subject=A%20stay%20at%20FJELD"><span class="dot"></span>Book a stay</a>
+    <span class="meta">or write to <a class="mail" href="mailto:stay@fjeld.no">stay@fjeld.no</a></span>
+  </section>
+</section>
+
+</main>
+
+<footer class="site-foot" data-dark>
+  <div class="foot-in">
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="#/" data-route>Stay</a>
+      <a href="#/rooms" data-route>Rooms</a>
+      <a href="#/experience" data-route>Days</a>
+      <a href="#/journal" data-route>Journal</a>
+    </nav>
+    <div class="foot-meta">
+      <div class="grp"><span>Write</span><a href="mailto:stay@fjeld.no">stay@fjeld.no</a></div>
+      <div class="grp"><span>Call, mornings</span><a href="tel:+4761230987">+47 61 23 09 87</a></div>
+      <div class="grp"><span>Find</span>61.63°N 8.31°E<br>Øvre Bergsdalen, Norway</div>
+      <div class="grp"><span>Follow</span><a href="mailto:stay@fjeld.no">@fjeld.lodge</a></div>
+    </div>
+  </div>
+  <div class="foot-mark" id="footMark" aria-hidden="true">FJELD</div>
+  <div class="foot-legal">
+    <span>© 2026 Fjeld Fjellstue AS</span>
+    <span>987 m over havet · est. 1962</span>
+  </div>
+</footer>
+
+<div class="room-preview" id="roomPreview" aria-hidden="true">
+  <img src="img/room-vindu.webp" alt="">
+  <img src="img/room-ask.webp" alt="">
+  <img src="img/room-bre.webp" alt="">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- utils ---------- */
+const $  = (s, c=document) => c.querySelector(s);
+const $$ = (s, c=document) => [...c.querySelectorAll(s)];
+const FINE = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+function splitWords(el){
+  if (el.dataset.split) return;
+  el.dataset.split = '1';
+  const walk = node => {
+    [...node.childNodes].forEach(ch => {
+      if (ch.nodeType === 3){
+        const frag = document.createDocumentFragment();
+        ch.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) frag.appendChild(document.createTextNode(part));
+          else { const s = document.createElement('span'); s.className = 'w'; s.textContent = part; frag.appendChild(s); }
+        });
+        node.replaceChild(frag, ch);
+      } else if (ch.nodeType === 1) walk(ch);
+    });
+  };
+  walk(el);
+}
+
+function countUp(el, target, dur=1.6){
+  const obj = { v: 0 };
+  gsap.to(obj, { v: target, duration: dur, ease: 'power2.out',
+    onUpdate(){ el.textContent = Math.round(obj.v).toLocaleString('en-US').replace(/,/g, ' '); } });
+}
+
+/* ---------- header ---------- */
+const head = $('#siteHead');
+addEventListener('scroll', () => head.classList.toggle('scrolled', scrollY > 24), { passive: true });
+
+let darkIO = null;
+function watchDark(){
+  if (darkIO) darkIO.disconnect();
+  const dark = new Set();
+  darkIO = new IntersectionObserver(entries => {
+    entries.forEach(e => e.isIntersecting ? dark.add(e.target) : dark.delete(e.target));
+    head.classList.toggle('inverted', dark.size > 0);
+  }, { rootMargin: '0px 0px -94% 0px', threshold: 0 });
+  $$('[data-dark]').forEach(el => { if (el.closest('.page[hidden]')) return; darkIO.observe(el); });
+}
+
+/* ---------- room preview (hover-following image) ---------- */
+const preview = $('#roomPreview');
+const pImgs = $$('img', preview);
+let pOn = false, px = 0, py = 0, tx = 0, ty = 0;
+if (FINE){
+  addEventListener('mousemove', e => { tx = e.clientX + 26; ty = e.clientY - 120; }, { passive: true });
+  (function pLoop(){
+    px += (tx - px) * .13; py += (ty - py) * .13;
+    preview.style.transform = `translate(${px}px, ${py}px)`;
+    requestAnimationFrame(pLoop);
+  })();
+}
+function bindPreviews(root){
+  if (!FINE) return;
+  $$('.room-row', root).forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      pImgs.forEach((im, i) => im.classList.toggle('on', i === +row.dataset.preview));
+      px = tx; py = ty;
+      gsap.to(preview, { opacity: 1, duration: .3, ease: 'power2.out' });
+      pOn = true;
+    });
+    row.addEventListener('mouseleave', () => {
+      pOn = false;
+      gsap.to(preview, { opacity: 0, duration: .25, ease: 'power2.out' });
+    });
+  });
+}
+
+/* ---------- page initialisers ---------- */
+function initHome(){
+  /* hero: framed photo grows to full bleed (scrubbed) */
+  const frame = $('#heroFrame'), img = $('#heroImg'), hl = $('#heroHl'), cap = $('#heroCap'), cue = $('#heroCue');
+  const corners = ['#hcTL','#hcTR','#hcBL','#hcBR'].map(s => $(s));
+  const isNarrow = innerWidth < 760;
+  const INSET_START = isNarrow ? 'inset(22% 8% 26% 8% round 0.4rem)' : 'inset(16% 26% 22% 26% round 0.4rem)';
+  gsap.set(frame, { clipPath: INSET_START });
+  gsap.set(img,   { scale: 1.18 });
+  gsap.set(cap,   { opacity: 0, y: 24 });
+  gsap.set(cue,   { opacity: 0 });
+
+  gsap.timeline({
+    scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: 0.55 }
+  })
+  .to(frame, { clipPath: 'inset(0% 0% 0% 0% round 0rem)', ease: 'none', duration: 1 }, 0)
+  .to(img,   { scale: 1.02, ease: 'none', duration: 1 }, 0)
+  .to(corners, { opacity: 0, y: -14, ease: 'none', duration: .3 }, 0)
+  .to(hl,    { yPercent: -46, opacity: 0, ease: 'none', duration: .55 }, .28)
+  .to(cap,   { opacity: 1, y: 0, ease: 'none', duration: .3 }, .62)
+  .to(cue,   { opacity: 1, ease: 'none', duration: .2 }, .72);
+
+  /* manifesto word scrub */
+  const man = $('#page-home .manifesto p[data-words]');
+  splitWords(man);
+  gsap.to($$('.w', man), {
+    opacity: 1, stagger: .045, ease: 'none',
+    scrollTrigger: { trigger: man, start: 'top 82%', end: 'top 30%', scrub: .4 }
+  });
+
+  /* scatter parallax */
+  $$('#page-home .days-fig').forEach(fig => {
+    const off = (parseFloat(fig.dataset.speed) - 1) * 26;
+    gsap.fromTo(fig, { yPercent: -off }, {
+      yPercent: off, ease: 'none',
+      scrollTrigger: { trigger: '#page-home .days', start: 'top bottom', end: 'bottom top', scrub: .5 }
+    });
+  });
+
+  /* guestbook bg drift + count-ups */
+  gsap.fromTo('#gbBg', { yPercent: -6 }, { yPercent: 6, ease: 'none',
+    scrollTrigger: { trigger: '#page-home .guestbook', start: 'top bottom', end: 'bottom top', scrub: .5 } });
+  ScrollTrigger.create({
+    trigger: '#page-home .gb-stats', start: 'top 85%', once: true,
+    onEnter: () => $$('#page-home [data-count]').forEach(el => countUp(el, +el.dataset.count))
+  });
+
+  bindPreviews($('#page-home'));
+
+  /* row + section reveals */
+  $$('#page-home .room-row, #page-home .jt-row').forEach(row => {
+    gsap.set(row, { opacity: 0, y: 26 });
+    gsap.to(row, { opacity: 1, y: 0, duration: .8, ease: 'power3.out',
+      scrollTrigger: { trigger: row, start: 'top 90%', once: true } });
+  });
+}
+
+function initRooms(){
+  $$('#page-rooms [data-parallax]').forEach(img => {
+    gsap.fromTo(img, { yPercent: -7 }, { yPercent: 7, ease: 'none',
+      scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: .5 } });
+  });
+  $$('#page-rooms .rb-body').forEach(b => {
+    gsap.set(b, { opacity: 0, y: 30 });
+    gsap.to(b, { opacity: 1, y: 0, duration: .9, ease: 'power3.out',
+      scrollTrigger: { trigger: b, start: 'top 86%', once: true } });
+  });
+}
+
+function initExperience(){
+  const wrap = $('#scrubWrap'), track = $('#scrubTrack');
+  if (FINE){
+    let target = 0, cur = 0, raf = null;
+    const max = () => Math.max(0, track.scrollWidth - wrap.clientWidth);
+    wrap.addEventListener('mousemove', e => {
+      const r = wrap.getBoundingClientRect();
+      target = ((e.clientX - r.left) / r.width) * max();
+      if (!raf) loop();
+    }, { passive: true });
+    function loop(){
+      cur += (target - cur) * .07;
+      wrap.scrollLeft = cur;
+      if (Math.abs(target - cur) > .6) raf = requestAnimationFrame(loop);
+      else raf = null;
+    }
+    wrap.addEventListener('mouseleave', () => { target = cur = wrap.scrollLeft; });
+  }
+  $$('#page-experience .exp-block, #page-experience .rhythm li').forEach(el => {
+    gsap.set(el, { opacity: 0, y: 28 });
+    gsap.to(el, { opacity: 1, y: 0, duration: .85, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+}
+
+function initJournal(){
+  $$('#page-journal .entry, #page-journal .letter-body p').forEach(el => {
+    gsap.set(el, { opacity: 0, y: 24 });
+    gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  });
+}
+
+function initFooter(){
+  gsap.fromTo('#footMark', { yPercent: 46 }, { yPercent: 18, ease: 'none',
+    scrollTrigger: { trigger: '.site-foot', start: 'top bottom', end: 'bottom bottom', scrub: .5 } });
+}
+
+/* ---------- router ---------- */
+const ROUTES = {
+  home:       { el: '#page-home',       title: 'FJELD · Mountain Lodge, Øvre Bergsdalen, Norway', init: initHome,       label: 'STAY' },
+  rooms:      { el: '#page-rooms',      title: 'Rooms · FJELD',   init: initRooms,      label: 'THE ROOMS' },
+  experience: { el: '#page-experience', title: 'Days · FJELD',    init: initExperience, label: 'THE DAYS' },
+  journal:    { el: '#page-journal',    title: 'Journal · FJELD', init: initJournal,    label: 'THE JOURNAL' },
+};
+function routeName(){
+  const h = location.hash.replace(/^#\/?/, '').split('?')[0];
+  return ROUTES[h] ? h : 'home';
+}
+let current = null;
+
+function mount(name){
+  ScrollTrigger.getAll().forEach(t => t.kill());
+  Object.values(ROUTES).forEach(r => { $(r.el).hidden = true; });
+  const r = ROUTES[name];
+  $(r.el).hidden = false;
+  document.title = r.title;
+  $$('.head-nav a').forEach(a =>
+    a.dataset.page === name ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
+  scrollTo(0, 0);
+  head.classList.remove('inverted');
+  r.init();
+  initFooter();
+  watchDark();
+  ScrollTrigger.refresh();
+  current = name;
+}
+
+const veil = $('#veil'), veilMeta = $('#veilMeta');
+let navigating = false;
+function navigate(name){
+  if (navigating || name === current) return;
+  navigating = true;
+  veilMeta.textContent = ROUTES[name].label;
+  gsap.timeline({ onComplete(){ navigating = false; } })
+    .set(veil, { display: 'block', yPercent: 110 })
+    .to(veil, { yPercent: 0, duration: .5, ease: 'power3.in' })
+    .add(() => mount(name))
+    .to(veil, { yPercent: -112, duration: .65, ease: 'power3.out' }, '+=0.08')
+    .set(veil, { display: 'none' });
+}
+addEventListener('hashchange', () => navigate(routeName()));
+
+/* ---------- loader + boot ---------- */
+const loader = $('#loader'), alt = $('#loaderAlt'), bar = $('#loaderBar');
+document.body.style.overflow = 'hidden';
+mount(routeName());
+
+const altObj = { v: 0 };
+gsap.timeline({
+  onComplete(){
+    document.body.style.overflow = '';
+    loader.remove();
+    if (current === 'home'){
+      /* intro: separate props from the scrub (stage opacity + headline inner spans) */
+      gsap.fromTo('.hero-stage', { opacity: 0 }, { opacity: 1, duration: .9, ease: 'power2.out' });
+      gsap.fromTo('#heroHl .hl-in', { yPercent: 105 }, { yPercent: 0, duration: 1.1, stagger: .12, ease: 'power4.out', delay: .15 });
+      gsap.fromTo('.hero-corner', { opacity: 0 }, { opacity: 1, duration: .8, stagger: .08, delay: .5, ease: 'power2.out' });
+    } else {
+      gsap.fromTo('.page:not([hidden]) .page-head > *', { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: .9, stagger: .1, ease: 'power3.out' });
+    }
+    ScrollTrigger.refresh();
+  }
+})
+.to(altObj, { v: 987, duration: 1.15, ease: 'power2.inOut',
+  onUpdate(){ alt.textContent = 'ALT ' + Math.round(altObj.v) + ' M'; } }, 0)
+.to(bar, { scaleX: 1, duration: 1.15, ease: 'power2.inOut' }, 0)
+.to(loader, { yPercent: -100, duration: .7, ease: 'power3.inOut' }, 1.35);
+</script>
+</body>
+</html>

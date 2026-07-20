@@ -29,6 +29,68 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'fjeld',
+    title: 'Fjeld — Nordic Mountain Lodge Site',
+    category: 'site',
+    tags: ['GSAP', 'ScrollTrigger', 'Multi-page', 'Editorial'],
+    description:
+      'A four-page site for a fictional nine-room mountain lodge in Norway, quiet luxury in fog tones with one moss accent. A framed hero photo grows to full bleed on scroll, room rows carry a cursor-following image preview, a horizontal gallery glides with the mouse, and every route change passes through a fog veil.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade MULTI-PAGE WEBSITE for a fictional boutique mountain lodge called "FJELD" (a nine-room lodge at 987 metres in Øvre Bergsdalen, Norway; est. 1962, rebuilt 2021; the pitch is weather, silence, heat and one long table). Build it as a React + Tailwind app with four routes (Home, Rooms, Days, Journal) using react-router; scroll animation with GSAP + ScrollTrigger via useGSAP; small UI motion with framer-motion. Fonts: Gambetta (Fontshare, 400/500 + italic) for display serif, Switzer (Fontshare, 300/400/500) for body, Sometype Mono (Google) for the small meta layer. Quality bar is Awwwards, not a hotel template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is a React + Tailwind interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the scroll choreography or the page transitions to make them easier to reproduce.
+
+THE CONTROLLING IDEA (anti-slop spine)
+"The weather is the amenity." The site behaves like fog: pages change behind a soft fog veil, the hero photo sits inside fog-coloured margins before expanding over them, the mono meta layer reads like a weather station (coordinates 61.63°N 8.31°E, altitude 987 M O.H., "TODAY: FOG, −4°"). The moss accent only marks live or inviting things (links, prices, the keeper's signature); the fog and ink do everything else.
+
+ART DIRECTION
+Nordic quiet luxury. A cool fog-white ground with generous, patient whitespace; deep pine-ink for text and the two dark bands (guestbook, footer); real photography with muted cold tones (misty peaks, pale wood interiors, one warm-lit lodge exterior at blue hour). Editorial serif at large scale, never bold; the mono layer is tiny, uppercase, letter-spaced, and treated like instrument readouts.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--fog #ECEFEA (ground) · --paper #F7F8F5 (raised) · --fog-dim #DFE4DC (recessed)
+--ink #131810 (pine ink, text + dark bands) · --ink-2 #242B21 · --muted #5C655A (secondary, AA on fog)
+--moss #4A6741 with --moss-deep #3C5535 (accent on light) · --moss-bright #B4CBA4 (accent on ink)
+--line rgba(19,24,16,.16) hairlines. Selection: moss background, fog text.
+
+TYPE
+Display: Gambetta 400/500, italic for emphasis moments, tight leading (1.04), sizes up to clamp(3rem,8.4vw,8.2rem) in the hero.
+Body: Switzer 400, 1.0625rem, line-height 1.65.
+Meta: Sometype Mono 400/500, 0.66 to 0.78rem, uppercase, letter-spacing 0.14 to 0.24em, for kickers ("01 · The idea"), coordinates, room specs, captions, times.
+Scale the whole layout proportionally on very wide screens (root font-size 1.1111vw above 1024px, everything in rem).
+
+MOTION PRINCIPLE
+Scroll assembles, hover invites, routes pass through fog. Ease cubic-bezier(.22,1,.36,1), 0.4 to 0.9s. One ambient loop only (the scroll cue line). CRITICAL for scrubbed timelines: never use .from() on staggered elements inside a scrub; gsap.set() the start state then .to() inside the scrub.
+
+SHELL
+LOADER (once per load, ~1.4s): fog ground, "ALT 0 M" counting to "ALT 987 M" in mono over the serif FJELD wordmark, a thin moss progress line, then the whole loader slides up and the hero reveals (stage fades in, headline lines rise from an overflow mask, corner meta staggers in).
+HEADER: fixed; serif letter-spaced FJELD brand left, mono nav (Stay, Rooms, Days, Journal) with a moss underline that draws on hover and marks the active route, a mono weather readout, and an ink "Book a stay" pill with a small moss-bright dot that floods moss-deep from below on hover. Transparent at top, blurred fog tint once scrolled, inverts to fog-on-ink while a dark section is under it.
+PAGE TRANSITION: a full-viewport fog veil (soft vertical gradient with rounded caps top and bottom) sweeps up to cover, the route swaps and scroll resets while covered, then it continues off the top; a mono label of the destination ("THE ROOMS") sits centered on the veil.
+FOOTER (ink): giant serif nav links with a draw-across underline on hover, a right column of mono groups (Write / Call, mornings / Find / Follow), a giant ghosted FJELD wordmark (alpha ~0.06) clipped by the bottom edge that rises slightly on scroll, and a hairline legal bar.
+
+HOME
+1) CINEMATIC HERO (a 265vh scroll chapter, stage sticky at 100svh). The lodge photo starts as a centered framed image (clip-path inset ~16% 26% round 0.4rem) on the fog ground with mono meta in the four corners (coordinates, altitude, est., today's weather). The serif headline "Above / the weather." sits over the photo in fog-white with the second line italic. On scroll the clip-path opens to full bleed while the photo settles from scale 1.18 to 1.02, corners fade up and out, the headline drifts up and fades, and a caption block fades in bottom-left (kicker "Øvre Bergsdalen · Norway", two short lines, a fog "Book a stay" pill) plus a "scroll" cue bottom-right.
+2) MANIFESTO: kicker "01 · The idea", then a large serif statement whose words lift from 14% opacity to full as the scroll passes (word-by-word scrub): "We built nothing the mountain did not ask for. Nine rooms. One long table. A sauna facing the valley. The fog handles the rest." with the last sentence italic in moss. A small muted aside paragraph follows.
+3) ROOM INDEX: heading "Sleep at altitude." with a mono note ("nine rooms · three shapes · from €210"). Three full-width rows (R.01 Vindu, R.02 Ask, R.03 Bre) separated by hairlines: mono index, large serif name, mono spec (m² · sleeps · view), a circled arrow. On hover the name shifts right and turns moss, the arrow fills moss and rotates 45°, and a CURSOR-FOLLOWING IMAGE PREVIEW (a 19rem photo card, lerped at 0.13, only on fine pointers) floats beside the cursor showing that room; touch layouts show a static thumb instead.
+4) SCATTERED DAYS: a tall section where four photo figures (sauna, dining detail, fireplace, winter forest; mono captions like "SAUNA · 90°C") drift at different scroll speeds (differential parallax, offsets from a data-speed per figure), around a centered copy block: "Slow is a skill." and a link to Days. On mobile it collapses to a two-column collage.
+5) GUESTBOOK BAND (dark): the fjord aerial photo as a dimmed, slowly drifting background under an ink gradient; a serif pull-quote from a guest, a mono attribution, then a hairline and three count-up stats (987 metres above the sea / 9 rooms, never more / 1962 first guests checked in) in serif moss-bright numerals with mono captions.
+6) JOURNAL TEASER: three hairline rows (date, serif title, arrow) linking to the Journal.
+7) CTA: centered "The valley is patient. Your calendar is not." with the second sentence italic moss, the book pill, and a mono mailto line.
+
+ROOMS
+Page head "Three kinds of quiet." with a short lede. Three alternating photo/body blocks (Vindu, Ask, Bre): the photo in a 4:3 media frame with a slight scrub parallax (image 116% height, yPercent -7 to 7); the body has a mono moss index, a serif title ("The one with the window." / "Dark timber, deep sleep." / "The attic, the sky."), a short authored paragraph, a mono spec table (Area / Sleeps / Faces / Bath as hairline rows), a serif price ("€240 / night, breakfast included") and a "Request dates" mailto link. Then a full-bleed winter photo divider with a mono caption, and an "Every stay includes" grid of three numbered items (breakfast at the long table, a private sauna hour, pickup from Otta station). Close with the CTA band.
+
+DAYS (EXPERIENCE)
+Page head "The programme is the absence of one." Then a MOUSE-SCRUB HORIZONTAL GALLERY: a full-width strip of six captioned photos; on fine pointers the horizontal position maps the mouse X across the strip (lerp scrollLeft at ~0.07 toward the target so it glides); on touch it is a native horizontal scroll; keep it keyboard-scrollable. Below: three numbered blocks (01 Heat, 02 The table, 03 Silence) with copy and a photo each, then "A day, roughly." as a vertical mono timeline (07:30 breakfast, 09:00 trailheads, 16:00 sauna hours, 19:30 dinner one seating, 22:00 the fire gets quiet) on a hairline rail with moss dots. Close with the CTA band.
+
+JOURNAL
+Page head "Notes from 987 metres." A LETTER FROM THE KEEPER: a sticky 3:4 portrait photo with a mono caption, beside serif letter paragraphs (drop cap on the first, an italic moss signature "Nils Fjærland, keeper"). Then three dated journal entries (hairline rows, serif titles, authored one-paragraph bodies, no lorem). Then "Getting here" as three numbered steps (Fly to Oslo / Train Oslo S to Otta / We drive the last 40 minutes) and a mono coordinates line. Close with the CTA band.
+
+QUALITY BAR
+Semantic landmarks, one h1 per route, real links for navigation, visible moss focus rings (moss-bright on dark), alt text on every meaningful photo, readable text on every ground, and copy that is specific and authored, never filler. Every photo is real photography in one consistent muted Nordic grade, no stock-smiling-people. Nothing may read as a template: no three-identical-feature-cards, no gradient blob hero, no emoji rows.`,
+    thumb: '/templates/fjeld/thumb.webp',
+    demoUrl: '/templates/fjeld/index.html',
+    date: '2026-07-20',
+  },
+  {
     slug: 'fathom',
     title: 'Fathom — Real-Time Signal Analytics',
     category: 'landing',
