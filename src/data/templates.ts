@@ -29,6 +29,110 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
  */
 export const templates: Template[] = [
   {
+    slug: 'seve',
+    title: 'SÈVE — Botanical Face Serum',
+    category: 'landing',
+    tags: ['GSAP', 'ScrollTrigger', 'Lenis', 'Editorial'],
+    description:
+      'A single-product DTC landing for a botanical face serum. Editorial split hero, a bold botanical-green benefits section with a drag before/after glow slider and cursor-reactive benefit pills, stats threaded on a self-drawing line, scroll-chapter ingredients, and a subscribe-or-buy close. One green brand with a single amber accent, the serum itself.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an Awwwards-grade SINGLE-PRODUCT DTC LANDING PAGE for a fictional botanical skincare brand called "SÈVE" (French for the sap of a plant; a cold-pressed face serum, Nº 01, shipped worldwide). Build it as a React + Tailwind app. Use framer-motion for reveals and micro-motion, GSAP + ScrollTrigger for the scroll-scrubbed moments (the self-drawing stat line, parallax, the marquee loop), and Lenis for smooth scroll. Quality bar is Awwwards e-commerce, never a template.
+
+INTERPRETATION NOTE: the live result generated from this prompt is a React + Tailwind interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the art direction, the imagery treatment, or the motion to make it easier to reproduce.
+
+THE CONTROLLING IDEA (anti-slop spine)
+One product, told like an editorial. The whole page lives in a single botanical-green world, and the one warm accent is the serum itself (amber). Green is the brand (surfaces, emphasis, the marquee band, the giant footer wordmark); amber is reserved, only the primary CTA, one key underline, the price, and anything that echoes the oil. Numbers never sit in a plain KPI row and benefits never sit in a feature grid; they orbit and thread instead.
+
+ART DIRECTION
+Warm, calm, editorial beauty. A warm ivory ground (never cold white) with generous whitespace, an elegant high-contrast serif for display, a clean grotesque for body, and a small uppercase monospace layer used like a spec sheet (eyebrows, meta, tags, badges). Photography carries the warmth: glowing skin, an amber dropper bottle on travertine, botanical leaves, the golden oil. Corner-to-corner composition, nothing centered-and-stacked by default.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--ivory #F4F0E6 (ground) · --paper #FBF8F1 (cards) · --dim #EAE3D3 (recessed)
+--pine #1E2A1E (ink) · --brand #2E5D3E (botanical green, generous) · --brand-2 #6E8F5E (leaf)
+--amber #C0803A (single reserved accent, the serum) · --amber-deep #A96A2A
+--muted #6B6E60 · --line rgba(30,42,30,.16)
+
+TYPE
+Display: Zodiak (Fontshare), weight 300, tight leading, an italic word in the headline tinted --brand. Hero up to clamp(3.1rem, 7.6vw, 7.6rem).
+Body: Supreme (Fontshare) 400/500, ~1rem, line-height 1.55.
+Meta: Fragment Mono, 0.44 to 0.8rem, uppercase, letter-spacing .14 to .22em, for eyebrows, meta, tags, badges, the footer status.
+Scale the whole layout proportionally on very wide screens (root font-size ~1.04vw above 1440px, everything in rem, uncapped so it holds at 4K).
+
+SECTIONS (in order)
+1. LOADER (once, ~1.1s): ivory ground, a mono counter 000 to 100 bottom-right against a serif SÈVE wordmark and a thin --brand progress line, then it lifts and the hero reveals in a stagger.
+2. HEADER (fixed): serif SÈVE brand left, mono nav center, an ink "Add to bag · $68" pill right. Frosted ivory once scrolled; hides on scroll down and returns on scroll up; inverts to light type over the dark reviews band and footer.
+3. HERO (split): left is copy (mono eyebrow "BOTANICAL FACE SERUM · Nº 01", giant serif headline with an italic --brand second line, lede, an --amber "Add to bag" pill + a "See the ritual" text link, a mono meta row), right is a tall rounded editorial portrait of luminous skin with a serum droplet, a small frosted price chip in the corner. Subtle scroll parallax on the image.
+4. MARQUEE BAND (--brand, cream type): a seamless GSAP loop of brand-voice phrases separated by --amber dots ("one drop every morning", "forty eight cold pressed botanicals", "your skin remembers"). Transition beat and personality.
+5. BENEFITS ("What one drop does."): the ONE bold moment where the botanical green (--brand) fills the whole section as the ground, cream type on green, so it breaks the light rhythm. Centerpiece is an INTERACTIVE before/after glow slider (a rounded frame holding the same portrait twice: a desaturated, dimmed "Week 0" and the full-glow "Week 4"; a draggable vertical handle with a round grip reveals one over the other via clip-path, pointer + touch, with a one-time auto-nudge and a "drag to see the glow" hint that dismisses on first drag; the Week 4 tag is amber). Benefit pills sit at organic positions around it (Deep hydration, Barrier repair, Calms redness, Overnight renewal, Softer texture) and, on scroll-enter, EMERGE FROM BEHIND the photo: each starts parked at the frame's centre behind it (the frame has a higher z-index and is opaque) then flies out to its position with a spring overshoot, staggered. After landing they drift subtly toward the cursor (magnetic parallax on pointermove). Below, four stats THREADED on a self-drawing amber SVG line (94% botanical origin, 4 wk to visible glow, 0 synthetics, 2,431 five star reviews) that draws on scroll-scrub with the numbers counting up.
+6. INGREDIENTS ("Inside every drop."): three scroll-chapters alternating image and text (Centella, Sea Buckthorn, Squalane), each with a mono index, serif name, italic latin name, a short sensorial paragraph, and a mono tag. Gentle image parallax per chapter.
+7. RITUAL ("Three drops, every morning."): an editorial application image beside three numbered steps (Cleanse, Warm three drops, Press into skin), each with an --amber step number.
+8. REVIEWS: the one dark beat (deep ink-green) over a blurred, darkened full-bleed product photo. A giant serif review count that counts up on enter, an --amber five-star row, and three frosted testimonial cards with verified tags.
+9. BUY ("Start the ritual."): a clean full-height product photo of the unlabelled bottle (brand it through the copy, not an overlay) beside a purchase panel: two selectable options (Subscribe & save with an --amber SAVE badge, and One time purchase), a full-width --amber "Add to bag", and trust badges as a mono row (30 day promise, free shipping, cruelty free, small batch).
+10. FOOTER (deep ink-green): brand blurb + a newsletter input with an --amber Join, two link columns, a mono status bar, and a giant Zodiak "SÈVE" wordmark clipped by the bottom edge that rises in on scroll.
+
+MOTION
+Lenis smooth scroll. Reveals ease up on enter (translate + fade). All scroll-scrubbed timelines set explicit start states then animate to end (never rely on .from in a scrub). Ease cubic-bezier(.22,1,.36,1), ~0.4 to 1s. Motion assembles and guides, it never decorates. Keep the imagery strict and let it carry the colour.
+
+QUALITY BAR
+Real editorial photography (glowing skin, amber bottle on travertine, botanical leaves, golden oil), one coherent green world with a single amber accent, deliberate layout variety (split hero, orbiting pills, threaded stats, alternating chapters, one dark band), generous whitespace, and copy specific to a botanical serum. Fully responsive: the split hero restacks image-first on mobile, pills reposition, stats become two columns, chapters stack.`,
+    thumb: '/templates/seve/thumb.webp',
+    demoUrl: '/templates/seve/index.html',
+    date: '2026-07-21',
+  },
+  {
+    slug: 'utsuwa',
+    title: 'Utsuwa — Studio Ceramics Configurator',
+    category: 'interactive',
+    tags: ['three.js', 'WebGL', '3D Configurator', 'PBR'],
+    description:
+      'A real-time 3D configurator for a made-to-order ceramics studio. Turn the vessel, morph its form between four thrown silhouettes, swap hand glazes with live PBR materials, and watch the whole interface retint to the glaze you choose. The product is the interaction.',
+    prompt: `You are a principal designer and creative developer at a high-end studio, building an award-grade INTERACTIVE 3D PRODUCT CONFIGURATOR for a fictional made-to-order ceramics studio called "UTSUWA" (utsuwa, 器, means "vessel"; a one-potter studio, Kyoto trained, shipping worldwide). Build it as a React + Tailwind app. Use @react-three/fiber + @react-three/drei for the real-time three.js scene, and framer-motion for UI motion. Quality bar is Awwwards, not a demo.
+
+INTERPRETATION NOTE: the live result generated from this prompt is a React + Tailwind interpretation of the demo, not a pixel-exact copy. Keep the full quality; do not simplify the 3D material work, the form-morph, or the glaze-driven theming to make it easier to reproduce.
+
+THE CONTROLLING IDEA (anti-slop spine)
+The product IS the interaction. This is not a hero followed by feature cards; it is one hero vessel the visitor plays with. And the single accent colour of the entire interface is driven by the currently selected glaze: pick Celadon and links, active states, the price and the reserve button turn jade; pick Tenmoku and everything turns warm brown; Cobalt turns the UI blue. The plaster ground and ink text never change. This ties the whole page to the object.
+
+ART DIRECTION
+Warm, quiet studio. A warm plaster ground (not stark white, not cool) with generous whitespace; the vessel floats at centre on a soft real contact shadow. Editorial serif at large scale for the headline, a clean grotesque for body, and a small uppercase monospace layer treated like a spec sheet / instrument readout (glaze code, firing temperature, dimensions, capacity). Restraint everywhere; the colour comes from the glaze on the vessel, echoed into the UI accent.
+
+PALETTE (CSS custom properties / Tailwind theme tokens)
+--clay #EDE7DD (warm plaster ground) · --paper #F6F2EB (raised) · --dim #E3DBCE (recessed)
+--ink #211C17 (espresso ink, text) · --muted #726657 (secondary) · --faint #9A8E7D · --line rgba(33,28,23,.16)
+--accent is LIVE, set from the selected glaze's UI colour: Chalk #8A7F6E · Celadon #5E8C74 · Ash #6E6C5C · Tenmoku #7A4E37 · Cobalt #39568C · Raw #A5603C. Update --accent (and a soft rgba variant) in JS on every glaze change; everything interactive reads from it.
+
+TYPE
+Display: Newsreader (serif, 400/500 + italic), tight leading, italic used for the accent word (the italic word is tinted --accent). Hero up to clamp(2.7rem, 7vw, 5.6rem).
+Body: Hanken Grotesk 400/500, ~1rem, line-height 1.6.
+Meta: DM Mono 400/500, 0.6 to 0.82rem, uppercase, letter-spacing .14 to .2em, for the kicker, the readout, spec labels, captions, the footer status.
+Scale the whole layout proportionally on very wide screens (root font-size ~1.14vw above 1280px, everything in rem, uncapped so it scales at 4K).
+
+THE 3D SCENE (react-three-fiber)
+Renderer: ACESFilmic tone mapping (exposure ~1.05), sRGB output, PCFSoft shadows, transparent background (alpha) so the plaster CSS ground shows through and the vessel + its shadow float on the page. Environment: drei <Environment preset="apartment" /> (or a PMREM RoomEnvironment) for soft studio reflections on glossy glaze. Lights: a warm key DirectionalLight upper front-left casting a soft shadow, a cool rim light behind, a low hemisphere fill. A transparent shadow-catcher plane on the ground (drei <ContactShadows> or a ShadowMaterial plane) gives the grounded soft shadow.
+The vessel: a LatheGeometry revolved from a smooth profile (Catmull-Rom through ~9 control points, resampled to ~140 points, 180 radial segments), material MeshPhysicalMaterial with clearcoat for glossy glazes and high roughness for matte, side: DoubleSide so the interior is visible through the mouth. Camera PerspectiveCamera fov ~30; on portrait/narrow viewports dolly the camera back so the vessel stays clear of the copy and controls (responsive framing is required).
+
+FOUR FORMS (morph, do not snap): Hana (tall slender vase, flared rim), Tsubo (bulbous jar, small mouth), Wan (wide open bowl), Tokkuri (bottle, narrow long neck). Store each as the same-count control-point set; changing form animates the profile by lerping the two point sets over ~0.75s and rebuilding the lathe each frame (dispose the old geometry). Update the readout dimensions and capacity from the active form.
+SIX GLAZES (real PBR, animate the transition ~0.55s by lerping colour/roughness/clearcoat): Chalk (matte off-white), Celadon (glossy pale jade), Ash (satin grey-green), Tenmoku (glossy dark iron-brown), Cobalt (glossy deep blue), Raw (unglazed matte terracotta). Each glaze also carries a firing readout ("1280°C · reduction", etc) and a price premium.
+THREE SIZES S/M/L: animate the vessel scale, and change the displayed dimensions, capacity and price.
+INTERACTION: drag to orbit (OrbitControls: no zoom, no pan, damping, clamped polar angle); a slow turntable auto-rotate that stops the moment the user drags and resumes after a few seconds idle. A faint "drag to turn" cue that dismisses on first interaction.
+
+LAYOUT
+LOADER (once, ~1.2s): plaster ground, a mono counter 000 to 100 over a faint serif UTSUWA wordmark and a thin --accent progress line, then it lifts and the hero reveals (kicker rises from an overflow mask, headline lines rise, readout + dock fade up).
+HEADER (fixed): serif letter-spaced UTSUWA brand with a small hand-drawn vessel mark, mono nav (The Clay, Made to Order, The Studio) with an --accent underline that draws on hover, and a "Made to order" mono pill with a dot that is --accent. Transparent at top, frosted plaster tint once scrolled.
+STUDIO / CONFIGURATOR (100svh): the 3D canvas fills it. Top-left: mono kicker + serif headline "Shape the vessel." (the word "vessel." italic + --accent) + a short sub. Right (desktop): a mono READOUT that updates live (Form / Glaze code+name / Firing / Dimensions H · Ø cm / Holds ~L), the glaze value in --accent. Bottom: a controls DOCK with the glaze swatches (round chips that read as glazed clay, active gets an --accent ring), the four form buttons (tiny profile-silhouette icons + name, active tinted --accent), an S/M/L segmented control, then the live price (€, serif) and a solid --accent "Reserve this piece" pill that opens a mailto prefilled with the chosen form, glaze and size. On mobile the dock gets a plaster gradient backing so it stays legible over the vessel, and the copy gets a matching top scrim.
+MATERIAL STORY: kicker "01 · The clay", serif statement "Fired twice. Glazed once." (the word "once." italic + --accent), a short authored paragraph about the single stoneware body, beside a mono spec list (Body / Bisque / Glaze firing / Finish / Care) on hairline rows.
+PROCESS: serif heading "Three hands between the clay and your table.", three steps on hairline-topped columns (mono STEP 0N in --accent, serif title, muted body): You shape it / We throw it / The kiln decides.
+CTA + FOOTER: centred serif "Make one that is only yours." (only yours. italic + --accent) and a mono mailto link; then a footer on the plaster ground with the brand + tagline, three mono link columns (Studio / Reach / Visit), a giant serif UTSUWA wordmark ghosted (alpha ~.06) clipped by the bottom edge, and a hairline legal bar with a pulsing --accent dot ("Kiln loading · next firing ...").
+
+MOTION PRINCIPLE
+The turntable is the only ambient loop; everything else assembles on scroll (IntersectionObserver reveals, ease cubic-bezier(.22,1,.36,1), 0.4 to 1s) and rests. Glaze, form and size changes are always animated, never instant. Pause the render loop when the configurator scrolls off screen.
+
+QUALITY BAR
+Award-winning. The vessel must read as real glazed ceramic (true PBR + environment reflections + a grounded soft shadow), the type must have real scale contrast, the mono layer must feel like a genuine spec sheet, and the glaze-drives-the-accent system must be obvious and cohesive. Nothing should read as an AI template.`,
+    thumb: '/templates/utsuwa/thumb.webp',
+    demoUrl: '/templates/utsuwa/index.html',
+    date: '2026-07-21',
+  },
+  {
     slug: 'fjeld',
     title: 'Fjeld — Nordic Mountain Lodge Site',
     category: 'site',

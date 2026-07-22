@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SÈVE — Botanical Face Serum</title>
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=zodiak@300,400,700,800&f[]=supreme@400,500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<style>
+:root{
+  --ivory:#F4F0E6; --paper:#FBF8F1; --dim:#EAE3D3;
+  --pine:#1E2A1E; --brand:#2E5D3E; --brand-2:#6E8F5E;
+  --amber:#C0803A; --amber-deep:#A96A2A;
+  --muted:#6B6E60; --line:rgba(30,42,30,.16); --line-soft:rgba(30,42,30,.08);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+@media(min-width:1440px){html{font-size:1.04vw}}
+body{
+  background:var(--ivory); color:var(--pine);
+  font-family:"Supreme",system-ui,sans-serif; font-weight:400;
+  line-height:1.55; overflow-x:hidden;
+}
+body.locked{overflow:hidden;height:100vh}
+::selection{background:var(--brand);color:var(--paper)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:"Zodiak",Georgia,serif;font-weight:300;line-height:.98;letter-spacing:-.01em}
+.serif-it{font-style:italic;font-weight:300}
+.mono{font-family:"Fragment Mono",monospace;font-weight:400}
+.eyebrow{font-family:"Fragment Mono",monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.wrap{width:min(92vw,84rem);margin-inline:auto}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:200;background:var(--ivory);display:flex;align-items:flex-end;justify-content:space-between;padding:2.2rem clamp(1.2rem,4vw,3rem)}
+#loader .lname{font-family:"Zodiak",serif;font-weight:300;font-size:clamp(2rem,6vw,4rem);letter-spacing:.02em}
+#loader .lcount{font-family:"Fragment Mono",monospace;font-size:clamp(2rem,6vw,4rem);color:var(--brand)}
+#loader .lbar{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--brand)}
+
+/* ---------- nav ---------- */
+header{position:fixed;top:0;left:0;width:100%;z-index:120;transition:transform .5s var(--ease),background .4s ease,border-color .4s ease;border-bottom:1px solid transparent}
+header.scrolled{background:rgba(244,240,230,.82);backdrop-filter:blur(14px);border-color:var(--line-soft)}
+header.hide{transform:translateY(-102%)}
+header.on-dark{color:var(--paper)}
+header.on-dark.scrolled{background:rgba(20,26,20,.5)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:4.6rem;padding-inline:clamp(1.2rem,4vw,3rem)}
+.brand{font-family:"Zodiak",serif;font-weight:300;font-size:1.5rem;letter-spacing:.06em}
+.nav-links{display:flex;gap:2.2rem}
+.nav-links a{font-size:.86rem;position:relative;opacity:.82;transition:opacity .3s}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-.35rem;width:0;height:1px;background:currentColor;transition:width .35s var(--ease)}
+.nav-links a:hover{opacity:1}.nav-links a:hover::after{width:100%}
+.nav-cta{display:inline-flex;align-items:center;gap:.6rem;background:var(--pine);color:var(--ivory);padding:.62rem 1.15rem;border-radius:2rem;font-size:.82rem;transition:background .35s,transform .35s var(--ease)}
+.nav-cta:hover{background:var(--brand);transform:translateY(-1px)}
+header.on-dark .nav-cta{background:var(--paper);color:var(--pine)}
+@media(max-width:820px){.nav-links{display:none}}
+
+/* ---------- hero ---------- */
+.hero{min-height:100svh;display:grid;grid-template-columns:1.05fr .95fr;align-items:stretch;padding-top:4.6rem}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(2rem,5vw,4.5rem) clamp(1.4rem,4vw,4rem) clamp(2rem,5vw,4rem)}
+.hero-copy .eyebrow{margin-bottom:1.6rem}
+.hero h1{font-size:clamp(3.1rem,7.6vw,7.6rem);margin-bottom:1.7rem}
+.hero h1 .l2{display:block;color:var(--brand)}
+.hero .lede{font-size:clamp(1rem,1.15rem,1.2rem);max-width:30rem;color:#40473c;margin-bottom:2.3rem}
+.hero-actions{display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;margin-bottom:2.4rem}
+.btn-amber{display:inline-flex;align-items:center;gap:.7rem;background:var(--amber);color:var(--paper);padding:1rem 1.7rem;border-radius:2.4rem;font-size:.98rem;letter-spacing:.01em;transition:background .35s,transform .35s var(--ease);box-shadow:0 1px 0 rgba(255,255,255,.4) inset}
+.btn-amber:hover{background:var(--amber-deep);transform:translateY(-2px)}
+.btn-text{display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;position:relative}
+.btn-text span{position:relative}
+.btn-text span::after{content:"";position:absolute;left:0;bottom:-.28rem;width:100%;height:1px;background:var(--pine);transform-origin:left;transition:transform .4s var(--ease)}
+.btn-text:hover span::after{transform:scaleX(0)}
+.hero-meta{display:flex;gap:1.6rem;flex-wrap:wrap}
+.hero-meta .mono{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero-img{position:relative;overflow:hidden;margin:clamp(1rem,2vw,1.6rem);margin-left:0;border-radius:1.4rem}
+.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.12);will-change:transform}
+.hero-price{position:absolute;left:1.4rem;bottom:1.4rem;background:rgba(251,248,241,.9);backdrop-filter:blur(6px);border-radius:1rem;padding:.9rem 1.1rem;display:flex;gap:.9rem;align-items:center}
+.hero-price .pw{font-family:"Zodiak",serif;font-size:1.15rem}
+.hero-price .pd{font-size:.72rem;color:var(--muted);line-height:1.3}
+.reveal{opacity:0;transform:translateY(1.4rem)}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:4.6rem}
+  .hero-img{height:78svh;margin:0 1rem 1rem;order:-1}
+  .hero-img img{transform:scale(1.05)}
+  .hero h1{font-size:clamp(3rem,13vw,5.4rem)}
+}
+
+/* ---------- marquee band ---------- */
+.band{background:var(--pine);color:var(--paper);padding:1.15rem 0;overflow:hidden;white-space:nowrap}
+.band .track{display:inline-flex;gap:2.6rem;will-change:transform}
+.band .track>span{font-family:"Zodiak",serif;font-weight:300;font-size:1.5rem;letter-spacing:.02em;display:inline-flex;align-items:center;gap:2.6rem}
+.band .dot{width:.4rem;height:.4rem;border-radius:50%;background:var(--amber);display:inline-block}
+
+/* ---------- benefits (bold botanical-green moment) ---------- */
+.benefits{padding:clamp(4.5rem,9vw,8rem) 0;background:var(--brand);color:var(--ivory)}
+.bhead{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:clamp(2.5rem,5vw,4rem)}
+.bhead h2{font-size:clamp(2.4rem,5vw,4.4rem);max-width:16ch;color:var(--ivory)}
+.bhead p{max-width:26rem;color:rgba(244,240,230,.78);font-size:1rem}
+.stage{position:relative;display:grid;grid-template-columns:1fr;justify-items:center;padding:clamp(1rem,3vw,2rem) 0}
+.stage-frame{position:relative;width:min(86vw,26rem);aspect-ratio:3/4;border-radius:1.4rem;overflow:hidden;background:var(--dim)}
+.stage-frame img{width:100%;height:100%;object-fit:cover;transform:scale(1.04)}
+/* before/after glow slider */
+.compare{position:relative;z-index:2;width:min(86vw,25rem);aspect-ratio:3/4;border-radius:1.4rem;overflow:hidden;background:var(--dim);cursor:ew-resize;user-select:none;touch-action:none;box-shadow:0 30px 70px rgba(0,0,0,.28);--x:50%}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.cmp-before{clip-path:inset(0 calc(100% - var(--x)) 0 0);filter:grayscale(.42) saturate(.5) brightness(.9) contrast(.94)}
+.cmp-handle{position:absolute;top:0;bottom:0;left:var(--x);width:2px;background:var(--ivory);transform:translateX(-1px);pointer-events:none;box-shadow:0 0 12px rgba(0,0,0,.35)}
+.cmp-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2.6rem;height:2.6rem;border-radius:50%;background:var(--ivory);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1rem;letter-spacing:-.05em;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.cmp-tag{position:absolute;bottom:1rem;font-family:"Fragment Mono",monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;background:rgba(18,24,18,.5);color:var(--ivory);padding:.32rem .6rem;border-radius:1rem;backdrop-filter:blur(4px);pointer-events:none}
+.cmp-tag-l{left:1rem}.cmp-tag-r{right:1rem;background:rgba(192,128,58,.85)}
+.cmp-hint{position:absolute;top:1rem;left:50%;transform:translateX(-50%);font-family:"Fragment Mono",monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ivory);opacity:.85;pointer-events:none;transition:opacity .4s}
+.compare.touched .cmp-hint{opacity:0}
+.pill{position:absolute;background:var(--paper);color:var(--pine);border:1px solid var(--line-soft);border-radius:2rem;padding:.55rem 1rem;font-size:.82rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 10px 26px rgba(0,0,0,.16);white-space:nowrap;opacity:0;transition:transform .5s var(--ease),opacity .6s ease;z-index:3}
+.pill{z-index:1}
+.pill i{width:.42rem;height:.42rem;border-radius:50%;background:var(--brand);display:block}
+.p1{top:8%;left:2%}.p2{top:26%;right:0%}.p3{bottom:30%;left:-2%}.p4{bottom:8%;right:3%}.p5{top:52%;left:6%}
+.statline{margin-top:clamp(3rem,6vw,5rem)}
+.statline svg{width:100%;height:auto;display:block;overflow:visible}
+.statline #statPath{stroke:var(--amber)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:1.5rem}
+.stat-grid .n{font-family:"Zodiak",serif;font-size:clamp(1.8rem,3.4vw,3rem);color:var(--ivory)}
+.stat-grid .k{font-size:.8rem;color:rgba(244,240,230,.7);margin-top:.2rem}
+@media(max-width:760px){
+  .pill{font-size:.72rem;padding:.45rem .8rem}
+  .p1{top:2%;left:0}.p2{top:16%;right:-2%}.p3{bottom:24%;left:-4%}.p4{bottom:2%;right:0}.p5{display:none}
+  .stat-grid{grid-template-columns:repeat(2,1fr);gap:1.4rem 1rem}
+}
+
+/* ---------- ingredients ---------- */
+.ingredients{padding:clamp(4rem,8vw,7rem) 0;background:var(--paper)}
+.ing-lede{max-width:38rem;margin-bottom:clamp(3rem,6vw,5rem)}
+.ing-lede h2{font-size:clamp(2.4rem,5vw,4.4rem);margin-bottom:1.2rem}
+.ing-lede p{color:#42483d}
+.chapter{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);align-items:center;padding:clamp(2rem,4vw,3.5rem) 0;border-top:1px solid var(--line-soft)}
+.chapter:nth-child(even) .ch-img{order:2}
+.ch-img{position:relative;aspect-ratio:4/5;border-radius:1.2rem;overflow:hidden;background:var(--dim)}
+.ch-img img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);will-change:transform}
+.ch-copy .num{font-family:"Fragment Mono",monospace;font-size:.8rem;color:var(--amber);letter-spacing:.14em;margin-bottom:1rem}
+.ch-copy h3{font-size:clamp(1.9rem,3.6vw,3rem);margin-bottom:.4rem}
+.ch-copy .latin{font-style:italic;font-family:"Zodiak",serif;color:var(--brand-2);font-size:1.1rem;margin-bottom:1.4rem}
+.ch-copy p{color:#42483d;max-width:32rem;margin-bottom:1.6rem}
+.ch-copy .tag{font-family:"Fragment Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line-soft);padding-top:.9rem;display:inline-block}
+@media(max-width:820px){.chapter{grid-template-columns:1fr;gap:1.4rem}.chapter:nth-child(even) .ch-img{order:0}}
+
+/* ---------- ritual ---------- */
+.ritual{padding:clamp(4.5rem,9vw,8rem) 0}
+.ritual-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(2rem,5vw,5rem);align-items:center}
+.ritual-img{aspect-ratio:3/4;border-radius:1.4rem;overflow:hidden;background:var(--dim);position:relative}
+.ritual-img img{width:100%;height:100%;object-fit:cover;transform:scale(1.06)}
+.ritual-copy h2{font-size:clamp(2.4rem,5vw,4.2rem);margin-bottom:2.6rem;max-width:14ch}
+.step{display:grid;grid-template-columns:auto 1fr;gap:1.4rem;padding:1.5rem 0;border-top:1px solid var(--line)}
+.step .sn{font-family:"Fragment Mono",monospace;font-size:.8rem;color:var(--amber)}
+.step h4{font-family:"Zodiak",serif;font-weight:300;font-size:1.5rem;margin-bottom:.3rem}
+.step p{font-size:.94rem;color:#42483d;max-width:30rem}
+@media(max-width:820px){.ritual-grid{grid-template-columns:1fr}.ritual-img{order:-1;max-height:70svh}}
+
+/* ---------- reviews ---------- */
+.reviews{position:relative;padding:clamp(5rem,10vw,9rem) 0;color:var(--paper);overflow:hidden}
+.reviews .bg{position:absolute;inset:0;z-index:0}
+.reviews .bg img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transform:scale(1.18);filter:blur(7px) brightness(.66) saturate(1.05)}
+.reviews .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,22,16,.8),rgba(16,22,16,.9))}
+.reviews .inner{position:relative;z-index:1}
+.reviews .rhead{text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem)}
+.reviews .rhead .count{font-family:"Zodiak",serif;font-size:clamp(3rem,8vw,6.5rem);line-height:1;color:var(--paper)}
+.reviews .rhead .stars{color:var(--amber);letter-spacing:.3em;margin-top:1rem;font-size:1.1rem}
+.reviews .rhead p{color:rgba(244,240,230,.72);margin-top:.6rem;font-size:.9rem}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.quote{background:rgba(244,240,230,.08);border:1px solid rgba(244,240,230,.14);border-radius:1rem;padding:1.8rem}
+.quote .s{color:var(--amber);letter-spacing:.24em;font-size:.8rem;margin-bottom:1rem}
+.quote p{font-family:"Zodiak",serif;font-weight:300;font-size:1.2rem;line-height:1.35;margin-bottom:1.4rem}
+.quote .who{font-size:.82rem;color:rgba(244,240,230,.72)}
+.quote .who b{color:var(--paper);font-weight:500}
+.quote .vf{font-family:"Fragment Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-2);margin-top:.5rem}
+@media(max-width:820px){.quotes{grid-template-columns:1fr}}
+
+/* ---------- buy ---------- */
+.buy{padding:clamp(4.5rem,9vw,8rem) 0}
+.buy-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);align-items:center}
+.buy-img{position:relative;aspect-ratio:3/4;border-radius:1.4rem;overflow:hidden;background:var(--dim)}
+.buy-img img{width:100%;height:100%;object-fit:cover}
+.buy-copy .eyebrow{margin-bottom:1.2rem}
+.buy-copy h2{font-size:clamp(2.4rem,5vw,4.2rem);margin-bottom:1rem}
+.buy-copy .price{display:flex;align-items:baseline;gap:.8rem;margin:1.4rem 0}
+.buy-copy .price .now{font-family:"Zodiak",serif;font-size:2.4rem;color:var(--brand)}
+.buy-copy .price .unit{color:var(--muted);font-size:.9rem}
+.buy-copy .lede{color:#42483d;max-width:32rem;margin-bottom:1.8rem}
+.opts{display:flex;flex-direction:column;gap:.8rem;margin-bottom:1.8rem;max-width:26rem}
+.opt{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:.9rem;padding:1rem 1.1rem;cursor:pointer;transition:border-color .3s,background .3s}
+.opt.active{border-color:var(--brand);background:rgba(46,93,62,.05)}
+.opt .ot{font-size:.92rem}.opt .osub{font-size:.76rem;color:var(--muted)}
+.opt .op{font-family:"Zodiak",serif;font-size:1.15rem}
+.opt .save{font-family:"Fragment Mono",monospace;font-size:.64rem;background:var(--amber);color:var(--paper);padding:.2rem .5rem;border-radius:1rem;margin-left:.6rem;letter-spacing:.08em}
+.buy .btn-amber{width:100%;justify-content:center;max-width:26rem;padding:1.15rem}
+.badges{display:flex;flex-wrap:wrap;gap:.7rem 1.4rem;margin-top:1.6rem;max-width:28rem}
+.badge{font-family:"Fragment Mono",monospace;font-size:.72rem;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:.45rem}
+.badge::before{content:"";width:.4rem;height:.4rem;border-radius:50%;background:var(--brand-2)}
+@media(max-width:820px){.buy-grid{grid-template-columns:1fr}.buy-img{order:-1;max-height:70svh}}
+
+/* ---------- footer ---------- */
+footer{background:var(--pine);color:var(--ivory);padding:clamp(3.5rem,7vw,6rem) 0 0;overflow:hidden}
+.foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2rem}
+.foot-brand .fb{font-family:"Zodiak",serif;font-size:1.6rem;letter-spacing:.06em;margin-bottom:1rem}
+.foot-brand p{color:rgba(244,240,230,.6);max-width:24rem;font-size:.92rem}
+.foot-news{display:flex;border-bottom:1px solid rgba(244,240,230,.3);max-width:22rem;margin-top:1.6rem}
+.foot-news input{flex:1;background:none;border:0;color:var(--ivory);padding:.7rem 0;font-family:inherit;font-size:.9rem;outline:none}
+.foot-news input::placeholder{color:rgba(244,240,230,.45)}
+.foot-news button{background:none;border:0;color:var(--amber);font-family:"Fragment Mono",monospace;font-size:.8rem;cursor:pointer;letter-spacing:.08em}
+.foot-col h5{font-family:"Fragment Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,240,230,.5);margin-bottom:1.1rem}
+.foot-col a{display:block;color:rgba(244,240,230,.82);font-size:.92rem;padding:.32rem 0;transition:color .3s}
+.foot-col a:hover{color:var(--amber)}
+.foot-bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:2rem 0 1.5rem;margin-top:2.5rem;border-top:1px solid rgba(244,240,230,.16)}
+.foot-bar .mono{font-size:.74rem;color:rgba(244,240,230,.5)}
+.foot-word{font-family:"Zodiak",serif;font-weight:300;font-size:clamp(6rem,24vw,20rem);line-height:.78;letter-spacing:.02em;color:rgba(244,240,230,.07);text-align:center;margin-top:1rem;user-select:none;transform:translateY(18%)}
+@media(max-width:820px){.foot-top{grid-template-columns:1fr 1fr}.foot-brand{grid-column:1/-1}}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+</style>
+</head>
+<body class="locked">
+
+<!-- loader -->
+<div id="loader">
+  <div class="lname">SÈVE</div>
+  <div class="lcount" id="lcount">000</div>
+  <div class="lbar" id="lbar"></div>
+</div>
+
+<!-- nav -->
+<header id="header">
+  <nav class="nav wrap" style="width:100%;max-width:none">
+    <a href="#" class="brand">SÈVE</a>
+    <div class="nav-links">
+      <a href="#benefits">The Serum</a>
+      <a href="#ingredients">Botanicals</a>
+      <a href="#ritual">Ritual</a>
+      <a href="#reviews">Reviews</a>
+    </div>
+    <a href="#buy" class="nav-cta">Add to bag <span class="mono">$68</span></a>
+  </nav>
+</header>
+
+<!-- hero -->
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow reveal">Botanical Face Serum · Nº 01</div>
+    <h1><span class="reveal">Skin, in its</span><span class="l2 serif-it reveal">natural light.</span></h1>
+    <p class="lede reveal">A cold pressed serum of forty eight botanicals. One drop each morning, and your skin learns to hold its own glow.</p>
+    <div class="hero-actions reveal">
+      <a href="#buy" class="btn-amber">Add to bag · $68</a>
+      <a href="#ritual" class="btn-text"><span>See the ritual</span> ↓</a>
+    </div>
+    <div class="hero-meta reveal">
+      <span class="mono">30 ml</span><span class="mono">Vegan</span><span class="mono">Fragrance free</span>
+    </div>
+  </div>
+  <div class="hero-img">
+    <img id="heroImg" src="img/hero-lifestyle.webp" alt="Model with luminous skin after applying SÈVE serum" />
+    <div class="hero-price reveal">
+      <span class="pw">$68</span>
+      <span class="pd">30 ml bottle<br/>60 mornings</span>
+    </div>
+  </div>
+</section>
+
+<!-- marquee band -->
+<div class="band" id="band">
+  <div class="track" id="track"></div>
+</div>
+
+<!-- benefits -->
+<section class="benefits" id="benefits">
+  <div class="wrap">
+    <div class="bhead">
+      <h2 class="reveal">What one drop does.</h2>
+      <p class="reveal">No actives you cannot pronounce. Just pressed botanicals that hydrate, calm, and let skin repair on its own clock.</p>
+    </div>
+    <div class="stage">
+      <div class="compare" id="compare">
+        <img class="cmp-after" src="img/hero-lifestyle.webp" alt="Skin after four weeks of SÈVE" />
+        <img class="cmp-before" src="img/hero-lifestyle.webp" alt="Skin before SÈVE" />
+        <span class="cmp-tag cmp-tag-l">Week 0</span>
+        <span class="cmp-tag cmp-tag-r">Week 4</span>
+        <span class="cmp-hint">drag to see the glow</span>
+        <div class="cmp-handle"><span class="cmp-grip">‹›</span></div>
+      </div>
+      <div class="pill p1"><i></i>Deep hydration</div>
+      <div class="pill p2"><i></i>Barrier repair</div>
+      <div class="pill p3"><i></i>Calms redness</div>
+      <div class="pill p4"><i></i>Overnight renewal</div>
+      <div class="pill p5"><i></i>Softer texture</div>
+    </div>
+
+    <div class="statline">
+      <svg id="statSvg" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+        <path id="statPath" d="M0,70 C200,20 320,20 480,55 C640,90 760,20 920,45 C1050,65 1140,40 1200,30"
+          fill="none" stroke="var(--brand)" stroke-width="2"/>
+      </svg>
+      <div class="stat-grid">
+        <div class="reveal"><div class="n" data-count="94" data-suffix="%">0%</div><div class="k">botanical origin</div></div>
+        <div class="reveal"><div class="n" data-count="4" data-prefix="" data-suffix=" wk">0</div><div class="k">to visible glow</div></div>
+        <div class="reveal"><div class="n">0</div><div class="k">synthetics, ever</div></div>
+        <div class="reveal"><div class="n" data-count="2431" data-suffix="">0</div><div class="k">five star reviews</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ingredients -->
+<section class="ingredients" id="ingredients">
+  <div class="wrap">
+    <div class="ing-lede">
+      <h2 class="reveal">Inside every drop.</h2>
+      <p class="reveal">Three botanicals do the quiet work. Sourced whole, cold pressed, and left as close to the plant as skin will allow.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="ch-img"><img src="img/ingredient-leaf.webp" alt="Fresh centella leaves"/></div>
+      <div class="ch-copy">
+        <div class="num reveal">01 / Calm</div>
+        <h3 class="reveal">Centella</h3>
+        <div class="latin reveal">Centella asiatica</div>
+        <p class="reveal">The plant that skin reaches for when it is tired. Centella settles heat and redness, and helps the barrier close the small gaps that let moisture escape.</p>
+        <span class="tag reveal">Soothing · barrier support</span>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <div class="ch-img"><img src="img/texture-macro.webp" alt="Golden sea buckthorn oil"/></div>
+      <div class="ch-copy">
+        <div class="num reveal">02 / Nourish</div>
+        <h3 class="reveal">Sea Buckthorn</h3>
+        <div class="latin reveal">Hippophae rhamnoides</div>
+        <p class="reveal">The gold in the bottle. A rare orange berry oil dense in omega 7, it feeds dry skin and carries the warm colour that makes SÈVE look like morning light.</p>
+        <span class="tag reveal">Omega rich · replenishing</span>
+      </div>
+    </div>
+
+    <div class="chapter">
+      <div class="ch-img"><img src="img/skin-swatch.webp" alt="Serum absorbing into skin"/></div>
+      <div class="ch-copy">
+        <div class="num reveal">03 / Seal</div>
+        <h3 class="reveal">Squalane</h3>
+        <div class="latin reveal">Plant derived</div>
+        <p class="reveal">The last layer. A weightless plant lipid that mirrors skin's own oils, it locks the botanicals in and leaves a finish that reads as skin, never slick.</p>
+        <span class="tag reveal">Weightless · locks in</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ritual -->
+<section class="ritual" id="ritual">
+  <div class="wrap ritual-grid">
+    <div class="ritual-img reveal"><img src="img/lifestyle-apply.webp" alt="Applying SÈVE serum with a dropper"/></div>
+    <div class="ritual-copy">
+      <h2 class="reveal">Three drops, every morning.</h2>
+      <div class="step reveal"><div class="sn">01</div><div><h4>Cleanse</h4><p>Start on clean, slightly damp skin. Damp skin drinks the oil deeper.</p></div></div>
+      <div class="step reveal"><div class="sn">02</div><div><h4>Warm three drops</h4><p>Press the dropper twice into your palm. Warm the serum between both hands for a moment.</p></div></div>
+      <div class="step reveal"><div class="sn">03</div><div><h4>Press into skin</h4><p>Press, do not rub, from the centre of the face outward. Let it settle before anything else.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- reviews -->
+<section class="reviews" id="reviews">
+  <div class="bg"><img src="img/testimonial-bg.webp" alt=""/></div>
+  <div class="inner wrap">
+    <div class="rhead">
+      <div class="count"><span data-count="2431">0</span></div>
+      <div class="stars">★★★★★</div>
+      <p class="reveal">Five star reviews, and counting.</p>
+    </div>
+    <div class="quotes">
+      <div class="quote reveal">
+        <div class="s">★★★★★</div>
+        <p>"Six weeks in and my skin looks lit from underneath. I stopped wearing foundation on weekends."</p>
+        <div class="who"><b>Amara O.</b>, combination skin</div>
+        <div class="vf">Verified purchase</div>
+      </div>
+      <div class="quote reveal">
+        <div class="s">★★★★★</div>
+        <p>"The only oil that never breaks me out. It sinks in and the redness around my nose is just gone."</p>
+        <div class="who"><b>Lena K.</b>, sensitive skin</div>
+        <div class="vf">Verified purchase</div>
+      </div>
+      <div class="quote reveal">
+        <div class="s">★★★★★</div>
+        <p>"Three drops is genuinely enough. One bottle lasted me two months and my barrier has never been calmer."</p>
+        <div class="who"><b>Priya S.</b>, dry skin</div>
+        <div class="vf">Verified purchase</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- buy -->
+<section class="buy" id="buy">
+  <div class="wrap buy-grid">
+    <div class="buy-img reveal">
+      <img src="img/bottle-clean.webp" alt="SÈVE botanical serum bottle"/>
+    </div>
+    <div class="buy-copy">
+      <div class="eyebrow reveal">Botanical Face Serum · Nº 01</div>
+      <h2 class="reveal">Start the ritual.</h2>
+      <p class="lede reveal">One bottle is sixty mornings. Keep it on your shelf, or let it arrive on its own each month and never think about it again.</p>
+      <div class="opts reveal">
+        <div class="opt active" data-opt>
+          <div><div class="ot">Subscribe &amp; save <span class="save">SAVE 15%</span></div><div class="osub">Every month, cancel anytime</div></div>
+          <div class="op">$58</div>
+        </div>
+        <div class="opt" data-opt>
+          <div><div class="ot">One time purchase</div><div class="osub">A single 30 ml bottle</div></div>
+          <div class="op">$68</div>
+        </div>
+      </div>
+      <a href="#" class="btn-amber reveal" onclick="return false">Add to bag</a>
+      <div class="badges reveal">
+        <span class="badge">30 day promise</span>
+        <span class="badge">Free shipping over $50</span>
+        <span class="badge">Cruelty free</span>
+        <span class="badge">Small batch</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer id="footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="fb">SÈVE</div>
+        <p>A botanical face serum for skin that would rather glow than shout. Pressed in small batches, shipped worldwide.</p>
+        <form class="foot-news" onsubmit="return false">
+          <input type="email" placeholder="Email for the slow beauty letter" aria-label="Email"/>
+          <button type="submit">Join →</button>
+        </form>
+      </div>
+      <div class="foot-col">
+        <h5>Shop</h5>
+        <a href="#buy">The Serum</a><a href="#buy">Subscribe</a><a href="#buy">Gift set</a><a href="#ingredients">Botanicals</a>
+      </div>
+      <div class="foot-col">
+        <h5>Studio</h5>
+        <a href="#">Our story</a><a href="#">Sourcing</a><a href="#reviews">Reviews</a><a href="#">Journal</a>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span class="mono">© 2026 SÈVE Botanicals</span>
+      <span class="mono">Every drop has a purpose.</span>
+    </div>
+  </div>
+  <div class="foot-word" id="footWord">SÈVE</div>
+</footer>
+
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger);
+  let lenis = null;
+  if(typeof Lenis !== 'undefined'){
+    lenis = new Lenis({ lerp:.1, wheelMultiplier:1, smoothWheel:true });
+    function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
+  }
+
+  /* build marquee track */
+  const track = document.getElementById('track');
+  const words = ['SÈVE','one drop every morning','forty eight cold pressed botanicals','your skin remembers','pure botanicals'];
+  let unit = '';
+  words.forEach(w => unit += `<span>${w}<span class="dot"></span></span>`);
+  track.innerHTML = unit + unit + unit + unit;
+
+  /* loader */
+  const lcount = document.getElementById('lcount');
+  const lbar = document.getElementById('lbar');
+  let ready = false;
+  const introObj = { v:0 };
+  gsap.to(introObj, {
+    v:100, duration:1.15, ease:'power2.inOut',
+    onUpdate(){ const n=Math.round(introObj.v); lcount.textContent=String(n).padStart(3,'0'); lbar.style.width=n+'%'; },
+    onComplete(){
+      const tl = gsap.timeline({ onComplete(){ ready=true; ScrollTrigger.refresh(); } });
+      tl.to('#loader',{ yPercent:-100, duration:.9, ease:'power4.inOut' })
+        .add(heroReveal, '-=.45');
+      document.body.classList.remove('locked');
+    }
+  });
+
+  /* hero reveal */
+  function heroReveal(){
+    gsap.to('.hero .reveal',{ opacity:1, y:0, duration:1, ease:'power3.out', stagger:.09 });
+  }
+
+  /* generic reveals */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    if(el.closest('.hero')) return;
+    gsap.to(el,{
+      opacity:1, y:0, duration:.95, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 88%' }
+    });
+  });
+
+  /* hero image parallax */
+  gsap.to('#heroImg',{ yPercent:8, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+
+  /* marquee loop */
+  const mq = gsap.to('#track',{ xPercent:-25, duration:26, ease:'none', repeat:-1 });
+
+  /* chapter image parallax */
+  gsap.utils.toArray('.ch-img img').forEach(img=>{
+    gsap.fromTo(img,{ yPercent:-6 },{ yPercent:6, ease:'none', scrollTrigger:{ trigger:img.closest('.chapter'), start:'top bottom', end:'bottom top', scrub:true } });
+  });
+
+  /* reviews bg parallax */
+  gsap.to('.reviews .bg img',{ yPercent:10, ease:'none', scrollTrigger:{ trigger:'.reviews', start:'top bottom', end:'bottom top', scrub:true } });
+
+  /* footer wordmark rise */
+  gsap.fromTo('#footWord',{ yPercent:40 },{ yPercent:12, ease:'none', scrollTrigger:{ trigger:'#footer', start:'top bottom', end:'bottom bottom', scrub:true } });
+
+  /* stat line draw */
+  const path = document.getElementById('statPath');
+  if(path){
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    gsap.to(path,{ strokeDashoffset:0, ease:'none', scrollTrigger:{ trigger:'.statline', start:'top 82%', end:'top 30%', scrub:true } });
+  }
+
+  /* count ups */
+  gsap.utils.toArray('[data-count]').forEach(el=>{
+    const end = +el.getAttribute('data-count');
+    const suf = el.getAttribute('data-suffix')||'';
+    const obj = { v:0 };
+    ScrollTrigger.create({
+      trigger:el, start:'top 88%', once:true,
+      onEnter(){
+        gsap.to(obj,{ v:end, duration:1.6, ease:'power2.out',
+          onUpdate(){ el.textContent = Math.round(obj.v).toLocaleString('en-US') + suf; } });
+      }
+    });
+  });
+
+  /* benefits: pills fade in (opacity only) + cursor-reactive drift */
+  const bStage = document.querySelector('.benefits .stage');
+  const cmpEl0 = document.getElementById('compare');
+  if(bStage && cmpEl0){
+    const pills = [...bStage.querySelectorAll('.pill')];
+    let revealed = false;
+    const originOf = p => {
+      const pr = p.getBoundingClientRect(), cr = cmpEl0.getBoundingClientRect();
+      return { x:(cr.left+cr.width/2) - (pr.left+pr.width/2), y:(cr.top+cr.height/2) - (pr.top+pr.height/2) };
+    };
+    /* park each pill at the photo's center, behind it (compare has higher z-index), scaled down */
+    const park = () => pills.forEach(p => { const o = originOf(p); gsap.set(p,{ x:o.x, y:o.y, scale:.7, opacity:1 }); });
+    park();
+    /* on enter, fly each pill out from behind the photo to its orbit position */
+    ScrollTrigger.create({ trigger:bStage, start:'top 74%', once:true, onEnter(){
+      pills.forEach((p,i) => {
+        gsap.to(p,{ x:0, y:0, scale:1, duration:1.05, ease:'back.out(1.4)', delay:.15 + i*0.09,
+          onComplete(){ if(i === pills.length-1) revealed = true; } });
+      });
+    }});
+    /* keep them parked correctly if the layout changes before they have flown out */
+    window.addEventListener('resize', () => { if(!revealed) park(); });
+    /* cursor-reactive drift, only after they have settled */
+    bStage.addEventListener('pointermove', e => {
+      if(!revealed || e.pointerType === 'touch') return;
+      pills.forEach(p => {
+        const r = p.getBoundingClientRect();
+        const dx = Math.max(-13, Math.min(13, (e.clientX - (r.left+r.width/2)) * 0.05));
+        const dy = Math.max(-13, Math.min(13, (e.clientY - (r.top+r.height/2)) * 0.05));
+        p.style.transform = `translate(${dx}px,${dy}px)`;
+      });
+    });
+    bStage.addEventListener('pointerleave', () => { if(revealed) pills.forEach(p => p.style.transform = ''); });
+  }
+
+  /* before/after glow slider */
+  const cmp = document.getElementById('compare');
+  if(cmp){
+    const setX = cx => { const r = cmp.getBoundingClientRect(); let x = (cx-r.left)/r.width*100; x = Math.max(6,Math.min(94,x)); cmp.style.setProperty('--x', x+'%'); };
+    let drag = false;
+    cmp.addEventListener('pointerdown', e => { drag = true; cmp.classList.add('touched'); try{ cmp.setPointerCapture(e.pointerId); }catch(_){} setX(e.clientX); });
+    cmp.addEventListener('pointermove', e => { if(drag) setX(e.clientX); });
+    cmp.addEventListener('pointerup', () => drag = false);
+    cmp.addEventListener('pointercancel', () => drag = false);
+    /* first-view nudge so visitors see it is draggable */
+    ScrollTrigger.create({ trigger:cmp, start:'top 68%', once:true, onEnter(){
+      const o = { x:50 };
+      gsap.to(o,{ x:66, duration:1, ease:'power2.inOut', yoyo:true, repeat:1,
+        onUpdate(){ if(!cmp.classList.contains('touched')) cmp.style.setProperty('--x', o.x+'%'); } });
+    }});
+  }
+
+  /* buy option toggle */
+  document.querySelectorAll('[data-opt]').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      document.querySelectorAll('[data-opt]').forEach(o=>o.classList.remove('active'));
+      opt.classList.add('active');
+    });
+  });
+
+  /* header behaviour: hide on scroll down, invert over dark sections */
+  const header = document.getElementById('header');
+  let lastY = 0;
+  const darkSections = ['#reviews','#footer'];
+  ScrollTrigger.create({
+    start:0, end:99999,
+    onUpdate(self){
+      const y = self.scroll();
+      header.classList.toggle('scrolled', y>40);
+      if(y>lastY && y>400) header.classList.add('hide'); else header.classList.remove('hide');
+      lastY = y;
+    }
+  });
+  darkSections.forEach(sel=>{
+    const s = document.querySelector(sel); if(!s) return;
+    ScrollTrigger.create({
+      trigger:s, start:'top 70px', end:'bottom 70px',
+      onToggle(self){ header.classList.toggle('on-dark', self.isActive); }
+    });
+  });
+
+  /* anchor smooth scroll via lenis */
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const id = a.getAttribute('href');
+      if(id.length>1){ const t=document.querySelector(id); if(t){ e.preventDefault();
+        if(lenis) lenis.scrollTo(t,{ offset:-60 });
+        else t.scrollIntoView({ behavior:'smooth', block:'start' });
+      } }
+    });
+  });
+})();
+</script>
+</body>
+</html>
