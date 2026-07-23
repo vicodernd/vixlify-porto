@@ -1,48 +1,61 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { Nav } from "@/components/portfolio/Nav";
-import { Hero } from "@/components/portfolio/Hero";
-import { Marquee } from "@/components/portfolio/Marquee";
-import { Work } from "@/components/portfolio/Work";
-import { Approach } from "@/components/portfolio/Approach";
-import { Contact, Footer } from "@/components/portfolio/Contact";
-import { LoadingScreen } from "@/components/LoadingScreen";
+import Lenis from "lenis";
+import { LangProvider } from "@/i18n";
+import { Preloader } from "@/components/Preloader";
+import { Nav } from "@/components/site/Nav";
+import { Hero } from "@/components/home/Hero";
+import { KineticBand } from "@/components/home/KineticBand";
+import { Pillars } from "@/components/home/Pillars";
+import { SelectedWork } from "@/components/home/SelectedWork";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { FreeResources } from "@/components/home/FreeResources";
+import { SiteFooter } from "@/components/home/Footer";
 
+/**
+ * Vixlify homepage — v3 Trionn-caliber rebuild.
+ *
+ * Built section by section (Vico reviews each before the next). Current:
+ * Preloader (light) -> Hero (dark, ember field kept). Kinetic band, services,
+ * selected work, how-it-works, free resources, and footer follow.
+ */
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <>
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+  // Lenis smooth scroll for the immersive Trionn feel (off for reduced motion).
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const lenis = new Lenis({ duration: 1.1 });
+    let raf = 0;
+    const loop = (time: number) => {
+      lenis.raf(time);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(raf);
+      lenis.destroy();
+    };
+  }, []);
 
-      <AnimatePresence mode="wait">
-        {isLoading && (
-          <LoadingScreen key="loader" onComplete={() => setIsLoading(false)} />
-        )}
+  return (
+    <LangProvider>
+      <AnimatePresence>
+        {isLoading && <Preloader key="preloader" onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
-      <div
-        className="dark min-h-screen bg-[#05070f] text-white antialiased"
-        style={{
-          opacity: isLoading ? 0 : 1,
-          transition: "opacity 0.5s ease-out",
-        }}
-      >
+      <div className="dark min-h-screen bg-[#0a0a0a] text-[#ececec] antialiased">
         <Nav />
         <main>
           <Hero />
-          <Marquee />
-          <Work />
-          <Approach />
-          <Contact />
+          <KineticBand />
+          <Pillars />
+          <SelectedWork />
+          <HowItWorks />
+          <FreeResources />
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
-    </>
+    </LangProvider>
   );
 }

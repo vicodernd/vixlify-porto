@@ -1,17 +1,45 @@
-import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Lock } from "lucide-react";
 import { CATEGORY_LABELS, type Template } from "@/data/templates";
 import { useCopyToClipboard } from "@/lib/useCopyToClipboard";
 
-export function TemplateCard({ template, onOpenPrompt }: { template: Template; onOpenPrompt: (t: Template) => void }) {
+/**
+ * Template library card, v3 "paper" redesign. A browser-chrome "live screen"
+ * around each demo capture (same language as the homepage Selected Work / Free
+ * Resources), then a meta block with the free-prompt actions. Ember is the one
+ * accent (the live dot, the category label, the copy-prompt hover). Clicking the
+ * screen opens the prompt modal; Open live and Copy prompt work inline.
+ */
+export function TemplateCard({
+  template,
+  onOpenPrompt,
+}: {
+  template: Template;
+  onOpenPrompt: (t: Template) => void;
+}) {
   const { copied, copy } = useCopyToClipboard();
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-3xl border border-white/8 bg-gradient-to-br from-white/[0.07] to-white/[0.02] transition-all duration-500 hover:-translate-y-2 hover:border-cyan/40 hover:shadow-[0_8px_32px_rgba(0,229,255,0.08)]">
-      {/* Thumbnail */}
+    <div className="group flex flex-col overflow-hidden rounded-xl border border-black/12 bg-white shadow-[0_30px_70px_-45px_rgba(0,0,0,0.45)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5">
+      {/* browser chrome */}
+      <div className="flex items-center gap-2 border-b border-black/10 bg-[#f2f1ef] px-3 py-2">
+        <span className="h-2 w-2 rounded-full bg-[#ff6a2b]" />
+        <span className="h-2 w-2 rounded-full bg-black/15" />
+        <span className="h-2 w-2 rounded-full bg-black/15" />
+        <span className="ml-1 flex flex-1 items-center gap-1 truncate rounded bg-black/[0.05] px-2 py-0.5 font-mono text-[9px] tracking-[0.04em] text-[#6b6b68]">
+          <Lock className="h-2 w-2 shrink-0 opacity-60" />
+          <span className="truncate">vixlify.studio/templates/{template.slug}</span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1 font-mono text-[8px] uppercase tracking-[0.2em] text-[#6b6b68]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ff6a2b] shadow-[0_0_8px_rgba(255,106,43,0.9)]" />
+          Live
+        </span>
+      </div>
+
+      {/* thumbnail → prompt modal */}
       <button
         type="button"
         onClick={() => onOpenPrompt(template)}
-        className="relative block aspect-[16/10] w-full cursor-pointer overflow-hidden bg-deep text-left"
+        className="relative block aspect-[16/10] w-full cursor-pointer overflow-hidden bg-[#e8e8e6] text-left"
         aria-label={`View prompt for ${template.title}`}
       >
         <img
@@ -20,48 +48,67 @@ export function TemplateCard({ template, onOpenPrompt }: { template: Template; o
           loading="lazy"
           className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-        <span className="absolute bottom-4 left-4 flex translate-y-2 items-center gap-1.5 text-sm font-semibold text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-          View prompt <ArrowUpRight className="h-4 w-4" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <span className="pointer-events-none absolute bottom-3 right-3 flex translate-y-2 items-center gap-1.5 rounded-full bg-[#111111] px-3.5 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-[#f4f4f2] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          View prompt <ArrowUpRight className="h-3.5 w-3.5" />
         </span>
       </button>
 
-      {/* Meta */}
-      <div className="flex flex-1 flex-col p-6">
+      {/* meta */}
+      <div className="flex flex-1 flex-col p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <span className="font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan">{CATEGORY_LABELS[template.category]}</span>
-          <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/30">{template.date}</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#ff6a2b]">
+            {CATEGORY_LABELS[template.category]}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-black/30">
+            {template.date}
+          </span>
         </div>
-        <h3 className="mb-2 font-display text-xl font-bold leading-snug text-white">{template.title}</h3>
-        <p className="mb-5 line-clamp-2 text-sm leading-relaxed text-white/50">{template.description}</p>
+        <h3 className="font-display text-xl font-semibold leading-snug tracking-[-0.01em] text-[#111111]">
+          {template.title}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-[14px] leading-relaxed text-[#3a3a38]">
+          {template.description}
+        </p>
 
-        <div className="mb-6 flex flex-wrap gap-2">
-          {template.tags.map((tag) => (
-            <span key={tag} className="rounded-full border border-white/8 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/50">
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {template.tags.slice(0, 4).map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-black/10 bg-black/[0.03] px-2.5 py-1 font-mono text-[10px] tracking-wide text-[#6b6b68]"
+            >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="mt-auto flex items-center gap-3">
+        <div className="mt-6 flex items-center gap-3">
           <a
             href={template.demoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:border-white/20 hover:bg-white/[0.12]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-black/15 px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#111111] transition-colors hover:bg-black/[0.05]"
           >
-            Open live <ArrowUpRight className="h-4 w-4" />
+            Open live <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
           <button
             type="button"
             onClick={() => copy(template.prompt)}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] transition-all duration-300 ${
               copied
-                ? "border border-cyan/50 bg-cyan/20 text-cyan"
-                : "bg-cyan text-space shadow-[0_0_15px_rgba(0,229,255,0.2)] hover:bg-cyan/90 hover:shadow-[0_0_25px_rgba(0,229,255,0.35)]"
+                ? "bg-[#ff6a2b]/15 text-[#c0531c]"
+                : "bg-[#111111] text-[#f4f4f2] hover:bg-[#ff6a2b] hover:text-[#0a0a0a]"
             }`}
           >
-            {copied ? (<><Check className="h-4 w-4" /> Copied</>) : (<><Copy className="h-4 w-4" /> Copy prompt</>)}
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5" /> Copied
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5" /> Copy prompt
+              </>
+            )}
           </button>
         </div>
       </div>

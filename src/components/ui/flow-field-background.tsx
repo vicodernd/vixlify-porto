@@ -9,16 +9,19 @@ interface NeuralBackgroundProps {
   fadeRgb?: string;
   particleCount?: number;
   speed?: number;
+  /** Enable the Trionn-style "hold to blast": pressing pushes particles out hard. */
+  blastOnHold?: boolean;
 }
 
 export default function NeuralBackground({
   className,
-  color = "#00E5FF",
+  color = "#ececec",
   colors,
   trailOpacity = 0.08,
-  fadeRgb = "5,7,15",
+  fadeRgb = "10,10,10",
   particleCount = 600,
   speed = 1,
+  blastOnHold = false,
 }: NeuralBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -36,7 +39,7 @@ export default function NeuralBackground({
     let height = container.clientHeight;
     let particles: Particle[] = [];
     let animationFrameId = 0;
-    const mouse = { x: -1000, y: -1000 };
+    const mouse = { x: -1000, y: -1000, pressed: false };
 
     class Particle {
       x = 0; y = 0; vx = 0; vy = 0; age = 0; life = 0; color = palette[0];
@@ -57,11 +60,12 @@ export default function NeuralBackground({
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const interactionRadius = 160;
+        const interactionRadius = mouse.pressed ? 320 : 160;
+        const push = mouse.pressed ? 0.24 : 0.05;
         if (distance < interactionRadius) {
           const force = (interactionRadius - distance) / interactionRadius;
-          this.vx -= dx * force * 0.05;
-          this.vy -= dy * force * 0.05;
+          this.vx -= dx * force * push;
+          this.vy -= dy * force * push;
         }
 
         this.x += this.vx; this.y += this.vy;
@@ -111,7 +115,14 @@ export default function NeuralBackground({
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     };
-    const handleMouseLeave = () => { mouse.x = -1000; mouse.y = -1000; };
+    const handleMouseLeave = () => { mouse.x = -1000; mouse.y = -1000; mouse.pressed = false; };
+    const handleDown = (e: PointerEvent) => {
+      if (blastOnHold) mouse.pressed = true;
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const handleUp = () => { mouse.pressed = false; };
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     init();
@@ -123,13 +134,17 @@ export default function NeuralBackground({
     window.addEventListener("resize", handleResize);
     container.addEventListener("mousemove", handleMouseMove);
     container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("pointerdown", handleDown);
+    window.addEventListener("pointerup", handleUp);
     return () => {
       window.removeEventListener("resize", handleResize);
       container.removeEventListener("mousemove", handleMouseMove);
       container.removeEventListener("mouseleave", handleMouseLeave);
+      container.removeEventListener("pointerdown", handleDown);
+      window.removeEventListener("pointerup", handleUp);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [color, colors, trailOpacity, fadeRgb, particleCount, speed]);
+  }, [color, colors, trailOpacity, fadeRgb, particleCount, speed, blastOnHold]);
 
   return (
     <div

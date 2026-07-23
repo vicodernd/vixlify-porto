@@ -1,12 +1,17 @@
 interface LogoMarkProps {
   className?: string;
+  theme?: "dark" | "light";
 }
 
 /**
- * Vixlify "Lift Mark" — three ascending chevrons (amplify / lift).
- * Refined two-stop cyan → violet gradient, no badge container.
+ * Vixlify mark v2 — "Ascending Nodes" (Concept A): a flow of connected nodes
+ * stepping upward, the final node lit as the outcome (build + automate). Pure
+ * monochrome; adapts to a light ground (e.g. the /templates page) via `theme`.
  */
-export function LogoMark({ className = "h-7 w-7" }: LogoMarkProps) {
+export function LogoMark({ className = "h-7 w-7", theme = "dark" }: LogoMarkProps) {
+  const primary = theme === "light" ? "#111111" : "#ECECEC";
+  const node = theme === "light" ? "#111111" : "#F5F5F5";
+  const mid = theme === "light" ? "#6B6B68" : "#8C8C8C";
   return (
     <svg
       viewBox="0 0 64 64"
@@ -15,36 +20,39 @@ export function LogoMark({ className = "h-7 w-7" }: LogoMarkProps) {
       role="img"
       aria-label="Vixlify"
     >
-      <defs>
-        <linearGradient id="vixlify-lift" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00E5FF" />
-          <stop offset="100%" stopColor="#8B5CF6" />
-        </linearGradient>
-      </defs>
-      <g
-        stroke="url(#vixlify-lift)"
-        strokeWidth="6.5"
+      <path
+        d="M12 50 L32 34 L52 14"
+        stroke={primary}
+        strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
-      >
-        <path d="M32 12 L44 24 M32 12 L20 24" />
-        <path d="M32 30 L51 44 M32 30 L13 44" />
-        <path d="M32 48 L56 61 M32 48 L8 61" />
-      </g>
+      />
+      <path
+        d="M32 34 L44 40"
+        stroke={mid}
+        strokeWidth="4.5"
+        strokeLinecap="round"
+      />
+      <circle cx="52" cy="14" r="7" fill={node} />
     </svg>
   );
 }
 
 interface LogoProps {
   href?: string;
+  theme?: "dark" | "light";
 }
 
 /** Full nav lockup: Lift Mark + VIXLIFY wordmark. */
-export function Logo({ href = "#top" }: LogoProps) {
+export function Logo({ href = "#top", theme = "dark" }: LogoProps) {
   return (
     <a href={href} className="flex items-center gap-2.5">
-      <LogoMark className="h-7 w-7" />
-      <span className="font-display text-sm font-semibold tracking-[0.18em] text-white">
+      <LogoMark className="h-7 w-7" theme={theme} />
+      <span
+        className={`font-display text-sm font-semibold tracking-[0.18em] ${
+          theme === "light" ? "text-[#111111]" : "text-[#ececec]"
+        }`}
+      >
         VIXLIFY
       </span>
     </a>
