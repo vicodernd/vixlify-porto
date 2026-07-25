@@ -48,11 +48,12 @@ function BrandEQ() {
   const mouseX = useRef<number>(-9999);
   const [n, setN] = useState(64);
 
-  // bar count scales with width
+  // bar count scales with width; peak starts pinned to the left edge on load
   useEffect(() => {
     const calc = () => {
       const w = fieldRef.current?.clientWidth ?? window.innerWidth;
       setN(Math.max(28, Math.min(120, Math.floor(w / 15))));
+      mouseX.current = w * 0.12;
     };
     calc();
     window.addEventListener("resize", calc);
@@ -96,7 +97,20 @@ function BrandEQ() {
         const r = fieldRef.current?.getBoundingClientRect();
         if (r) mouseX.current = e.clientX - r.left;
       }}
-      onMouseLeave={() => (mouseX.current = -9999)}
+      onTouchStart={(e) => {
+        const r = fieldRef.current?.getBoundingClientRect();
+        const touch = e.touches[0];
+        if (r && touch) mouseX.current = touch.clientX - r.left;
+      }}
+      onTouchMove={(e) => {
+        const r = fieldRef.current?.getBoundingClientRect();
+        const touch = e.touches[0];
+        if (r && touch) mouseX.current = touch.clientX - r.left;
+      }}
+      onClick={(e) => {
+        const r = fieldRef.current?.getBoundingClientRect();
+        if (r) mouseX.current = e.clientX - r.left;
+      }}
       aria-hidden="true"
     >
       {Array.from({ length: n }).map((_, i) => (
