@@ -197,7 +197,7 @@ export const copy = {
         "These are self-directed studio builds. Each one is live: open it, click through it, judge the craft. The same hands build yours.",
       view: "Live",
       explore: "Explore project",
-      note: "8 builds · all live",
+      note: "6 builds · all live",
       dragHint: "Scroll to explore",
     },
     how: {
@@ -305,7 +305,7 @@ export const copy = {
         "Ini karya studio yang kami bangun sendiri. Semuanya live: buka, klik, nilai kualitasnya. Tangan yang sama yang akan mengerjakan punyamu.",
       view: "Live",
       explore: "Lihat proyek",
-      note: "8 build · semua live",
+      note: "6 build · semua live",
       dragHint: "Scroll untuk menjelajah",
     },
     how: {

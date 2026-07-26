@@ -31,36 +31,14 @@ type Build = {
 
 const builds: Build[] = [
   {
-    slug: "fathom",
-    title: "Fathom",
-    kind: { en: "Real-time SaaS landing", id: "Landing SaaS real-time" },
-    stack: "WebGL · GSAP · Shader",
+    slug: "nexus-architecture",
+    title: "Nexus",
+    kind: { en: "Architecture studio landing", id: "Landing studio arsitektur" },
+    stack: "three.js · GSAP · Lenis",
     year: "2026",
     blurb: {
-      en: "One metaphor, the signal, runs the whole page in real time.",
-      id: "Satu metafora, sinyal, menggerakkan seluruh halaman secara real-time.",
-    },
-  },
-  {
-    slug: "utsuwa",
-    title: "Utsuwa",
-    kind: { en: "3D product configurator", id: "Konfigurator produk 3D" },
-    stack: "three.js · R3F · PBR",
-    year: "2026",
-    blurb: {
-      en: "Turn it, morph it, glaze it. The product is the interaction.",
-      id: "Putar, ubah bentuk, ganti glasir. Produknya adalah interaksinya.",
-    },
-  },
-  {
-    slug: "seve",
-    title: "Sève",
-    kind: { en: "DTC e-commerce landing", id: "Landing e-commerce DTC" },
-    stack: "GSAP · ScrollTrigger · Lenis",
-    year: "2026",
-    blurb: {
-      en: "One product, told like an editorial. One green world, one amber accent.",
-      id: "Satu produk, dikisahkan seperti editorial. Satu dunia hijau, satu aksen amber.",
+      en: "A cinematic scroll past a wireframe tower and a pinned gallery.",
+      id: "Scroll sinematik melewati menara wireframe dan galeri yang di-pin.",
     },
   },
   {
@@ -75,17 +53,6 @@ const builds: Build[] = [
     },
   },
   {
-    slug: "nexus-architecture",
-    title: "Nexus",
-    kind: { en: "Architecture studio landing", id: "Landing studio arsitektur" },
-    stack: "three.js · GSAP · Lenis",
-    year: "2026",
-    blurb: {
-      en: "A cinematic scroll past a wireframe tower and a pinned gallery.",
-      id: "Scroll sinematik melewati menara wireframe dan galeri yang di-pin.",
-    },
-  },
-  {
     slug: "fjeld",
     title: "Fjeld",
     kind: { en: "Multi-page lodge site", id: "Situs lodge multi-halaman" },
@@ -97,17 +64,6 @@ const builds: Build[] = [
     },
   },
   {
-    slug: "resonance",
-    title: "Resonance",
-    kind: { en: "Kinetic type hero", id: "Hero tipografi kinetik" },
-    stack: "Variable fonts · Canvas",
-    year: "2026",
-    blurb: {
-      en: "The headline is the instrument. The cursor plays the name.",
-      id: "Headline-nya adalah instrumen. Kursor memainkan namanya.",
-    },
-  },
-  {
     slug: "linehaul-ops",
     title: "Linehaul",
     kind: { en: "3D freight ops landing", id: "Landing operasi logistik 3D" },
@@ -116,6 +72,28 @@ const builds: Build[] = [
     blurb: {
       en: "Scroll flies a camera along a coral route through a low-poly port.",
       id: "Scroll menerbangkan kamera menyusuri rute koral melintasi pelabuhan low-poly.",
+    },
+  },
+  {
+    slug: "fathom",
+    title: "Fathom",
+    kind: { en: "Real-time SaaS landing", id: "Landing SaaS real-time" },
+    stack: "WebGL · GSAP · Shader",
+    year: "2026",
+    blurb: {
+      en: "One metaphor, the signal, runs the whole page in real time.",
+      id: "Satu metafora, sinyal, menggerakkan seluruh halaman secara real-time.",
+    },
+  },
+  {
+    slug: "resonance",
+    title: "Resonance",
+    kind: { en: "Kinetic type hero", id: "Hero tipografi kinetik" },
+    stack: "Variable fonts · Canvas",
+    year: "2026",
+    blurb: {
+      en: "The headline is the instrument. The cursor plays the name.",
+      id: "Headline-nya adalah instrumen. Kursor memainkan namanya.",
     },
   },
 ];
