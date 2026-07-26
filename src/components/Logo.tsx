@@ -4,14 +4,13 @@ interface LogoMarkProps {
 }
 
 /**
- * Vixlify mark v2 — "Ascending Nodes" (Concept A): a flow of connected nodes
- * stepping upward, the final node lit as the outcome (build + automate). Pure
- * monochrome; adapts to a light ground (e.g. the /templates page) via `theme`.
+ * Vixlify mark v3 — "Lift Arrow" (final, locked): one solid upward chevron,
+ * flat fill (no outline), with a single ember wedge lit at the fold. Adapts
+ * to a light ground (e.g. the /templates page) via `theme`.
  */
 export function LogoMark({ className = "h-7 w-7", theme = "dark" }: LogoMarkProps) {
-  const primary = theme === "light" ? "#111111" : "#ECECEC";
-  const node = theme === "light" ? "#111111" : "#F5F5F5";
-  const mid = theme === "light" ? "#6B6B68" : "#8C8C8C";
+  const ink = theme === "light" ? "#111111" : "#ECECEC";
+  const ember = theme === "light" ? "#E5501A" : "#FF6A2B";
   return (
     <svg
       viewBox="0 0 64 64"
@@ -21,19 +20,10 @@ export function LogoMark({ className = "h-7 w-7", theme = "dark" }: LogoMarkProp
       aria-label="Vixlify"
     >
       <path
-        d="M12 50 L32 34 L52 14"
-        stroke={primary}
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M32 14 L54 50 L42 50 L32 33 L22 50 L10 50 Z"
+        fill={ink}
       />
-      <path
-        d="M32 34 L44 40"
-        stroke={mid}
-        strokeWidth="4.5"
-        strokeLinecap="round"
-      />
-      <circle cx="52" cy="14" r="7" fill={node} />
+      <path d="M32 33 L42 50 L32 50 Z" fill={ember} />
     </svg>
   );
 }
