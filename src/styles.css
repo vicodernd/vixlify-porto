@@ -316,10 +316,20 @@
     40%           { opacity: 0.9; transform: scale(1); }
   }
 
+  /* text caret for the /vixwispr dictation demo, once the text has landed */
+  @keyframes caret-blink {
+    0%, 46%   { opacity: 1; }
+    54%, 100% { opacity: 0; }
+  }
+  .animate-caret {
+    animation: caret-blink 1.1s steps(1, end) infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-marquee,
     .animate-float-slow,
-    .animate-pulse-ring {
+    .animate-pulse-ring,
+    .animate-caret {
       animation: none !important;
     }
     .at-root .at-inner,

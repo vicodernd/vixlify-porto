@@ -268,10 +268,10 @@ export function FreeResources() {
           </p>
         </div>
 
-        {/* DESTINATION CARDS — mirror the two pillars */}
-        <div className="mt-20 grid grid-cols-1 border-t border-black/12 sm:mt-28 md:grid-cols-2 md:divide-x md:divide-black/12">
+        {/* DESTINATION CARDS — Templates (live) / VixWispr (live) / Automations (coming soon) */}
+        <div className="mt-20 grid grid-cols-1 border-t border-black/12 sm:mt-28 md:grid-cols-3 md:divide-x md:divide-black/12">
           {/* Templates — live */}
-          <Rise className="group py-10 md:pr-12 md:py-12">
+          <Rise className="group py-10 md:py-12 md:pr-10">
             <a href="/templates" className="block">
               <div className="flex items-center gap-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#ff6a2b]" />
@@ -279,7 +279,7 @@ export function FreeResources() {
                   {t.templates.tag}
                 </span>
               </div>
-              <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">
+              <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-0.02em] sm:text-4xl">
                 {t.templates.title}
               </h3>
               <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-[#3a3a38]">
@@ -295,15 +295,40 @@ export function FreeResources() {
             </a>
           </Rise>
 
+          {/* VixWispr — live, Vixlify's own give-away app */}
+          <Rise delay={0.06} className="group py-10 md:py-12 md:px-10">
+            <a href="/vixwispr" className="block">
+              <div className="flex items-center gap-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#ff6a2b]" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#6b6b68]">
+                  {t.vixwispr.tag}
+                </span>
+              </div>
+              <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-0.02em] sm:text-4xl">
+                {t.vixwispr.title}
+              </h3>
+              <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-[#3a3a38]">
+                {t.vixwispr.desc}
+              </p>
+              <span className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[#111111]">
+                <span className="relative">
+                  {t.vixwispr.cta}
+                  <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-[#111111] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
+                </span>
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </span>
+            </a>
+          </Rise>
+
           {/* Automations — honestly coming soon (no link, /automations is Stage 5) */}
-          <Rise delay={0.1} className="py-10 md:pl-12 md:py-12">
+          <Rise delay={0.12} className="py-10 md:py-12 md:pl-10">
             <div className="flex items-center gap-3">
               <span className="h-1.5 w-1.5 rounded-full border border-black/30" />
               <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#6b6b68]">
                 {t.automations.tag}
               </span>
             </div>
-            <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-0.02em] text-[#6b6b68] sm:text-5xl">
+            <h3 className="mt-5 font-display text-4xl font-semibold tracking-[-0.02em] text-[#6b6b68] sm:text-4xl">
               {t.automations.title}
             </h3>
             <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-[#3a3a38]">
