@@ -7,13 +7,14 @@ import { useLang, copy, waLink } from "@/i18n";
 /**
  * Client Engagements (DARK, plural). Sits right after Selected Work: where
  * that section proves craft through live demos, this one proves it through
- * real paid engagements that can never be a live demo. Confidentiality is the
- * whole point, so the visual language is a "case file" instead of a "live
- * screen": a redacted client name, a mono dossier strip, and value framed as
- * what this class of system targets, not a specific claim about a client's
- * results. Numbers asserted here are either facts about the build itself
- * (screens, tests, models) or clearly labeled external benchmarks, never a
- * fabricated outcome for any engagement.
+ * real engagements that go deeper than a landing-page demo. Visual language
+ * is a "case file": a mono dossier strip, stat facts, value framed as outcomes.
+ * Confidentiality is PER ENTRY, not a section-wide rule (Vico, 2026-07-29):
+ * some engagements are under NDA (client name redacted, a Lock badge on the
+ * status pill) and some are named openly with real screenshots, depending on
+ * what that client allows. Numbers asserted here are either facts about the
+ * build itself (screens, tests, models) or clearly labeled external
+ * benchmarks, never a fabricated outcome for any engagement.
  *
  * ACCORDION, one case open at a time (Vico's call, 2026-07-29, since more
  * engagements are coming and a full case-file per entry would make the page
@@ -64,6 +65,8 @@ function RedactedBar() {
 
 type Engagement = {
   id: string;
+  confidential: boolean;
+  clientValue?: string;
   sectorValue: string;
   scopeValue: string;
   statusValue: string;
@@ -109,7 +112,8 @@ function EngagementItem({
             {item.scopeValue}
           </span>
         </span>
-        <span className="hidden shrink-0 rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45 sm:inline-block">
+        <span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45 sm:inline-flex">
+          {item.confidential && <Lock className="h-2.5 w-2.5" aria-hidden="true" />}
           {item.statusValue}
         </span>
         <ChevronDown
@@ -134,7 +138,11 @@ function EngagementItem({
                   {fields.client}
                 </div>
                 <div className="mt-2">
-                  <RedactedBar />
+                  {item.confidential ? (
+                    <RedactedBar />
+                  ) : (
+                    <span className="text-[13px] font-medium text-white/80">{item.clientValue}</span>
+                  )}
                 </div>
               </div>
               <div className="px-1 py-6 sm:px-6">
@@ -238,9 +246,6 @@ export function ClientEngagement() {
             {t.eyebrow}
           </span>
           <LineGrow className="max-w-16 bg-white/15" />
-          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.22em] text-[#ff6a2b]/80">
-            {t.confidential}
-          </span>
         </div>
 
         <h2 className="mt-6 max-w-[16ch] font-display font-semibold leading-[0.92] tracking-[-0.035em] text-[clamp(2.75rem,9vw,7.5rem)]">

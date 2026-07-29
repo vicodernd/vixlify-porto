@@ -227,11 +227,10 @@ export const copy = {
     },
     engagements: {
       eyebrow: "Client engagements",
-      confidential: "Confidential · NDA",
       headingLead: "Proof we can't",
       headingEmph: "show you.",
       intro:
-        "Some of the most demanding work never makes it into a portfolio. These are full systems built for real companies, delivered under confidentiality agreements. No names, no real data, just the scope and the outcome each one targets.",
+        "Some of the most demanding work never makes it into a portfolio. These are full systems built for real practices and companies. Some run under a confidentiality agreement, no name, no real data. Others are shown openly, screenshots and all, when the client is fine with it. Either way: the scope and the outcome it targets, honestly.",
       fields: {
         client: "Client",
         sector: "Sector",
@@ -243,6 +242,7 @@ export const copy = {
       list: [
         {
           id: "sop-cockpit",
+          confidential: true,
           sectorValue: "Supply chain & operations planning",
           scopeValue: "Forecasting engine port, full UI rebuild",
           statusValue: "Confidential, delivered",
@@ -278,6 +278,46 @@ export const copy = {
             "What used to mean pulling numbers from a dozen spreadsheets before every monthly planning meeting now recomputes the moment new data lands.",
           benchmark:
             "Mature sales and operations planning programs are widely reported (Gartner, APICS) to cut inventory carrying cost by 10 to 20 percent while holding service levels flat. Published industry benchmark, not a measured result for this engagement.",
+        },
+        {
+          id: "padel-schedule",
+          confidential: false,
+          clientValue: "Padel Coach (solo practice)",
+          sectorValue: "Sports coaching & personal business ops",
+          scopeValue: "Scheduling, revenue dashboard, AI auto-logging",
+          statusValue: "Delivered, in daily use",
+          stats: [
+            { value: "2", label: "ways to log a booking: type it, or forward a screenshot" },
+            { value: "3", label: "modules: schedule, revenue, expenses" },
+            { value: "1", label: "AI agent that reads either input and files it itself" },
+            { value: "Daily", label: "actually used to run a real coaching calendar" },
+          ],
+          values: [
+            {
+              index: "01",
+              title: "Zero manual bookkeeping",
+              desc: "No more copying bookings into a spreadsheet after every session. Type it or forward a screenshot, and it's already in the schedule and the revenue numbers.",
+            },
+            {
+              index: "02",
+              title: "Always know the real number",
+              desc: "Revenue, unpaid sessions, and per-venue breakdowns stay current the moment a booking lands, not at the end of the month.",
+            },
+            {
+              index: "03",
+              title: "Logging takes seconds, not minutes",
+              desc: "A coach between sessions doesn't have time for data entry. Text or photo in, structured record out, in the time it takes to send a message.",
+            },
+          ],
+          screens: [
+            { src: "/engagement/padel-jadwal.jpg", label: "Schedule" },
+            { src: "/engagement/padel-omset.jpg", label: "Revenue dashboard" },
+          ],
+          screensCaption: "Real screens from the actual app, running on demo data for this preview.",
+          highlight:
+            "Built because a full coaching calendar had outgrown a spreadsheet. Now every booking, typed or photographed, updates itself.",
+          benchmark:
+            "Figures shown here are illustrative demo data, not real income. In daily use, this runs on the coach's own real schedule.",
         },
       ],
     },
@@ -397,11 +437,10 @@ export const copy = {
     },
     engagements: {
       eyebrow: "Kerja sama klien",
-      confidential: "Rahasia · NDA",
       headingLead: "Bukti yang tidak bisa",
       headingEmph: "kami tunjukkan.",
       intro:
-        "Sebagian kerja paling menantang tidak pernah masuk portofolio. Ini sistem-sistem lengkap yang dibangun untuk perusahaan sungguhan, dikerjakan di bawah perjanjian kerahasiaan. Tanpa nama, tanpa data asli, hanya cakupan kerja dan hasil yang ditargetkan masing-masing.",
+        "Sebagian kerja paling menantang tidak pernah masuk portofolio. Ini sistem-sistem lengkap yang dibangun untuk praktik dan perusahaan sungguhan. Sebagian berjalan di bawah perjanjian kerahasiaan, tanpa nama, tanpa data asli. Sebagian lagi ditampilkan terang-terangan, lengkap dengan screenshot aslinya, kalau kliennya mengizinkan. Yang pasti: cakupan kerja dan hasil yang ditargetkan, apa adanya.",
       fields: {
         client: "Klien",
         sector: "Sektor",
@@ -413,6 +452,7 @@ export const copy = {
       list: [
         {
           id: "sop-cockpit",
+          confidential: true,
           sectorValue: "Perencanaan rantai pasok & operasi",
           scopeValue: "Port mesin forecasting, rebuild UI penuh",
           statusValue: "Rahasia, sudah diserahkan",
@@ -448,6 +488,46 @@ export const copy = {
             "Yang dulu berarti menarik angka dari belasan spreadsheet sebelum setiap rapat perencanaan bulanan, sekarang terhitung ulang saat data baru masuk.",
           benchmark:
             "Program sales and operations planning yang matang banyak dilaporkan (Gartner, APICS) memangkas biaya penyimpanan inventory 10 sampai 20 persen sambil menjaga service level tetap. Ini benchmark industri yang dipublikasikan, bukan hasil terukur dari kerja sama ini.",
+        },
+        {
+          id: "padel-schedule",
+          confidential: false,
+          clientValue: "Padel Coach (praktik solo)",
+          sectorValue: "Coaching olahraga & operasional bisnis pribadi",
+          scopeValue: "Jadwal, dashboard omset, AI auto-log",
+          statusValue: "Sudah diserahkan, dipakai tiap hari",
+          stats: [
+            { value: "2", label: "cara log booking: ketik teks atau kirim screenshot" },
+            { value: "3", label: "modul: jadwal, omset, pengeluaran" },
+            { value: "1", label: "AI agent yang membaca dua jenis input itu dan menyimpannya sendiri" },
+            { value: "Harian", label: "benar-benar dipakai untuk jadwal coaching sungguhan" },
+          ],
+          values: [
+            {
+              index: "01",
+              title: "Tidak ada lagi catat manual",
+              desc: "Tidak perlu lagi menyalin booking ke spreadsheet setiap habis sesi. Ketik atau kirim screenshot-nya, langsung masuk ke jadwal dan angka omset.",
+            },
+            {
+              index: "02",
+              title: "Selalu tahu angka yang sebenarnya",
+              desc: "Omset, sesi yang belum dibayar, dan rincian per venue selalu terkini seketika booking masuk, bukan menunggu akhir bulan.",
+            },
+            {
+              index: "03",
+              title: "Catat cuma hitungan detik",
+              desc: "Coach di sela-sela sesi tidak punya waktu untuk input data. Teks atau foto masuk, catatan terstruktur keluar, secepat kirim pesan.",
+            },
+          ],
+          screens: [
+            { src: "/engagement/padel-jadwal.jpg", label: "Jadwal" },
+            { src: "/engagement/padel-omset.jpg", label: "Dashboard omset" },
+          ],
+          screensCaption: "Layar asli dari app yang sungguhan, berjalan di atas data demo khusus untuk preview ini.",
+          highlight:
+            "Dibangun karena jadwal coaching yang penuh sudah lebih besar dari kapasitas spreadsheet. Sekarang setiap booking, diketik atau difoto, memperbarui dirinya sendiri.",
+          benchmark:
+            "Angka yang ditampilkan di sini adalah data demo ilustratif, bukan omset asli. Dalam pemakaian sehari-hari, ini berjalan di atas jadwal asli sang coach sendiri.",
         },
       ],
     },
