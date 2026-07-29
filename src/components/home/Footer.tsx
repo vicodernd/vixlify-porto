@@ -15,9 +15,9 @@ import { useLang, copy, waLink, LangToggle } from "@/i18n";
  */
 
 const SOCIALS = [
-  { label: "Instagram", href: "https://www.instagram.com/vixlifyy/" },
-  { label: "Threads", href: "https://www.threads.com/@vixlifyy" },
-  { label: "X", href: "https://x.com/vixlifyy" },
+  { label: "Instagram", href: "https://www.instagram.com/vixlify.studio" },
+  { label: "Threads", href: "https://www.threads.com/@vixlify.studio" },
+  { label: "X", href: "https://x.com/vixlifystudio" },
 ];
 
 const TAGLINE = "Websites and automation, built with intent."; // brand line, always English

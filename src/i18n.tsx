@@ -362,7 +362,7 @@ export const copy = {
     nav: { work: "Karya", approach: "Proses", templates: "Template", contact: "Kontak", cta: "Chat" },
     hero: {
       eyebrow: "Studio Web + AI Automation",
-      sub: "Vixlify membangun dua hal: website premium yang menjual, dan automation AI yang memangkas kerja manual. Ambil salah satunya, atau biarkan keduanya jalan bareng sebagai satu sistem.",
+      sub: "Vixlify menghadirkan dua solusi utama: website premium yang dirancang untuk meningkatkan penjualan, serta otomatisasi AI untuk mengefisiensikan kerja manual Anda. Pilih salah satu, atau integrasikan keduanya menjadi satu sistem yang cerdas.",
       primary: "Chat lewat WhatsApp",
       secondary: "Lihat karya",
       status: "Siap terima proyek baru",
@@ -374,12 +374,12 @@ export const copy = {
       headingLead: "Dua layanan. Pilih satu, atau",
       headingEmph: "ambil dua-duanya.",
       independence:
-        "Cuma butuh satu? Wajar. Kebanyakan klien mulai dari website atau automation dulu, baru nambah yang satunya belakangan.",
+        "Hanya butuh salah satu layanan? Tentu bisa. Banyak klien kami yang memulai dengan pembuatan website atau otomatisasi AI terlebih dahulu, kemudian menambahkan solusi lainnya seiring dengan perkembangan bisnis mereka.",
       cta: "Chat lewat WhatsApp",
       web: {
         label: "01 / Website",
         title: "Website",
-        desc: "Website premium: cepat, tampilannya tajam, dan bikin pengunjung jadi pelanggan. Kami desain dan bangun dari nol sampai jadi.",
+        desc: "Website Premium: Cepat, responsif, dengan tampilan modern yang meningkatkan kepercayaan klien. Kami membangun website Anda sepenuhnya dari nol, memastikan setiap detailnya selaras dengan identitas brand Anda.",
         points: [
           "Landing page yang convert",
           "Website perusahaan & brand",
@@ -390,7 +390,7 @@ export const copy = {
       auto: {
         label: "02 / AI Automation",
         title: "AI Automation",
-        desc: "Alur kerja yang jalan sendiri tanpa perlu disentuh. Tool-tool kamu kami sambungkan, biar AI yang urus pekerjaan berulangnya, supaya tim kamu berhenti copy-paste.",
+        desc: "Alur kerja otomatis yang berjalan tanpa hambatan. Kami mengintegrasikan berbagai platform bisnis Anda, membiarkan AI menangani pekerjaan repetitif, sehingga tim Anda bisa fokus pada hal yang lebih strategis tanpa perlu lagi melakukan input data manual.",
         points: [
           "Menangani lead & pertanyaan masuk",
           "Pipeline konten & data",
@@ -401,10 +401,10 @@ export const copy = {
     },
     work: {
       eyebrow: "Karya pilihan",
-      headingLead: "Bukti yang bisa langsung",
-      headingEmph: "kamu klik.",
+      headingLead: "Bukti yang bisa",
+      headingEmph: "langsung kamu klik.",
       intro:
-        "Ini karya yang kami bangun sendiri sebagai studio. Semuanya live, tinggal buka dan klik-klik, lalu nilai sendiri kualitasnya. Tangan yang sama yang akan mengerjakan punya kamu.",
+        "Kami membangun setiap proyek dengan standar tinggi dan perhatian pada detail. Silakan eksplorasi karya kami, karena kualitas yang sama akan kami hadirkan untuk website dan sistem Anda.",
       view: "Live",
       explore: "Lihat proyek",
       note: "6 karya · semua live",
@@ -412,42 +412,42 @@ export const copy = {
     },
     how: {
       eyebrow: "Cara kerjanya",
-      headingLead: "Tiga langkah.",
-      headingEmph: "Tanpa tebak-tebakan.",
+      headingLead: "Tiga langkah pasti.",
+      headingEmph: "Tanpa spekulasi.",
       intro:
-        "Jalurnya jelas, dari chat pertama sampai sesuatu yang benar-benar live. Rencana dan harganya kamu lihat dulu, baru kami mulai bangun.",
+        "Alur kerja yang transparan, mulai dari konsultasi awal hingga sistem Anda siap digunakan. Kami memastikan rencana kerja dan rincian biaya disetujui sepenuhnya sebelum tahap pembangunan dimulai.",
       steps: [
         {
           label: "Langkah 01",
           title: "Ruang lingkup",
-          body: "Kami cari tahu dulu tujuannya, siapa audiensnya, dan seperti apa hasil yang dianggap berhasil. Baru setelah itu kamu dapat rencana jelas dan harga pasti, sebelum satu piksel atau satu workflow pun mulai dibangun.",
+          body: "Kami memulai dengan mendalami tujuan bisnis Anda, memahami audiens target, serta menetapkan indikator keberhasilan yang jelas. Hasilnya adalah rencana kerja yang komprehensif dan transparansi biaya yang pasti, bahkan sebelum satu piksel atau alur kerja pun mulai kami bangun.",
         },
         {
           label: "Langkah 02",
-          title: "Bangun",
-          body: "Desain dan development kami pegang sendiri, jadi satu alur yang konsisten. Prosesnya kamu lihat bertahap dan bisa kamu arahkan kapan saja. Tidak ada proses tertutup, tidak ada kejutan di akhir.",
+          title: "Pembangunan",
+          body: "Proses desain dan pengembangan kami tangani sepenuhnya secara internal untuk memastikan konsistensi kualitas. Anda dapat memantau progres secara bertahap dan memberikan arahan kapan saja. Kami menjamin proses yang terbuka tanpa ada kejutan biaya atau teknis di akhir proyek.",
         },
         {
           label: "Langkah 03",
           title: "Rilis & serah terima",
-          body: "Situsnya kami rilis, hasilnya kami ukur, lalu semuanya diserahkan dalam kondisi yang benar-benar bisa kamu jalankan sendiri. Automation-nya tetap bekerja lama setelah proyek selesai.",
+          body: "Setelah situs diluncurkan dan performanya diukur, seluruh sistem akan diserahkan dalam kondisi siap operasional yang dapat Anda kelola secara mandiri. Otomatisasi yang kami bangun akan terus bekerja secara optimal untuk jangka panjang.",
         },
       ],
-      applies: "Tiga langkah yang sama, baik kamu ambil website, automation, atau keduanya.",
+      applies: "Tiga langkah konsisten yang kami terapkan untuk layanan Website, AI Automation, maupun kombinasi keduanya.",
     },
     engagements: {
       eyebrow: "Kerja sama klien",
       headingLead: "Bukti yang sebagian",
       headingEmph: "bisa kami tunjukkan.",
       intro:
-        "Sebagian kerja yang paling menantang justru tidak pernah masuk portofolio. Ini sistem-sistem lengkap yang kami bangun untuk praktik dan perusahaan sungguhan. Ada yang harus tetap di bawah perjanjian kerahasiaan, tanpa nama klien, tanpa data asli. Ada juga yang boleh ditampilkan terang-terangan lengkap dengan screenshot aslinya, kalau kliennya mengizinkan. Yang pasti sama: cakupan kerja dan target hasilnya, kami ceritakan apa adanya.",
+        "Beberapa proyek kami yang paling kompleks tidak dapat ditampilkan secara publik karena terikat perjanjian kerahasiaan (NDA). Kami sangat menghormati privasi dan data klien kami. Namun, untuk proyek yang telah mendapatkan izin, kami menampilkannya secara transparan agar Anda dapat melihat cakupan kerja dan hasil nyata yang kami berikan.",
       fields: {
         client: "Klien",
         sector: "Sektor",
         scope: "Cakupan",
         status: "Status",
       },
-      ctaLine: "Masih menjalankan proses serupa lewat spreadsheet dan perkiraan?",
+      ctaLine: "Apakah operasional bisnis Anda masih bergantung sepenuhnya pada spreadsheet manual dan estimasi yang kurang akurat?",
       cta: "Chat lewat WhatsApp",
       list: [
         {
@@ -476,7 +476,7 @@ export const copy = {
             {
               index: "03",
               title: "Biaya gudang lebih rendah",
-              desc: "Membeli sesuai jumlah yang benar-benar dibutuhkan data, bukan margin aman, berarti membayar lebih sedikit untuk menyimpannya.",
+              desc: "Jumlah yang dibeli mengikuti kebutuhan yang ditunjukkan data, bukan margin aman, jadi ongkos penyimpanannya lebih murah.",
             },
           ],
           screens: [
@@ -492,7 +492,7 @@ export const copy = {
         {
           id: "padel-schedule",
           confidential: false,
-          clientValue: "Padel Coach (praktik solo)",
+          clientValue: "Padel Coach",
           sectorValue: "Coaching olahraga & operasional bisnis pribadi",
           scopeValue: "Jadwal, dashboard omset, AI auto-log",
           statusValue: "Sudah diserahkan, dipakai tiap hari",
@@ -511,7 +511,7 @@ export const copy = {
             {
               index: "02",
               title: "Selalu tahu angka yang sebenarnya",
-              desc: "Omset, sesi yang belum dibayar, dan rincian per venue selalu terkini seketika booking masuk, bukan menunggu akhir bulan.",
+              desc: "Omset, sesi yang belum dibayar, dan rincian per venue selalu terkini begitu booking masuk, bukan menunggu akhir bulan.",
             },
             {
               index: "03",
@@ -523,20 +523,20 @@ export const copy = {
             { src: "/engagement/padel-jadwal.jpg", label: "Jadwal" },
             { src: "/engagement/padel-omset.jpg", label: "Dashboard omset" },
           ],
-          screensCaption: "Layar asli dari aplikasi yang sungguhan dipakai, memakai data demo khusus untuk preview ini.",
+          screensCaption: "Layar asli dari aplikasi yang benar-benar dipakai sehari-hari, dengan data demo khusus untuk preview ini.",
           highlight:
-            "Dibangun karena jadwal coaching yang penuh sudah lebih besar dari kapasitas spreadsheet. Sekarang setiap booking, diketik atau difoto, memperbarui dirinya sendiri.",
+            "Solusi cerdas untuk jadwal yang padat. Kami menggantikan pengelolaan manual yang melelahkan dengan sistem otomatis. Sekarang, setiap data pesanan yang masuk akan langsung diproses oleh AI untuk memperbarui jadwal Anda secara real-time.",
           benchmark:
             "Angka yang ditampilkan di sini adalah data demo ilustratif, bukan omset asli. Dalam pemakaian sehari-hari, ini berjalan di atas jadwal asli sang coach sendiri.",
         },
       ],
     },
     resources: {
-      eyebrow: "Sumber daya gratis",
+      eyebrow: "Template gratis",
       headingLead: "Desain yang",
-      headingEmph: "bergerak.",
+      headingEmph: "dinamis.",
       intro:
-        "Semua yang kami bangun untuk klien, kami bagikan gratis. Koleksi karya kelas produksi yang terus bertambah, tinggal buka demonya, salin prompt-nya, dan bangun versimu sendiri. Tanpa daftar akun, tanpa bayar.",
+        "Kami membagikan inspirasi dari proyek-proyek yang kami bangun secara gratis. Akses koleksi karya kelas produksi kami yang terus berkembang: jelajahi demonya, pelajari metodenya, dan kembangkan versi Anda sendiri. Tanpa perlu mendaftar, tanpa biaya.",
       hint: "Arahkan kursor untuk jeda · klik kartu mana pun untuk buka demonya",
       templates: {
         tag: "11 live · gratis",
@@ -558,10 +558,10 @@ export const copy = {
       },
     },
     footer: {
-      eyebrow: "Ayo bangun",
-      headingLead: "Siap membangun",
-      headingEmph: "sesuatu yang bekerja?",
-      sub: "Ceritakan apa yang sedang kamu buat: website, automation, atau keduanya. Balasan pertama biasanya dalam sehari.",
+      eyebrow: "Ayo mulai berkolaborasi",
+      headingLead: "Siap memiliki sistem",
+      headingEmph: "bisnis yang lebih cerdas?",
+      sub: "Sampaikan rencana Anda kepada kami. Kami akan memberikan tanggapan pertama dalam waktu satu hari.",
       cta: "Mulai lewat WhatsApp",
       secondary: "Lihat karya",
       email: "atau email",
