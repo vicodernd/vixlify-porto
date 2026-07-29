@@ -26,6 +26,21 @@ function Cross({ className = "" }: { className?: string }) {
   );
 }
 
+function Screenshot({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#141414]">
+      <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+        <span className="h-2 w-2 rounded-full bg-[#ff6a2b]/70" aria-hidden="true" />
+        <span className="h-2 w-2 rounded-full bg-white/20" aria-hidden="true" />
+        <span className="h-2 w-2 rounded-full bg-white/20" aria-hidden="true" />
+        <Lock className="ml-2 h-3 w-3 text-white/30" strokeWidth={2} aria-hidden="true" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/35">{label}</span>
+      </div>
+      <img src={src} alt="" aria-hidden="true" className="block w-full" loading="lazy" />
+    </div>
+  );
+}
+
 function RedactedBar() {
   return (
     <span
@@ -74,6 +89,18 @@ export function ClientEngagement() {
           className="mt-6 max-w-2xl text-[15px] leading-relaxed text-white/60 sm:text-[1rem]"
         >
           {t.intro}
+        </Rise>
+
+        <Rise delay={0.12} className="mt-12 grid grid-cols-1 gap-5 sm:mt-16 lg:grid-cols-2">
+          <Screenshot src="/engagement/sop-overview.jpg" label={t.screens.overviewLabel} />
+          <Screenshot src="/engagement/sop-decisions.jpg" label={t.screens.decisionsLabel} />
+        </Rise>
+        <Rise
+          as="p"
+          delay={0.16}
+          className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-[0.1em] text-white/35"
+        >
+          {t.screens.caption}
         </Rise>
 
         {/* dossier meta strip */}

@@ -232,6 +232,11 @@ export const copy = {
       headingEmph: "show you.",
       intro:
         "Some of the most demanding work never makes it into a portfolio. This is a full operations system built for a real company's supply chain team, delivered under a confidentiality agreement. No name, no real data, just the scope and the outcome it targets.",
+      screens: {
+        caption: "Two real screens from the build, running on the demo dataset. Client identity redacted.",
+        overviewLabel: "Executive summary",
+        decisionsLabel: "Decisions & signals",
+      },
       meta: {
         client: "Client",
         sector: "Sector",
@@ -392,6 +397,11 @@ export const copy = {
       headingEmph: "kami tunjukkan.",
       intro:
         "Sebagian kerja paling menantang tidak pernah masuk portofolio. Ini sistem operasi lengkap yang dibangun untuk tim rantai pasok sebuah perusahaan sungguhan, dikerjakan di bawah perjanjian kerahasiaan. Tanpa nama, tanpa data asli, hanya cakupan kerja dan hasil yang ditargetkan.",
+      screens: {
+        caption: "Dua layar asli dari build ini, berjalan di atas dataset demo. Identitas klien disensor.",
+        overviewLabel: "Ringkasan eksekutif",
+        decisionsLabel: "Keputusan & sinyal",
+      },
       meta: {
         client: "Klien",
         sector: "Sektor",
