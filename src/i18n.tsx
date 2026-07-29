@@ -282,7 +282,7 @@ export const copy = {
         {
           id: "padel-schedule",
           confidential: false,
-          clientValue: "Padel Coach (solo practice)",
+          clientValue: "Padel Coach",
           sectorValue: "Sports coaching & personal business ops",
           scopeValue: "Scheduling, revenue dashboard, AI auto-logging",
           statusValue: "Delivered, in daily use",
