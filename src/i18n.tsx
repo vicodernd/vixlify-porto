@@ -227,8 +227,8 @@ export const copy = {
     },
     engagements: {
       eyebrow: "Client engagements",
-      headingLead: "Proof we can't",
-      headingEmph: "show you.",
+      headingLead: "Proof we can",
+      headingEmph: "partly show you.",
       intro:
         "Some of the most demanding work never makes it into a portfolio. These are full systems built for real practices and companies. Some run under a confidentiality agreement, no name, no real data. Others are shown openly, screenshots and all, when the client is fine with it. Either way: the scope and the outcome it targets, honestly.",
       fields: {
@@ -362,24 +362,24 @@ export const copy = {
     nav: { work: "Karya", approach: "Proses", templates: "Template", contact: "Kontak", cta: "Chat" },
     hero: {
       eyebrow: "Studio Web + AI Automation",
-      sub: "Vixlify membangun website premium dan automation AI, sebagai dua layanan yang bisa kamu ambil terpisah atau sekaligus. Website yang menjual, automation yang memangkas kerja manual, atau keduanya berjalan sebagai satu sistem.",
-      primary: "Chat via WhatsApp",
+      sub: "Vixlify membangun dua hal: website premium yang menjual, dan automation AI yang memangkas kerja manual. Ambil salah satunya, atau biarkan keduanya jalan bareng sebagai satu sistem.",
+      primary: "Chat lewat WhatsApp",
       secondary: "Lihat karya",
-      status: "Terbuka untuk proyek",
+      status: "Siap terima proyek baru",
       hint: "Tahan untuk meledakkan",
-      based: "Jakarta · Melayani seluruh dunia",
+      based: "Jakarta · Klien dari mana saja",
     },
     pillars: {
       eyebrow: "Yang kami kerjakan",
-      headingLead: "Dua layanan. Ambil satu, atau",
-      headingEmph: "keduanya.",
+      headingLead: "Dua layanan. Pilih satu, atau",
+      headingEmph: "ambil dua-duanya.",
       independence:
-        "Cuma butuh satu? Wajar. Kebanyakan klien mulai dari website atau automation dulu, lalu menambah yang lain nanti.",
-      cta: "Chat via WhatsApp",
+        "Cuma butuh satu? Wajar. Kebanyakan klien mulai dari website atau automation dulu, baru nambah yang satunya belakangan.",
+      cta: "Chat lewat WhatsApp",
       web: {
         label: "01 / Website",
         title: "Website",
-        desc: "Website premium yang cepat, tampil tajam, dan mengubah pengunjung jadi pelanggan. Didesain dan dibangun dari awal sampai jadi.",
+        desc: "Website premium: cepat, tampilannya tajam, dan bikin pengunjung jadi pelanggan. Kami desain dan bangun dari nol sampai jadi.",
         points: [
           "Landing page yang convert",
           "Website perusahaan & brand",
@@ -390,7 +390,7 @@ export const copy = {
       auto: {
         label: "02 / AI Automation",
         title: "AI Automation",
-        desc: "Alur kerja yang berjalan sendiri. Kami sambungkan tool-mu dan biarkan AI menangani pekerjaan berulang, supaya timmu berhenti copy-paste.",
+        desc: "Alur kerja yang jalan sendiri tanpa perlu disentuh. Tool-tool kamu kami sambungkan, biar AI yang urus pekerjaan berulangnya, supaya tim kamu berhenti copy-paste.",
         points: [
           "Menangani lead & pertanyaan masuk",
           "Pipeline konten & data",
@@ -401,13 +401,13 @@ export const copy = {
     },
     work: {
       eyebrow: "Karya pilihan",
-      headingLead: "Bukti yang bisa kamu",
-      headingEmph: "klik langsung.",
+      headingLead: "Bukti yang bisa langsung",
+      headingEmph: "kamu klik.",
       intro:
-        "Ini karya studio yang kami bangun sendiri. Semuanya live: buka, klik, nilai kualitasnya. Tangan yang sama yang akan mengerjakan punyamu.",
+        "Ini karya yang kami bangun sendiri sebagai studio. Semuanya live, tinggal buka dan klik-klik, lalu nilai sendiri kualitasnya. Tangan yang sama yang akan mengerjakan punya kamu.",
       view: "Live",
       explore: "Lihat proyek",
-      note: "6 build · semua live",
+      note: "6 karya · semua live",
       dragHint: "Scroll untuk menjelajah",
     },
     how: {
@@ -415,32 +415,32 @@ export const copy = {
       headingLead: "Tiga langkah.",
       headingEmph: "Tanpa tebak-tebakan.",
       intro:
-        "Jalur yang jelas dari pesan pertama sampai sesuatu yang live. Kamu lihat rencana dan harganya sebelum apa pun dibangun.",
+        "Jalurnya jelas, dari chat pertama sampai sesuatu yang benar-benar live. Rencana dan harganya kamu lihat dulu, baru kami mulai bangun.",
       steps: [
         {
           label: "Langkah 01",
           title: "Ruang lingkup",
-          body: "Kami petakan tujuan, audiens, dan seperti apa keberhasilannya. Kamu dapat rencana jelas dan harga pasti sebelum satu pun piksel atau workflow dibangun.",
+          body: "Kami cari tahu dulu tujuannya, siapa audiensnya, dan seperti apa hasil yang dianggap berhasil. Baru setelah itu kamu dapat rencana jelas dan harga pasti, sebelum satu piksel atau satu workflow pun mulai dibangun.",
         },
         {
           label: "Langkah 02",
           title: "Bangun",
-          body: "Desain dan pengembangan dalam satu tangan. Kamu lihat prosesnya bertahap dan bisa mengarahkan. Bukan kotak hitam, tanpa kejutan di akhir.",
+          body: "Desain dan development kami pegang sendiri, jadi satu alur yang konsisten. Prosesnya kamu lihat bertahap dan bisa kamu arahkan kapan saja. Tidak ada proses tertutup, tidak ada kejutan di akhir.",
         },
         {
           label: "Langkah 03",
           title: "Rilis & serah terima",
-          body: "Kami rilis, ukur, dan serahkan sesuatu yang benar-benar bisa kamu jalankan. Automation tetap bekerja lama setelah kami selesai.",
+          body: "Situsnya kami rilis, hasilnya kami ukur, lalu semuanya diserahkan dalam kondisi yang benar-benar bisa kamu jalankan sendiri. Automation-nya tetap bekerja lama setelah proyek selesai.",
         },
       ],
       applies: "Tiga langkah yang sama, baik kamu ambil website, automation, atau keduanya.",
     },
     engagements: {
       eyebrow: "Kerja sama klien",
-      headingLead: "Bukti yang tidak bisa",
-      headingEmph: "kami tunjukkan.",
+      headingLead: "Bukti yang sebagian",
+      headingEmph: "bisa kami tunjukkan.",
       intro:
-        "Sebagian kerja paling menantang tidak pernah masuk portofolio. Ini sistem-sistem lengkap yang dibangun untuk praktik dan perusahaan sungguhan. Sebagian berjalan di bawah perjanjian kerahasiaan, tanpa nama, tanpa data asli. Sebagian lagi ditampilkan terang-terangan, lengkap dengan screenshot aslinya, kalau kliennya mengizinkan. Yang pasti: cakupan kerja dan hasil yang ditargetkan, apa adanya.",
+        "Sebagian kerja yang paling menantang justru tidak pernah masuk portofolio. Ini sistem-sistem lengkap yang kami bangun untuk praktik dan perusahaan sungguhan. Ada yang harus tetap di bawah perjanjian kerahasiaan, tanpa nama klien, tanpa data asli. Ada juga yang boleh ditampilkan terang-terangan lengkap dengan screenshot aslinya, kalau kliennya mengizinkan. Yang pasti sama: cakupan kerja dan target hasilnya, kami ceritakan apa adanya.",
       fields: {
         client: "Klien",
         sector: "Sektor",
@@ -448,7 +448,7 @@ export const copy = {
         status: "Status",
       },
       ctaLine: "Masih menjalankan proses serupa lewat spreadsheet dan perkiraan?",
-      cta: "Chat via WhatsApp",
+      cta: "Chat lewat WhatsApp",
       list: [
         {
           id: "sop-cockpit",
@@ -458,7 +458,7 @@ export const copy = {
           statusValue: "Rahasia, sudah diserahkan",
           stats: [
             { value: "7", label: "model forecasting yang di-port dan diuji unit" },
-            { value: "19", label: "layar operasional yang menghitung real-time" },
+            { value: "19", label: "layar operasional yang menghitung secara real-time" },
             { value: "599+", label: "automated test yang menjaga logika bisnis" },
             { value: "4", label: "status data: live, shadow, awaiting, quarantined" },
           ],
@@ -483,7 +483,7 @@ export const copy = {
             { src: "/engagement/sop-overview.jpg", label: "Ringkasan eksekutif" },
             { src: "/engagement/sop-decisions.jpg", label: "Keputusan & sinyal" },
           ],
-          screensCaption: "Layar asli dari build ini, berjalan di atas dataset demo. Identitas klien disensor.",
+          screensCaption: "Layar asli dari build ini, memakai dataset demo. Identitas klien disamarkan.",
           highlight:
             "Yang dulu berarti menarik angka dari belasan spreadsheet sebelum setiap rapat perencanaan bulanan, sekarang terhitung ulang saat data baru masuk.",
           benchmark:
@@ -523,7 +523,7 @@ export const copy = {
             { src: "/engagement/padel-jadwal.jpg", label: "Jadwal" },
             { src: "/engagement/padel-omset.jpg", label: "Dashboard omset" },
           ],
-          screensCaption: "Layar asli dari app yang sungguhan, berjalan di atas data demo khusus untuk preview ini.",
+          screensCaption: "Layar asli dari aplikasi yang sungguhan dipakai, memakai data demo khusus untuk preview ini.",
           highlight:
             "Dibangun karena jadwal coaching yang penuh sudah lebih besar dari kapasitas spreadsheet. Sekarang setiap booking, diketik atau difoto, memperbarui dirinya sendiri.",
           benchmark:
@@ -536,7 +536,7 @@ export const copy = {
       headingLead: "Desain yang",
       headingEmph: "bergerak.",
       intro:
-        "Semua yang kami bangun untuk klien, kami bagikan juga. Perpustakaan karya kelas produksi yang terus bertambah: buka demonya, salin prompt-nya, bangun versimu sendiri. Tanpa daftar, tanpa bayar.",
+        "Semua yang kami bangun untuk klien, kami bagikan gratis. Koleksi karya kelas produksi yang terus bertambah, tinggal buka demonya, salin prompt-nya, dan bangun versimu sendiri. Tanpa daftar akun, tanpa bayar.",
       hint: "Arahkan kursor untuk jeda · klik kartu mana pun untuk buka demonya",
       templates: {
         tag: "11 live · gratis",
@@ -565,7 +565,7 @@ export const copy = {
       cta: "Mulai lewat WhatsApp",
       secondary: "Lihat karya",
       email: "atau email",
-      status: "Terbuka untuk proyek",
+      status: "Siap terima proyek baru",
     },
   },
 } as const;

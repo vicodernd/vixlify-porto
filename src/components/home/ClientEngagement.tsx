@@ -43,7 +43,9 @@ function Screenshot({ src, label }: { src: string; label: string }) {
         <Lock className="ml-2 h-3 w-3 text-white/30" strokeWidth={2} aria-hidden="true" />
         <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/35">{label}</span>
       </div>
-      <img src={src} alt="" aria-hidden="true" className="block w-full" loading="lazy" />
+      <div className="flex max-h-[420px] items-start justify-center overflow-hidden bg-black/20">
+        <img src={src} alt="" aria-hidden="true" className="block w-auto max-h-[420px]" loading="lazy" />
+      </div>
     </div>
   );
 }
@@ -94,32 +96,46 @@ function EngagementItem({
   const reduce = useReducedMotion();
 
   return (
-    <div className="border-b border-white/10 first:border-t">
+    <div className="border-b border-white/15 first:border-t">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="group flex w-full items-center gap-4 py-7 text-left sm:gap-6 sm:py-8"
+        className={`group -mx-5 flex w-[calc(100%+2.5rem)] items-center gap-4 rounded-2xl px-5 py-7 text-left transition-colors duration-300 hover:bg-white/[0.04] sm:-mx-8 sm:w-[calc(100%+4rem)] sm:gap-6 sm:px-8 sm:py-9 ${
+          open ? "bg-white/[0.04]" : ""
+        }`}
       >
-        <span className="font-display text-lg font-semibold text-white/25 sm:text-xl">
+        <span
+          className={`font-display text-xl font-bold transition-colors duration-300 sm:text-2xl ${
+            open ? "text-[#ff6a2b]" : "text-white/30 group-hover:text-[#ff6a2b]/70"
+          }`}
+        >
           {String(index + 1).padStart(2, "0")}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-display text-lg font-semibold tracking-[-0.01em] text-[#ececec] sm:text-2xl">
+          <span className="block font-display text-xl font-bold tracking-[-0.01em] text-[#ececec] sm:text-3xl">
             {item.sectorValue}
           </span>
-          <span className="mt-1 block truncate font-mono text-[11px] uppercase tracking-[0.1em] text-white/40 sm:text-[12px]">
+          <span className="mt-1.5 block truncate font-mono text-[11px] uppercase tracking-[0.1em] text-white/45 sm:text-[12px]">
             {item.scopeValue}
           </span>
         </span>
-        <span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45 sm:inline-flex">
+        <span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-white/[0.03] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/60 sm:inline-flex">
           {item.confidential && <Lock className="h-2.5 w-2.5" aria-hidden="true" />}
           {item.statusValue}
         </span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-white/45 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-          aria-hidden="true"
-        />
+        <span
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
+            open
+              ? "border-[#ff6a2b] bg-[#ff6a2b]/10 text-[#ff6a2b]"
+              : "border-white/20 text-white/60 group-hover:border-[#ff6a2b]/50 group-hover:text-[#ff6a2b]"
+          }`}
+        >
+          <ChevronDown
+            className={`h-4 w-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          />
+        </span>
       </button>
 
       <div
@@ -231,7 +247,7 @@ export function ClientEngagement() {
   const { lang } = useLang();
   const t = copy[lang].engagements;
   const ctaHref = waLink(lang);
-  const [openId, setOpenId] = useState<string | null>(t.list[0]?.id ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   return (
     <section id="engagements" className="relative overflow-hidden bg-[#0a0a0a] text-[#ececec]">

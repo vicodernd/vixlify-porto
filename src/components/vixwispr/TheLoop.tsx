@@ -1,17 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion, useInView } from "framer-motion";
 import { BlurReveal, Rise, LineGrow } from "@/components/motion/reveal";
+import { useLang } from "@/i18n";
 import { EASE, EMBER, PILL_BG, PILL_BORDER, WEIGHTS, barHeight, speechLevel } from "./pillSpec";
 
 /**
  * Section 2 — The mechanic (DARK, closes the dark act).
  *
- * The hero above already PLAYS the full pipeline on a loop. Repeating that here
- * would be a rerun, so this section changes who is driving: the visitor holds the
- * key themselves and watches the app's real states answer. That is the Anime.js
- * lesson from the design library taken literally — the page is the product demo —
- * and it is the one claim a static screenshot can never make, because the whole
- * point of VixWispr is that it is a HOLD, not a click.
+ * The hero above already PLAYS the full pipeline on a loop. This section still
+ * changes who is driving: the visitor can hold the key themselves and watch the
+ * app's real states answer, which is the one claim a static screenshot can never
+ * make, because the whole point of VixWispr is that it is a HOLD, not a click.
+ *
+ * Auto-demo (added 2026-07-29, Vico's call): a visitor who never thinks to click
+ * would otherwise scroll past a static, empty-looking panel, so the panel plays
+ * the cycle once by itself as soon as it scrolls into view (a simulated hold,
+ * same `start()`/`end()` the real button calls), then sits ready for the
+ * visitor to hold it themselves and replay in whichever language they pick.
+ * Skipped under prefers-reduced-motion, which should never spring an
+ * un-requested animated sequence on a visitor who opted out of exactly that.
  *
  * Honesty rules applied here (the site's standing bar):
  *  - Nothing is recorded. No microphone is requested, and the panel says so in
@@ -99,15 +106,20 @@ function Keycap({ label, lit }: { label: string; lit: boolean }) {
 
 export function TheLoop() {
   const reduce = useReducedMotion();
+  const { lang: siteLang } = useLang();
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [shown, setShown] = useState(0);
   const [tooShort, setTooShort] = useState(false);
   const [everHeld, setEverHeld] = useState(false);
   /** Chosen before the hold; locked in via activeLang once a hold starts, so
-   *  a demo in progress can never change language under itself. */
-  const [lang, setLang] = useState<"EN" | "ID">("EN");
-  const [activeLang, setActiveLang] = useState<"EN" | "ID">("EN");
+   *  a demo in progress can never change language under itself. Defaults to
+   *  whatever the visitor already set the site's own EN/ID toggle to, so
+   *  choosing "id" there and then finding this demo defaulted to English
+   *  does not read as broken. Still freely switchable here afterward; this
+   *  is only the starting point, not a lock to the site language. */
+  const [lang, setLang] = useState<"EN" | "ID">(siteLang === "id" ? "ID" : "EN");
+  const [activeLang, setActiveLang] = useState<"EN" | "ID">(siteLang === "id" ? "ID" : "EN");
   const [heldTenths, setHeldTenths] = useState(0);
 
   // Refs mirror state for the rAF loop, which must read the current phase
@@ -118,6 +130,13 @@ export function TheLoop() {
   const heldTenthsRef = useRef(0);
   const barsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const rafRef = useRef<number | null>(null);
+
+  // Auto-demo on scroll-in: the panel itself, not the whole section, so it
+  // fires once the interactive area is actually on screen.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const autoPlayedRef = useRef(false);
+  const autoTimersRef = useRef<number[]>([]);
+  const inView = useInView(panelRef, { once: true, margin: "-15% 0px" });
 
   const goto = useCallback((next: Phase) => {
     phaseRef.current = next;
@@ -148,6 +167,26 @@ export function TheLoop() {
     }
     goto("working");
   }, [goto]);
+
+  /* Play the cycle once, unprompted, the moment the panel scrolls into view.
+     A short pause after it appears reads as intentional rather than as a
+     glitch, then holds roughly as long as a real dictated sentence would. */
+  useEffect(() => {
+    if (!inView || autoPlayedRef.current || reduce) return;
+    autoPlayedRef.current = true;
+    const APPEAR_DELAY_MS = 500;
+    const AUTO_HOLD_MS = 1400;
+    const t1 = window.setTimeout(() => {
+      start();
+      const t2 = window.setTimeout(() => end(), AUTO_HOLD_MS);
+      autoTimersRef.current.push(t2);
+    }, APPEAR_DELAY_MS);
+    autoTimersRef.current.push(t1);
+    return () => {
+      autoTimersRef.current.forEach((id) => window.clearTimeout(id));
+      autoTimersRef.current = [];
+    };
+  }, [inView, reduce, start, end]);
 
   /* Releasing outside the button (or with the window losing focus) still has to
      end the hold, or the panel would sit in LISTENING forever. */
@@ -288,7 +327,7 @@ export function TheLoop() {
             The visitor drives it. Everything here is a simulation of the app's
             states and says so on the panel itself. */}
         <Rise delay={0.1} className="mt-16 sm:mt-20">
-          <div className="relative rounded-2xl border border-white/12 bg-white/[0.02] p-6 sm:p-9">
+          <div ref={panelRef} className="relative rounded-2xl border border-white/12 bg-white/[0.02] p-6 sm:p-9">
 
             <div className="relative grid grid-cols-1 gap-9 lg:grid-cols-12 lg:gap-12">
               {/* LEFT: the hold affordance */}
