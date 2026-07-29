@@ -238,6 +238,12 @@ export const copy = {
         desc: "Live web templates with the full generation prompt attached. Open, study, copy, build.",
         cta: "Browse templates",
       },
+      vixwispr: {
+        tag: "Free · Windows",
+        title: "VixWispr",
+        desc: "Voice dictation for Windows. Hold a hotkey, speak, and it types the cleaned-up result at your cursor.",
+        cta: "Get VixWispr",
+      },
       automations: {
         tag: "Coming soon",
         title: "Automations",
@@ -345,6 +351,12 @@ export const copy = {
         title: "Template",
         desc: "Template web live lengkap dengan prompt pembuatannya. Buka, pelajari, salin, bangun.",
         cta: "Lihat template",
+      },
+      vixwispr: {
+        tag: "Gratis · Windows",
+        title: "VixWispr",
+        desc: "Dikte suara untuk Windows. Tahan satu hotkey, bicara, dan hasil yang sudah rapi langsung diketik di kursor.",
+        cta: "Ambil VixWispr",
       },
       automations: {
         tag: "Segera hadir",
