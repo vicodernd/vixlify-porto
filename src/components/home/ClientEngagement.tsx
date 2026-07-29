@@ -1,18 +1,24 @@
-import { Lock, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Lock, MessageCircle } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import { BlurReveal, Rise, LineGrow } from "@/components/motion/reveal";
 import { useLang, copy, waLink } from "@/i18n";
 
 /**
- * Client Engagement (DARK). Sits right after Selected Work: where that
- * section proves craft through live demos, this one proves it through a real
- * paid engagement that can never be a live demo. Confidentiality is the whole
- * point, so the visual language is a "case file" instead of a "live screen":
- * a redacted client name, a mono dossier strip, and value framed as what this
- * class of system targets, not a specific claim about this client's results
- * (nothing is measured in production yet, the client's own team still has to
- * wire the live database). Numbers asserted here are either facts about the
- * build itself (screens, tests, models) or clearly labeled external
- * benchmarks, never a fabricated outcome for this engagement.
+ * Client Engagements (DARK, plural). Sits right after Selected Work: where
+ * that section proves craft through live demos, this one proves it through
+ * real paid engagements that can never be a live demo. Confidentiality is the
+ * whole point, so the visual language is a "case file" instead of a "live
+ * screen": a redacted client name, a mono dossier strip, and value framed as
+ * what this class of system targets, not a specific claim about a client's
+ * results. Numbers asserted here are either facts about the build itself
+ * (screens, tests, models) or clearly labeled external benchmarks, never a
+ * fabricated outcome for any engagement.
+ *
+ * ACCORDION, one case open at a time (Vico's call, 2026-07-29, since more
+ * engagements are coming and a full case-file per entry would make the page
+ * grow without bound). Add a new engagement by appending to
+ * `copy.<lang>.engagements.list` in src/i18n.tsx; nothing else has to change.
  */
 
 function Cross({ className = "" }: { className?: string }) {
@@ -56,10 +62,168 @@ function RedactedBar() {
   );
 }
 
+type Engagement = {
+  id: string;
+  sectorValue: string;
+  scopeValue: string;
+  statusValue: string;
+  stats: readonly { value: string; label: string }[];
+  values: readonly { index: string; title: string; desc: string }[];
+  screens: readonly { src: string; label: string }[];
+  screensCaption: string;
+  highlight: string;
+  benchmark: string;
+};
+
+function EngagementItem({
+  item,
+  index,
+  open,
+  onToggle,
+  fields,
+}: {
+  item: Engagement;
+  index: number;
+  open: boolean;
+  onToggle: () => void;
+  fields: { client: string; sector: string; scope: string; status: string };
+}) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="border-b border-white/10 first:border-t">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="group flex w-full items-center gap-4 py-7 text-left sm:gap-6 sm:py-8"
+      >
+        <span className="font-display text-lg font-semibold text-white/25 sm:text-xl">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-lg font-semibold tracking-[-0.01em] text-[#ececec] sm:text-2xl">
+            {item.sectorValue}
+          </span>
+          <span className="mt-1 block truncate font-mono text-[11px] uppercase tracking-[0.1em] text-white/40 sm:text-[12px]">
+            {item.scopeValue}
+          </span>
+        </span>
+        <span className="hidden shrink-0 rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45 sm:inline-block">
+          {item.statusValue}
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-white/45 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        />
+      </button>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: open ? "1fr" : "0fr",
+          transition: reduce ? "none" : "grid-template-rows 480ms cubic-bezier(0.4,0,0.2,1)",
+        }}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-14 sm:pb-16">
+            {/* dossier meta strip */}
+            <div className="grid grid-cols-2 divide-y divide-white/10 border-y border-white/10 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+              <div className="px-1 py-6 sm:px-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
+                  {fields.client}
+                </div>
+                <div className="mt-2">
+                  <RedactedBar />
+                </div>
+              </div>
+              <div className="px-1 py-6 sm:px-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
+                  {fields.sector}
+                </div>
+                <div className="mt-2 text-[13px] font-medium text-white/80">{item.sectorValue}</div>
+              </div>
+              <div className="px-1 py-6 sm:px-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
+                  {fields.scope}
+                </div>
+                <div className="mt-2 text-[13px] font-medium text-white/80">{item.scopeValue}</div>
+              </div>
+              <div className="px-1 py-6 sm:px-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
+                  {fields.status}
+                </div>
+                <div className="mt-2 text-[13px] font-medium text-white/80">{item.statusValue}</div>
+              </div>
+            </div>
+
+            {/* stat strip */}
+            <div className="mt-10 grid grid-cols-2 gap-y-8 sm:mt-12 lg:grid-cols-4 lg:gap-x-6">
+              {item.stats.map((s) => (
+                <div key={s.label} className="px-1 sm:px-6 lg:border-l lg:border-white/10 lg:first:border-l-0 lg:first:pl-0">
+                  <div className="font-display text-4xl font-semibold tracking-[-0.02em] text-[#ececec] sm:text-5xl">
+                    {s.value}
+                  </div>
+                  <div className="mt-2 max-w-[20ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-white/45">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* value grid */}
+            <div className="mt-12 grid grid-cols-1 divide-y divide-white/10 border-y border-white/10 sm:mt-14 md:grid-cols-3 md:divide-x md:divide-y-0">
+              {item.values.map((v) => (
+                <div key={v.index} className="group relative px-1 py-10 sm:px-6 md:px-8">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-0 top-3 font-display text-[4rem] font-bold leading-none text-white/[0.04] sm:left-2 sm:text-[5.5rem]"
+                  >
+                    {v.index}
+                  </span>
+                  <div className="relative pt-14 sm:pt-16">
+                    <h3 className="font-display text-xl font-semibold leading-tight tracking-[-0.02em] text-[#ececec] sm:text-2xl">
+                      {v.title}
+                    </h3>
+                    <p className="mt-3 text-[14px] leading-relaxed text-white/55">{v.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* screenshots */}
+            {item.screens.length > 0 && (
+              <>
+                <div className="mt-12 grid grid-cols-1 gap-5 sm:mt-14 lg:grid-cols-2">
+                  {item.screens.map((s) => (
+                    <Screenshot key={s.src} src={s.src} label={s.label} />
+                  ))}
+                </div>
+                <p className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-[0.1em] text-white/35">
+                  {item.screensCaption}
+                </p>
+              </>
+            )}
+
+            {/* highlight + benchmark */}
+            <p className="mt-12 max-w-3xl font-display text-lg font-medium leading-snug tracking-[-0.01em] text-white/85 sm:mt-14 sm:text-xl">
+              {item.highlight}
+            </p>
+            <p className="mt-5 max-w-2xl font-mono text-[11px] uppercase leading-relaxed tracking-[0.1em] text-white/35">
+              {item.benchmark}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ClientEngagement() {
   const { lang } = useLang();
   const t = copy[lang].engagements;
   const ctaHref = waLink(lang);
+  const [openId, setOpenId] = useState<string | null>(t.list[0]?.id ?? null);
 
   return (
     <section id="engagements" className="relative overflow-hidden bg-[#0a0a0a] text-[#ececec]">
@@ -90,113 +254,25 @@ export function ClientEngagement() {
         >
           {t.intro}
         </Rise>
-
-        <Rise delay={0.12} className="mt-12 grid grid-cols-1 gap-5 sm:mt-16 lg:grid-cols-2">
-          <Screenshot src="/engagement/sop-overview.jpg" label={t.screens.overviewLabel} />
-          <Screenshot src="/engagement/sop-decisions.jpg" label={t.screens.decisionsLabel} />
-        </Rise>
-        <Rise
-          as="p"
-          delay={0.16}
-          className="mt-4 font-mono text-[11px] uppercase leading-relaxed tracking-[0.1em] text-white/35"
-        >
-          {t.screens.caption}
-        </Rise>
-
-        {/* dossier meta strip */}
-        <Rise
-          delay={0.15}
-          className="mt-14 grid grid-cols-2 divide-y divide-white/10 border-y border-white/10 sm:mt-20 lg:grid-cols-4 lg:divide-x lg:divide-y-0"
-        >
-          <div className="px-1 py-6 sm:px-6">
-            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
-              {t.meta.client}
-            </div>
-            <div className="mt-2">
-              <RedactedBar />
-            </div>
-          </div>
-          <div className="px-1 py-6 sm:px-6">
-            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
-              {t.meta.sector}
-            </div>
-            <div className="mt-2 text-[13px] font-medium text-white/80">{t.meta.sectorValue}</div>
-          </div>
-          <div className="px-1 py-6 sm:px-6">
-            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
-              {t.meta.scope}
-            </div>
-            <div className="mt-2 text-[13px] font-medium text-white/80">{t.meta.scopeValue}</div>
-          </div>
-          <div className="px-1 py-6 sm:px-6">
-            <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
-              {t.meta.status}
-            </div>
-            <div className="mt-2 text-[13px] font-medium text-white/80">{t.meta.statusValue}</div>
-          </div>
-        </Rise>
-
-        {/* engine stat strip */}
-        <div className="mt-14 grid grid-cols-2 gap-y-8 sm:mt-16 lg:grid-cols-4 lg:gap-x-6">
-          {t.stats.map((s, i) => (
-            <Rise
-              key={s.label}
-              delay={0.05 * i}
-              className="px-1 sm:px-6 lg:border-l lg:border-white/10 lg:first:border-l-0 lg:first:pl-0"
-            >
-              <div className="font-display text-4xl font-semibold tracking-[-0.02em] text-[#ececec] sm:text-5xl">
-                {s.value}
-              </div>
-              <div className="mt-2 max-w-[20ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.08em] text-white/45">
-                {s.label}
-              </div>
-            </Rise>
-          ))}
-        </div>
       </div>
 
-      {/* value grid */}
-      <div className="relative mx-auto mt-20 max-w-[1500px] sm:mt-28">
-        <div className="grid grid-cols-1 divide-y divide-white/10 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {t.values.map((v) => (
-            <div key={v.index} className="group relative px-5 py-14 sm:px-8 md:px-10 lg:px-12">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute left-4 top-4 font-display text-[5.5rem] font-bold leading-none text-white/[0.04] transition-transform duration-500 group-hover:-translate-y-1 sm:text-[7rem] lg:left-6"
-              >
-                {v.index}
-              </span>
-              <div className="relative pt-20 sm:pt-24">
-                <h3 className="font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-[#ececec] sm:text-[1.75rem]">
-                  {v.title}
-                </h3>
-                <p className="mt-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
-                  {v.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* accordion list */}
+      <div className="mx-auto mt-14 max-w-[1500px] px-5 sm:mt-20 sm:px-8">
+        {t.list.map((item, i) => (
+          <EngagementItem
+            key={item.id}
+            item={item}
+            index={i}
+            open={openId === item.id}
+            onToggle={() => setOpenId((cur) => (cur === item.id ? null : item.id))}
+            fields={t.fields}
+          />
+        ))}
       </div>
 
-      {/* highlight + benchmark + cta */}
+      {/* shared cta */}
       <div className="mx-auto max-w-[1500px] px-5 pb-24 pt-16 sm:px-8 sm:pb-32 lg:pb-40">
-        <Rise
-          as="p"
-          className="max-w-3xl font-display text-xl font-medium leading-snug tracking-[-0.01em] text-white/85 sm:text-2xl"
-        >
-          {t.highlight}
-        </Rise>
-
-        <Rise
-          delay={0.1}
-          as="p"
-          className="mt-6 max-w-2xl font-mono text-[11px] uppercase leading-relaxed tracking-[0.1em] text-white/35"
-        >
-          {t.benchmark}
-        </Rise>
-
-        <Rise delay={0.15} className="mt-12 flex flex-wrap items-center gap-6">
+        <Rise delay={0.15} className="flex flex-wrap items-center gap-6">
           <span className="text-[15px] text-white/60">{t.ctaLine}</span>
           <a
             href={ctaHref}
