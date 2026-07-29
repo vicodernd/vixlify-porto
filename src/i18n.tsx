@@ -225,6 +225,52 @@ export const copy = {
       ],
       applies: "Same three steps whether you take a website, an automation, or both.",
     },
+    engagements: {
+      eyebrow: "Client engagement",
+      confidential: "Confidential · NDA",
+      headingLead: "Proof we can't",
+      headingEmph: "show you.",
+      intro:
+        "Some of the most demanding work never makes it into a portfolio. This is a full operations system built for a real company's supply chain team, delivered under a confidentiality agreement. No name, no real data, just the scope and the outcome it targets.",
+      meta: {
+        client: "Client",
+        sector: "Sector",
+        sectorValue: "Supply chain & operations planning",
+        scope: "Scope",
+        scopeValue: "Forecasting engine port, full UI rebuild",
+        status: "Status",
+        statusValue: "Confidential, delivered",
+      },
+      stats: [
+        { value: "7", label: "forecasting models ported and unit tested" },
+        { value: "19", label: "operational screens computing in real time" },
+        { value: "599+", label: "automated tests guarding the business math" },
+        { value: "4", label: "data states: live, shadow, awaiting, quarantined" },
+      ],
+      values: [
+        {
+          index: "01",
+          title: "Lower working capital",
+          desc: "Every purchase ties back to real demand instead of a gut call, so less cash sits parked in inventory that isn't moving.",
+        },
+        {
+          index: "02",
+          title: "Less dead stock, same service level",
+          desc: "Overstock and near-stockouts surface on the same screen, so slow movers get cleared without service level paying for it.",
+        },
+        {
+          index: "03",
+          title: "Lower warehouse cost",
+          desc: "Buying the amount the data actually calls for, not a safety margin, means paying to store less of it.",
+        },
+      ],
+      highlight:
+        "What used to mean pulling numbers from a dozen spreadsheets before every monthly planning meeting now recomputes the moment new data lands.",
+      benchmark:
+        "Mature sales and operations planning programs are widely reported (Gartner, APICS) to cut inventory carrying cost by 10 to 20 percent while holding service levels flat. Published industry benchmark, not a measured result for this engagement.",
+      ctaLine: "Running a similar process on spreadsheets and gut feel?",
+      cta: "Chat on WhatsApp",
+    },
     resources: {
       eyebrow: "Free resources",
       headingLead: "Design in",
@@ -338,6 +384,52 @@ export const copy = {
         },
       ],
       applies: "Tiga langkah yang sama, baik kamu ambil website, automation, atau keduanya.",
+    },
+    engagements: {
+      eyebrow: "Kerja sama klien",
+      confidential: "Rahasia · NDA",
+      headingLead: "Bukti yang tidak bisa",
+      headingEmph: "kami tunjukkan.",
+      intro:
+        "Sebagian kerja paling menantang tidak pernah masuk portofolio. Ini sistem operasi lengkap yang dibangun untuk tim rantai pasok sebuah perusahaan sungguhan, dikerjakan di bawah perjanjian kerahasiaan. Tanpa nama, tanpa data asli, hanya cakupan kerja dan hasil yang ditargetkan.",
+      meta: {
+        client: "Klien",
+        sector: "Sektor",
+        sectorValue: "Perencanaan rantai pasok & operasi",
+        scope: "Cakupan",
+        scopeValue: "Port mesin forecasting, rebuild UI penuh",
+        status: "Status",
+        statusValue: "Rahasia, sudah diserahkan",
+      },
+      stats: [
+        { value: "7", label: "model forecasting yang di-port dan diuji unit" },
+        { value: "19", label: "layar operasional yang menghitung real-time" },
+        { value: "599+", label: "automated test yang menjaga logika bisnis" },
+        { value: "4", label: "status data: live, shadow, awaiting, quarantined" },
+      ],
+      values: [
+        {
+          index: "01",
+          title: "Modal kerja lebih rendah",
+          desc: "Setiap pembelian mengacu pada permintaan nyata, bukan perkiraan kasar, jadi lebih sedikit uang tertahan di inventory yang tidak bergerak.",
+        },
+        {
+          index: "02",
+          title: "Dead stock lebih rendah, service level tetap terjaga",
+          desc: "Overstock dan barang yang hampir habis muncul di layar yang sama, jadi barang lambat bisa dibersihkan tanpa mengorbankan service level.",
+        },
+        {
+          index: "03",
+          title: "Biaya gudang lebih rendah",
+          desc: "Membeli sesuai jumlah yang benar-benar dibutuhkan data, bukan margin aman, berarti membayar lebih sedikit untuk menyimpannya.",
+        },
+      ],
+      highlight:
+        "Yang dulu berarti menarik angka dari belasan spreadsheet sebelum setiap rapat perencanaan bulanan, sekarang terhitung ulang saat data baru masuk.",
+      benchmark:
+        "Program sales and operations planning yang matang banyak dilaporkan (Gartner, APICS) memangkas biaya penyimpanan inventory 10 sampai 20 persen sambil menjaga service level tetap. Ini benchmark industri yang dipublikasikan, bukan hasil terukur dari kerja sama ini.",
+      ctaLine: "Masih menjalankan proses serupa lewat spreadsheet dan perkiraan?",
+      cta: "Chat via WhatsApp",
     },
     resources: {
       eyebrow: "Sumber daya gratis",

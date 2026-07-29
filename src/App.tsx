@@ -8,6 +8,7 @@ import { Hero } from "@/components/home/Hero";
 import { KineticBand } from "@/components/home/KineticBand";
 import { Pillars } from "@/components/home/Pillars";
 import { SelectedWork } from "@/components/home/SelectedWork";
+import { ClientEngagement } from "@/components/home/ClientEngagement";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FreeResources } from "@/components/home/FreeResources";
 import { SiteFooter } from "@/components/home/Footer";
@@ -51,6 +52,7 @@ export default function App() {
           <KineticBand />
           <Pillars />
           <SelectedWork />
+          <ClientEngagement />
           <HowItWorks />
           <FreeResources />
         </main>
