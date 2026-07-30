@@ -78,6 +78,8 @@ function PillarBlock({
         src={img}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         style={{
           y,
           scale,
@@ -177,8 +179,8 @@ export function Pillars() {
         <Cross className="-top-4 right-4 text-sm lg:right-8" />
 
         <div className="grid grid-cols-1 divide-y divide-white/10 md:grid-cols-2 md:divide-x md:divide-y-0">
-          <PillarBlock pillar={t.web} index={0} img="/pillars/web.png" ctaHref={ctaHref} cta={t.cta} />
-          <PillarBlock pillar={t.auto} index={1} img="/pillars/auto.png" ctaHref={ctaHref} cta={t.cta} />
+          <PillarBlock pillar={t.web} index={0} img="/pillars/web.webp" ctaHref={ctaHref} cta={t.cta} />
+          <PillarBlock pillar={t.auto} index={1} img="/pillars/auto.webp" ctaHref={ctaHref} cta={t.cta} />
         </div>
       </div>
 

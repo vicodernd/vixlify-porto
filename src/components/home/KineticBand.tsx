@@ -62,9 +62,11 @@ export function KineticBand() {
           still. Same mask + screen blend so no rectangle shows. */}
       {reduce ? (
         <motion.img
-          src="/kinetic/mark-3d.png"
+          src="/kinetic/mark-3d.webp"
           alt=""
           aria-hidden="true"
+          loading="lazy"
+          decoding="async"
           style={{
             y,
             scale,
@@ -78,11 +80,12 @@ export function KineticBand() {
       ) : (
         <motion.video
           src="/kinetic/mark-3d.mp4"
-          poster="/kinetic/mark-3d.png"
+          poster="/kinetic/mark-3d.webp"
           autoPlay
           muted
           loop
           playsInline
+          preload="metadata"
           aria-hidden="true"
           style={{
             y,

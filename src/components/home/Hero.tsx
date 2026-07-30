@@ -72,8 +72,8 @@ export function Hero() {
 
         {/* headline = the tagline, always English (brand rule), resolves from blur */}
         <h1 className="mt-6 font-display text-[13vw] font-semibold leading-[0.9] tracking-[-0.05em] text-[#e4e4e4] sm:mt-8 sm:text-[9vw] lg:text-[7.5rem] xl:text-[8.5rem]">
-          <BlurReveal text="Websites and automation," className="block" stagger={0.07} delay={0.15} />
-          <BlurReveal text="built with intent." className="block text-white" stagger={0.07} delay={0.5} />
+          <BlurReveal text="Websites and automation," className="block" stagger={0.07} delay={0.05} />
+          <BlurReveal text="built with intent." className="block text-white" stagger={0.07} delay={0.3} />
         </h1>
 
         {/* sub + CTAs */}

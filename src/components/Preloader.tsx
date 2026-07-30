@@ -30,7 +30,14 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const DURATION = reduce ? 300 : 1700;
+    // Kept short on purpose: this is a branding flourish, not a real loading
+    // gate, and it fully covers the page while it runs. The original 1700ms
+    // count + 250ms grace + 900ms lift held every visitor (and every GTmetrix
+    // run) behind an opaque screen for ~2.85s before any real content could
+    // paint — that's almost exactly the 2.9s LCP Vico measured. Same counter
+    // + crosshair + lift choreography, just fast enough to not be the page's
+    // biggest performance cost.
+    const DURATION = reduce ? 250 : 450;
     let raf = 0;
     let start = 0;
 
@@ -50,8 +57,8 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
     const doneAt = setTimeout(() => {
       setCount(100);
       setDone(true);
-    }, DURATION + 250);
-    const completeAt = setTimeout(() => onComplete(), DURATION + 1300);
+    }, DURATION + 120);
+    const completeAt = setTimeout(() => onComplete(), DURATION + 700);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -66,7 +73,7 @@ export function Preloader({ onComplete }: { onComplete: () => void }) {
       className="fixed inset-0 z-[100] flex flex-col justify-between bg-[var(--color-paper)] px-5 py-5 text-[var(--color-paper-ink)] sm:px-8 sm:py-7"
       initial={{ y: 0 }}
       animate={done ? { y: "-100%" } : { y: 0 }}
-      transition={{ duration: 0.9, ease: EASE }}
+      transition={{ duration: 0.5, ease: EASE }}
       onAnimationComplete={() => done && onComplete()}
     >
       <Crosshair className="left-4 top-4 sm:left-7 sm:top-7" />
