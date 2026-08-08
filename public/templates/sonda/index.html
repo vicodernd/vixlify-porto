@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SONDA · Deep Water Expeditions</title>
+<meta name="description" content="Expedition diving to remote Pacific seamounts. Nine sites, twelve days, one vessel.">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@300,400,500,800&f[]=synonym@400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SONDA — Deep Water Expeditions
+   Controlling idea: the chart is the product. Every element on
+   the page is plotted as if onto one hydrographic survey chart.
+   ============================================================ */
+
+:root{
+  --abyss:#04121B;
+  --deep:#0A2230;
+  --shelf:#14384A;
+  --foam:#E6EFF0;
+  --haze:#7E9AA6;
+  --faint:#46626E;
+  --lume:#7CFFB2;
+  --lume-deep:#3ECF86;
+  --line:rgba(230,239,240,.12);
+  --line-soft:rgba(230,239,240,.06);
+
+  --ease:cubic-bezier(.4,0,.2,1);
+  --gut:clamp(1.25rem,4.4vw,4.5rem);
+  --maxw:96rem;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+@media (min-width:1440px){ html{font-size:1.111vw} }   /* rem shell: proportional to 4K, never CSS zoom */
+
+body{
+  margin:0;background:var(--abyss);color:var(--foam);
+  font-family:'Synonym',system-ui,sans-serif;font-weight:400;
+  font-size:1rem;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;overscroll-behavior:none;
+}
+body.is-loading{overflow:hidden;height:100vh}
+
+h1,h2,h3,h4{font-family:'Cabinet Grotesk',system-ui,sans-serif;font-weight:300;margin:0;letter-spacing:-.02em;line-height:1.02}
+p{margin:0}
+img,video{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--lume);outline-offset:3px}
+
+/* --- the systems-readout layer ------------------------------ */
+.mono{
+  font-family:'Azeret Mono',ui-monospace,monospace;font-weight:400;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--haze);
+}
+.mono--sm{font-size:.55rem;letter-spacing:.22em}
+.lume{color:var(--lume)}
+
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
+.rule{height:1px;background:var(--line);border:0;margin:0}
+
+/* --- reveal (motion sinks: enters from above, settles down) -- */
+.rv{opacity:0;transform:translateY(-1.1rem)}
+.is-ready .rv{transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* ============================================================
+   00 · SOUNDING (loader)
+   ============================================================ */
+#sounding{
+  position:fixed;inset:0;z-index:100;background:var(--abyss);
+  display:grid;place-items:center;
+  transition:transform 1s var(--ease),opacity .6s var(--ease);
+}
+#sounding.lift{transform:translateY(-100%);opacity:0;pointer-events:none}
+.sounding-in{position:relative;display:grid;place-items:center;width:min(28rem,74vw);aspect-ratio:1}
+.ping{position:absolute;inset:0;margin:auto;width:2rem;height:2rem;border:1px solid var(--lume);border-radius:50%;opacity:0}
+.ping.go{animation:ping 2.6s var(--ease) infinite}
+.ping:nth-child(2){animation-delay:.85s}
+.ping:nth-child(3){animation-delay:1.7s}
+@keyframes ping{
+  0%{transform:scale(1);opacity:.55}
+  100%{transform:scale(14);opacity:0}
+}
+.sounding-num{
+  font-family:'Azeret Mono',monospace;font-weight:300;
+  font-size:clamp(2.4rem,7vw,4.2rem);letter-spacing:-.03em;
+  color:var(--foam);position:relative;z-index:2;font-variant-numeric:tabular-nums;
+}
+.sounding-num span{color:var(--faint);font-size:.36em;letter-spacing:.2em;margin-left:.6em}
+.sounding-label{position:absolute;bottom:-3.2rem;z-index:2}
+.sounding-bar{position:absolute;bottom:-4.6rem;width:9rem;height:1px;background:var(--line);z-index:2;overflow:hidden}
+.sounding-bar i{display:block;height:100%;width:0%;background:var(--lume)}
+
+/* ============================================================
+   NAV (corners, never a bar)
+   ============================================================ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;pointer-events:none;
+     padding-inline:var(--gut);padding-block:clamp(1.1rem,3vw,2.2rem);
+     display:grid;grid-template-columns:1fr auto;align-items:center;gap:1rem;
+     border-bottom:1px solid transparent;
+     transition:transform .55s var(--ease),background-color .45s var(--ease),
+                padding-block .45s var(--ease),border-color .45s var(--ease)}
+.nav.hide{transform:translateY(-104%)}
+.nav.stuck{background-color:rgba(4,18,27,.8);padding-block:.85rem;border-bottom-color:var(--line);
+           backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.brand{pointer-events:auto;display:flex;align-items:baseline;gap:.7rem}
+.brand-mark{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.26em;line-height:1}
+.brand-sub{display:none}
+@media(min-width:52em){.brand-sub{display:block}}
+.nav-links{pointer-events:auto;display:none;gap:1.6rem;align-items:center}
+@media(min-width:64em){.nav-links{display:flex}}
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-.4rem;width:0;height:1px;background:var(--lume);transition:width .4s var(--ease)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{pointer-events:auto;border:1px solid var(--line);padding:.55rem 1.1rem;border-radius:100px;transition:border-color .4s var(--ease),color .4s var(--ease)}
+.nav-cta:hover{border-color:var(--lume);color:var(--lume)}
+
+/* the readout strip sits on its own scrim so it never fights the content
+   it happens to be passing over */
+.hud-scrim{position:fixed;left:0;right:0;bottom:0;height:8rem;z-index:55;pointer-events:none;
+           background:linear-gradient(180deg,rgba(4,18,27,0) 0%,rgba(4,18,27,.55) 46%,rgba(4,18,27,.92) 100%)}
+@media(max-width:52em){.hud-scrim{display:none}}
+
+/* the contextual station readout, bottom-left, rewrites per section */
+.station{position:fixed;left:var(--gut);bottom:var(--gut);z-index:60;pointer-events:none;
+         display:flex;align-items:center;gap:.6rem}
+.station-dot{width:.34rem;height:.34rem;border-radius:50%;background:var(--lume);
+             box-shadow:0 0 0 0 rgba(124,255,178,.5);animation:beat 2.4s var(--ease) infinite}
+@keyframes beat{0%{box-shadow:0 0 0 0 rgba(124,255,178,.45)}70%{box-shadow:0 0 0 .55rem rgba(124,255,178,0)}100%{box-shadow:0 0 0 0 rgba(124,255,178,0)}}
+.station-txt{transition:opacity .35s var(--ease)}
+.clock{position:fixed;right:var(--gut);bottom:var(--gut);z-index:60;pointer-events:none;font-variant-numeric:tabular-nums}
+.station,.clock,.hud-scrim{transition:opacity .45s var(--ease)}
+.hud-off .station,.hud-off .clock,.hud-off .hud-scrim{opacity:0}
+@media(max-width:52em){.station,.clock{display:none}}
+
+/* ============================================================
+   01 · HERO
+   ============================================================ */
+.hero{position:relative;min-height:100svh;display:grid;align-items:end;overflow:hidden}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media video,.hero-media img{width:100%;height:100%;object-fit:cover}
+.hero-media::after{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 50% 0%,rgba(4,18,27,0) 0%,rgba(4,18,27,.55) 62%,rgba(4,18,27,.94) 100%),
+    linear-gradient(180deg,rgba(4,18,27,.55) 0%,rgba(4,18,27,0) 28%);
+}
+/* the faint chart plotted over the water */
+.hero-grid{position:absolute;inset:0;z-index:1;opacity:.5;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+  background-size:5rem 5rem;
+  mask-image:radial-gradient(75% 60% at 50% 45%,#000 0%,transparent 78%);
+  -webkit-mask-image:radial-gradient(75% 60% at 50% 45%,#000 0%,transparent 78%);
+}
+.hero-in{position:relative;z-index:2;width:100%;padding-block:0 clamp(5rem,12vh,9rem)}
+.hero-eyebrow{display:flex;align-items:center;gap:.8rem;margin-bottom:1.6rem}
+.hero-eyebrow i{display:block;width:2.4rem;height:1px;background:var(--lume)}
+.hero h1{
+  font-size:clamp(2.5rem,6.4vw,6.4rem);font-weight:300;
+  max-width:19ch;letter-spacing:-.035em;
+}
+.hero h1 em{font-style:normal;color:var(--haze)}
+.hero-foot{display:grid;gap:2rem;margin-top:clamp(2rem,5vh,3.4rem);
+           grid-template-columns:1fr;align-items:end}
+@media(min-width:60em){.hero-foot{grid-template-columns:1fr auto;gap:4rem}}
+.hero-lede{max-width:42ch;color:var(--haze);font-size:.98rem}
+.hero-stats{display:flex;gap:2.6rem;flex-wrap:wrap}
+.hstat b{display:block;font-family:'Cabinet Grotesk',sans-serif;font-weight:300;
+         font-size:2rem;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.hstat span{display:block;margin-top:.5rem}
+
+/* corner readouts */
+.hero-corner{position:absolute;z-index:2;display:grid;gap:.35rem}
+.hero-corner--tr{top:7.6rem;right:var(--gut);text-align:right}
+@media(max-width:64em){.hero-corner--tr{display:none}}
+
+/* scroll cue */
+.cue{position:absolute;left:50%;bottom:1.6rem;z-index:3;transform:translateX(-50%);
+     display:grid;justify-items:center;gap:.6rem}
+.cue i{display:block;width:1px;height:3rem;background:linear-gradient(var(--lume),transparent);
+       animation:sink 2.4s var(--ease) infinite}
+@keyframes sink{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}
+                51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media(max-width:52em){.cue{display:none}}
+
+/* ============================================================
+   SECTION FURNITURE
+   ============================================================ */
+.sec{position:relative;padding-block:clamp(6rem,14vh,11rem)}
+.sec-head{display:grid;gap:1.6rem;margin-bottom:clamp(2.6rem,6vh,4.6rem)}
+@media(min-width:60em){.sec-head{grid-template-columns:1fr 1fr;gap:4rem;align-items:end}}
+.sec-head h2{font-size:clamp(1.9rem,4vw,3.5rem);max-width:16ch}
+.sec-head p{color:var(--haze);max-width:46ch}
+.idx{display:flex;align-items:center;gap:.9rem;margin-bottom:1.4rem}
+.idx i{display:block;width:1.8rem;height:1px;background:var(--faint)}
+
+/* ============================================================
+   02 · THE CHART
+   ============================================================ */
+#chart{background:linear-gradient(180deg,var(--abyss) 0%,#061924 50%,var(--abyss) 100%)}
+.chart-stage{position:relative;display:grid;gap:1.6rem}
+@media(min-width:70em){.chart-stage{grid-template-columns:1fr 23rem;gap:2.4rem;align-items:stretch}}
+.chart-stage>*{min-width:0}
+.chart-col{display:flex;flex-direction:column;min-width:0}
+
+.chart-frame{position:relative;min-width:0;border:1px solid var(--line);background:
+  radial-gradient(120% 100% at 30% 20%,rgba(20,56,74,.5) 0%,rgba(4,18,27,0) 70%),
+  var(--deep);
+  overflow:hidden}
+.chart-frame::before{ /* chart graticule */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+  background-size:3.2rem 3.2rem}
+.chart-scroll{position:relative}
+.chart-svg{position:relative;display:block;width:100%;height:auto}
+.chart-hint{display:none;position:absolute;right:.9rem;bottom:.7rem;z-index:4;
+            background:rgba(4,18,27,.72);padding:.3rem .6rem;border-radius:100px;
+            border:1px solid var(--line);pointer-events:none}
+
+.contour{fill:none;stroke:rgba(126,154,166,.17);stroke-width:1}
+.contour--deep{stroke:rgba(126,154,166,.085)}
+.island{fill:rgba(20,56,74,.62);stroke:rgba(126,154,166,.34);stroke-width:1}
+.sounding{font-family:'Azeret Mono',monospace;font-size:6.5px;letter-spacing:.06em;
+          fill:rgba(126,154,166,.38);text-anchor:middle}
+.route-base{fill:none;stroke:rgba(230,239,240,.1);stroke-width:1.4;stroke-dasharray:4 5}
+.route{fill:none;stroke:var(--lume);stroke-width:1.6;stroke-linecap:round;
+       filter:drop-shadow(0 0 4px rgba(124,255,178,.45))}
+
+.node{cursor:pointer}
+.node-hit{fill:transparent}
+.node-ring{fill:none;stroke:rgba(230,239,240,.34);stroke-width:1;transition:stroke .35s var(--ease),r .35s var(--ease)}
+.node-core{fill:var(--foam);transition:fill .35s var(--ease),r .35s var(--ease)}
+.node-pulse{fill:none;stroke:var(--lume);stroke-width:1;opacity:0}
+.node-label{font-family:'Azeret Mono',monospace;font-size:7px;letter-spacing:.16em;
+            fill:var(--haze);text-transform:uppercase;transition:fill .35s var(--ease)}
+.node.on .node-ring,.node:hover .node-ring{stroke:var(--lume);r:11}
+.node.on .node-core,.node:hover .node-core{fill:var(--lume);r:3.4}
+.node.on .node-label,.node:hover .node-label{fill:var(--foam)}
+.node.on .node-pulse{opacity:1;animation:npulse 2.2s var(--ease) infinite}
+@keyframes npulse{0%{r:6;opacity:.6}100%{r:20;opacity:0}}
+.node[data-locked="1"] .node-core{fill:var(--faint)}
+.node[data-locked="1"] .node-ring{stroke:rgba(230,239,240,.14)}
+.node[data-locked="1"] .node-label{fill:var(--faint)}
+
+/* the depth-profile card */
+.probe{border:1px solid var(--line);background:var(--deep);padding:1.4rem;display:grid;gap:1.1rem;
+       position:relative;overflow:hidden;align-content:start}
+.probe-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.probe-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:400;font-size:1.32rem;letter-spacing:-.02em;line-height:1.1}
+.probe-num{font-family:'Azeret Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--lume)}
+.profile-svg{display:block;width:100%;height:auto;background:rgba(4,18,27,.6);border:1px solid var(--line-soft)}
+.seabed{fill:rgba(20,56,74,.85);stroke:rgba(126,154,166,.5);stroke-width:1}
+.diveline{fill:none;stroke:var(--lume);stroke-width:1.2;stroke-dasharray:3 3}
+.divedot{fill:var(--lume)}
+.wline{stroke:rgba(230,239,240,.22);stroke-width:1;stroke-dasharray:2 4}
+.ptext{font-family:'Azeret Mono',monospace;font-size:6px;letter-spacing:.14em;fill:var(--faint)}
+.probe-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;border-top:1px solid var(--line);padding-top:1rem}
+.pg b{display:block;font-family:'Cabinet Grotesk',sans-serif;font-weight:400;font-size:1.02rem;
+      letter-spacing:-.01em;margin-top:.3rem;font-variant-numeric:tabular-nums}
+.probe-note{color:var(--haze);font-size:.86rem;line-height:1.55}
+.probe-hint{color:var(--faint)}
+
+/* the expanded site brief */
+.brief{position:absolute;inset:0;z-index:5;background:var(--deep);
+       display:grid;grid-template-rows:1fr auto;opacity:0;pointer-events:none;
+       transition:opacity .45s var(--ease)}
+.brief.open{opacity:1;pointer-events:auto}
+.brief-img{position:relative;overflow:hidden}
+.brief-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(1.06)}
+.brief-img::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,34,48,.1),rgba(10,34,48,.92))}
+.brief-body{position:relative;z-index:2;padding:clamp(1.4rem,3vw,2.4rem);display:grid;gap:1.2rem;align-content:end}
+.brief-body h3{font-size:clamp(1.7rem,3.4vw,2.9rem);font-weight:300}
+.brief-body p{color:var(--haze);max-width:52ch}
+.brief-meta{display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;border-top:1px solid var(--line);padding-top:1.2rem}
+.brief-meta b{display:block;font-family:'Cabinet Grotesk',sans-serif;font-weight:400;font-size:1.15rem;margin-top:.3rem}
+.brief-close{position:absolute;top:1.2rem;right:1.2rem;z-index:6;
+             border:1px solid var(--line);border-radius:100px;padding:.5rem 1rem;
+             background:rgba(4,18,27,.6);backdrop-filter:blur(8px);
+             transition:border-color .35s var(--ease),color .35s var(--ease)}
+.brief-close:hover{border-color:var(--lume);color:var(--lume)}
+.brief.open + .chart-legend{opacity:0}
+
+.chart-legend{display:flex;flex-wrap:wrap;gap:1.4rem 2.2rem;margin-top:1.4rem;
+              padding-top:1.2rem;border-top:1px solid var(--line);transition:opacity .3s var(--ease)}
+.lg{display:flex;align-items:center;gap:.55rem}
+.lg i{display:block;width:.7rem;height:.7rem;border-radius:50%;border:1px solid var(--faint)}
+.lg i.on{border-color:var(--lume);background:var(--lume)}
+.lg i.dash{width:1.4rem;height:0;border-radius:0;border:0;border-top:1px dashed var(--faint)}
+
+/* ============================================================
+   03 · THE DESCENT
+   ============================================================ */
+#descent{position:relative;height:420vh}
+.descent-pin{position:sticky;top:0;height:100svh;overflow:hidden;
+             display:grid;place-items:center}
+.descent-bg{position:absolute;inset:0;z-index:0}
+.descent-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
+                transform:scale(1.06);filter:saturate(.7)}
+.descent-veil{position:absolute;inset:0;z-index:1;background:var(--abyss);opacity:.35}
+#snow{position:absolute;inset:0;z-index:2;width:100%;height:100%}
+.descent-in{position:relative;z-index:3;width:100%;max-width:var(--maxw);
+            margin-inline:auto;padding-inline:var(--gut);
+            display:grid;gap:2rem;align-content:center;height:100%}
+/* Centred with grid, NOT with translateY(-50%): the descent timeline animates
+   `y` on these same elements and GSAP rewrites the whole transform, which wiped
+   the centring out and left the tallest zone hanging off the bottom edge.
+   The asymmetric padding keeps the copy clear of the nav above and the HUD
+   scrim below. */
+.zone{position:absolute;left:var(--gut);right:var(--gut);top:0;bottom:0;
+      display:grid;align-content:center;
+      padding-block:clamp(3rem,8vh,5.5rem) clamp(4rem,11vh,8rem);
+      max-width:34rem;opacity:0}
+.zone h3{font-size:clamp(1.8rem,4.2vw,3.4rem);font-weight:300;margin-bottom:1.1rem}
+.zone p{color:var(--haze);max-width:40ch}
+/* short viewports (13 inch laptops, a browser window that is not full height)
+   are where a pinned 100svh section runs out of room first */
+@media(max-height:820px){
+  .zone h3{font-size:clamp(1.5rem,3.4vw,2.4rem);margin-bottom:.85rem}
+  .zone p{font-size:.93rem;line-height:1.5}
+  .zone-tag{margin-bottom:1rem}
+  .zone{padding-block:clamp(2.5rem,7vh,4rem) clamp(3.2rem,9vh,5.5rem)}
+}
+@media(max-height:640px){
+  .zone h3{font-size:1.35rem;margin-bottom:.6rem}
+  .zone p{font-size:.86rem}
+  .zone-tag{margin-bottom:.7rem}
+}
+.zone-tag{display:inline-flex;align-items:center;gap:.6rem;margin-bottom:1.4rem;
+          border:1px solid var(--line);border-radius:100px;padding:.4rem .9rem}
+/* the depth gauge, right edge */
+.gauge{position:absolute;right:var(--gut);top:50%;transform:translateY(-50%);z-index:4;
+       display:grid;justify-items:end;gap:.6rem}
+@media(max-width:64em){.gauge{display:none}}
+.gauge-num{font-family:'Azeret Mono',monospace;font-weight:300;
+           font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.04em;line-height:1;
+           font-variant-numeric:tabular-nums;color:var(--foam)}
+.gauge-num s{text-decoration:none;color:var(--faint);font-size:.32em;letter-spacing:.2em;margin-left:.4em}
+.gauge-track{width:1px;height:11rem;background:var(--line);position:relative}
+.gauge-track i{position:absolute;left:-2px;width:5px;height:5px;border-radius:50%;background:var(--lume);top:0}
+
+/* ============================================================
+   04 · THE VESSEL
+   ============================================================ */
+.vessel-grid{display:grid;gap:2.4rem}
+@media(min-width:70em){.vessel-grid{grid-template-columns:1.15fr .85fr;gap:3.4rem;align-items:center}}
+.vessel-img{position:relative;overflow:hidden;border:1px solid var(--line)}
+.vessel-img img{width:100%;aspect-ratio:3/2;object-fit:cover;
+                filter:saturate(.62) contrast(1.08) brightness(.72) hue-rotate(-6deg)}
+.vessel-img::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(4,18,27,.36),rgba(4,18,27,.06) 45%,rgba(4,18,27,.6))}
+.vessel-stamp{position:absolute;left:1.1rem;bottom:1.1rem;z-index:2;display:grid;gap:.3rem}
+.spec{display:grid;gap:0}
+.spec-row{display:grid;grid-template-columns:1fr auto;gap:1.2rem;align-items:baseline;
+          padding-block:.85rem;border-bottom:1px solid var(--line)}
+.spec-row:first-child{border-top:1px solid var(--line)}
+.spec-row b{font-family:'Cabinet Grotesk',sans-serif;font-weight:400;font-size:1.06rem;
+            letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+
+/* ============================================================
+   05 · EXPEDITIONS
+   ============================================================ */
+/* the sailing year, drawn as an instrument rather than a list */
+.year{border:1px solid var(--line);background:var(--deep);padding:1.4rem 1.2rem 1rem}
+.year-svg{display:block;width:100%;height:auto;overflow:visible}
+.ymonth{font-family:'Azeret Mono',monospace;font-size:8px;letter-spacing:.18em;
+        fill:var(--faint);text-anchor:middle}
+.yaxis{stroke:var(--line);stroke-width:1}
+.ytick{stroke:rgba(230,239,240,.08);stroke-width:1}
+.yswell{fill:url(#swellFade);stroke:rgba(126,154,166,.5);stroke-width:1}
+.yclosed{fill:url(#closedHatch);stroke:rgba(126,154,166,.26);stroke-width:1}
+.yclosed-lbl{font-family:'Azeret Mono',monospace;font-size:8px;letter-spacing:.18em;
+             fill:var(--haze);text-anchor:middle}
+.ybar{cursor:pointer}
+.ybar:focus{outline:none}
+.ybar:focus-visible rect{stroke-width:2}
+.ybar rect{fill:transparent;stroke:var(--lume);stroke-width:1;
+           transition:fill .4s var(--ease),stroke .4s var(--ease)}
+/* scoped to the index only: the berth count below the bar keeps its own colour,
+   otherwise the selected bar turns it abyss-on-abyss and it vanishes */
+.ynum{font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:.14em;
+      fill:var(--lume);text-anchor:middle;transition:fill .4s var(--ease)}
+.ybar:hover rect{fill:rgba(124,255,178,.18)}
+.ybar.on rect{fill:var(--lume)}
+.ybar.on .ynum{fill:var(--abyss)}
+.ybar .ystem{stroke:var(--lume);stroke-width:1;opacity:.4;transition:opacity .4s var(--ease)}
+.ybar.on .ystem{opacity:1}
+.ysold{font-family:'Azeret Mono',monospace;font-size:7.5px;letter-spacing:.12em;
+       fill:var(--faint);text-anchor:middle;transition:fill .4s var(--ease)}
+.ybar.on .ysold{fill:var(--lume)}
+
+.year-key{display:flex;flex-wrap:wrap;gap:.7rem 1.6rem;margin-top:1rem;
+          padding-top:.9rem;border-top:1px solid var(--line)}
+.yk{display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+.yk i{display:block;flex:0 0 auto;width:.75rem;height:.55rem;border:1px solid var(--faint)}
+.yk i.swell{background:rgba(20,56,74,.9);border-color:rgba(126,154,166,.5)}
+.yk i.closed{background:repeating-linear-gradient(45deg,transparent 0 2px,rgba(126,154,166,.5) 2px 3px)}
+/* named depkey, not dep: `.dep` is the departure panel below and its
+   grid + margin-top leaked onto this 12px swatch */
+.yk i.depkey{border-color:var(--lume);background:var(--lume)}
+.yk-hint{color:var(--faint);margin-left:auto}
+
+/* the selected departure */
+.dep{display:grid;gap:2rem;margin-top:2rem}
+@media(min-width:64em){.dep{grid-template-columns:1.25fr .75fr;gap:2.6rem;align-items:stretch}}
+.dep>*{min-width:0}
+.dep-map{position:relative;border:1px solid var(--line);background:var(--abyss);
+         padding:1rem;display:flex;flex-direction:column;gap:.7rem;min-width:0}
+.dep-svg{display:block;width:100%;height:auto}
+.dep-cap{color:var(--faint)}
+.depContour{fill:none;stroke:rgba(126,154,166,.1);stroke-width:1.6}
+.depIsland{fill:rgba(20,56,74,.45);stroke:rgba(126,154,166,.2);stroke-width:1.4}
+.depGhost{fill:none;stroke:rgba(230,239,240,.09);stroke-width:2;stroke-dasharray:6 8}
+.depTrack{fill:none;stroke:var(--lume);stroke-width:2.6;stroke-linecap:round;
+          filter:drop-shadow(0 0 5px rgba(124,255,178,.4))}
+.depNode{fill:var(--lume)}
+.depNodeRing{fill:none;stroke:var(--lume);stroke-width:1.4;opacity:.5}
+.depLbl{font-family:'Azeret Mono',monospace;font-size:13px;letter-spacing:.12em;
+        fill:var(--foam);text-anchor:middle}
+
+.dep-info{display:flex;flex-direction:column;gap:1rem}
+.dep-info h3{font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:300}
+.dep-info p{color:var(--haze);max-width:38ch}
+.dep-rows{display:grid;margin-top:.3rem}
+.dep-row{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;
+         padding-block:.72rem;border-bottom:1px solid var(--line)}
+.dep-row:first-child{border-top:1px solid var(--line)}
+.dep-row b{font-family:'Cabinet Grotesk',sans-serif;font-weight:400;font-size:1.04rem;
+           font-variant-numeric:tabular-nums}
+.dep-berths{display:flex;align-items:center;gap:.6rem}
+.berth-dots{display:flex;gap:.22rem}
+.berth-dots i{width:.34rem;height:.34rem;border-radius:50%;background:var(--faint)}
+.berth-dots i.free{background:var(--lume)}
+.dep-info .submit{margin-top:.6rem;max-width:none}
+
+/* ============================================================
+   06 · BRIEFING + BOOKING
+   ============================================================ */
+#booking{background:linear-gradient(180deg,var(--abyss),#061a25)}
+.book-grid{display:grid;gap:2.6rem}
+@media(min-width:70em){.book-grid{grid-template-columns:.9fr 1.1fr;gap:4rem;align-items:start}}
+.book-img{position:relative;overflow:hidden;border:1px solid var(--line)}
+.book-img img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:saturate(.6) contrast(1.05) brightness(.8)}
+.book-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,18,27,.1),rgba(4,18,27,.7))}
+.book-panel{display:grid;gap:1.8rem}
+.book-panel h2{font-size:clamp(1.9rem,4vw,3.2rem)}
+.field{display:grid;gap:.55rem}
+.field input,.field select{
+  width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);
+  color:var(--foam);font-family:'Synonym',sans-serif;font-size:1rem;padding:.7rem 0;
+  transition:border-color .4s var(--ease)}
+.field input:focus,.field select:focus{outline:0;border-color:var(--lume)}
+.field select option{background:var(--deep);color:var(--foam)}
+.field input::placeholder{color:var(--faint)}
+.book-row{display:grid;gap:1.6rem}
+@media(min-width:44em){.book-row{grid-template-columns:1fr 1fr}}
+.submit{display:inline-flex;align-items:center;justify-content:space-between;gap:2rem;
+        border:1px solid var(--lume);color:var(--lume);border-radius:100px;
+        padding:.9rem 1.4rem;width:100%;max-width:22rem;
+        transition:background .45s var(--ease),color .45s var(--ease)}
+.submit:hover{background:var(--lume);color:var(--abyss)}
+.creds{display:flex;flex-wrap:wrap;gap:.7rem 1.4rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+.creds span{position:relative;padding-right:1.4rem}
+.creds span::after{content:"·";position:absolute;right:.5rem;color:var(--faint)}
+.creds span:last-child{padding-right:0}
+.creds span:last-child::after{content:none}
+
+/* ============================================================
+   07 · FOOTER
+   ============================================================ */
+footer{position:relative;overflow:hidden;border-top:1px solid var(--line);
+       padding-top:clamp(3.4rem,8vh,6rem)}
+.foot-top{display:grid;gap:2.4rem}
+@media(min-width:64em){.foot-top{grid-template-columns:1.4fr 1fr 1fr;gap:3rem}}
+.foot-col h4{font-family:'Azeret Mono',monospace;font-size:.6rem;font-weight:400;
+             letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:1.1rem}
+.foot-col a{display:block;padding-block:.35rem;color:var(--haze);transition:color .35s var(--ease)}
+.foot-col a:hover{color:var(--lume)}
+.foot-status{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;
+             margin-top:clamp(2.4rem,6vh,4rem);padding-block:1.2rem;border-top:1px solid var(--line)}
+.foot-mark{position:relative;margin-top:1rem;line-height:.76;overflow:hidden}
+.foot-mark span{display:block;font-family:'Cabinet Grotesk',sans-serif;font-weight:800;
+                font-size:clamp(4.5rem,20vw,17rem);letter-spacing:-.045em;
+                color:transparent;-webkit-text-stroke:1px rgba(230,239,240,.16);
+                transform:translateY(22%)}
+.sounding-line{position:absolute;left:50%;top:0;width:1px;height:0;background:linear-gradient(var(--lume),transparent);z-index:2}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:70em){
+  /* the chart carries too much information to shrink: let it scroll instead */
+  .chart-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+                scrollbar-width:none}
+  .chart-scroll::-webkit-scrollbar{display:none}
+  .chart-svg{min-width:52rem}
+  .chart-hint{display:block}
+  .chart-legend{gap:.8rem 1.4rem}
+}
+@media(max-width:52em){
+  .hero-stats{gap:1.6rem}
+  .hstat b{font-size:1.6rem}
+  /* the year axis needs its width too, so let it scroll like the chart */
+  .year{padding:1rem .9rem .8rem;overflow-x:auto;scrollbar-width:none}
+  .year::-webkit-scrollbar{display:none}
+  .year-svg{min-width:34rem}
+  .yk-hint{margin-left:0}
+  .depLbl{font-size:19px}
+}
+</style>
+</head>
+<body class="is-loading">
+
+<!-- ===================== 00 · SOUNDING ===================== -->
+<div id="sounding">
+  <div class="sounding-in">
+    <span class="ping"></span><span class="ping"></span><span class="ping"></span>
+    <div class="sounding-num"><span id="snd-num">0000</span><span>M</span></div>
+    <div class="sounding-label mono mono--sm">Sounding the drop</div>
+    <div class="sounding-bar"><i id="snd-bar"></i></div>
+  </div>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" aria-label="Primary">
+  <div class="brand">
+    <span class="brand-mark">SONDA</span>
+    <span class="brand-sub mono mono--sm">Deep Water Expeditions</span>
+  </div>
+  <div style="display:flex;gap:2rem;align-items:center;justify-self:end">
+    <div class="nav-links mono">
+      <a href="#chart">Chart</a>
+      <a href="#descent">Descent</a>
+      <a href="#vessel">Vessel</a>
+      <a href="#trips">Expeditions</a>
+    </div>
+    <a href="#booking" class="nav-cta mono">Request a berth</a>
+  </div>
+</nav>
+
+<div class="hud-scrim"></div>
+<div class="station">
+  <span class="station-dot"></span>
+  <span class="station-txt mono mono--sm" id="station">At anchor · Station 00</span>
+</div>
+<div class="clock mono mono--sm" id="clock">--:--:-- UTC</div>
+
+<main>
+
+<!-- ===================== 01 · HERO ===================== -->
+<header class="hero">
+  <div class="hero-media">
+    <video id="heroVid" autoplay muted loop playsinline preload="metadata" poster="img/hero-water.webp">
+      <source src="img/descent.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-corner hero-corner--tr">
+    <span class="mono mono--sm">Position &nbsp;<span class="lume">08&deg;41.2&prime;S &nbsp;134&deg;07.6&prime;E</span></span>
+    <span class="mono mono--sm">Sea floor &nbsp;<span class="lume">1840 m</span></span>
+    <span class="mono mono--sm">Heading &nbsp;<span class="lume">214&deg;</span></span>
+    <span class="mono mono--sm">Water &nbsp;<span class="lume">27.4 &deg;C</span></span>
+  </div>
+
+  <div class="hero-in wrap">
+    <div class="hero-eyebrow rv"><i></i><span class="mono">Nine sites &nbsp;·&nbsp; Twelve days &nbsp;·&nbsp; One vessel</span></div>
+    <h1 class="rv">We only go where the chart <em>runs out.</em></h1>
+    <div class="hero-foot">
+      <p class="hero-lede rv">SONDA runs twelve day expeditions to seamounts and outer atolls in the eastern Banda Sea. No resorts, no day boats, no other divers. The nearest harbour is nineteen hours astern.</p>
+      <div class="hero-stats rv">
+        <div class="hstat"><b>1840</b><span class="mono mono--sm">Max sounding, m</span></div>
+        <div class="hstat"><b>09</b><span class="mono mono--sm">Charted sites</span></div>
+        <div class="hstat"><b>16</b><span class="mono mono--sm">Berths aboard</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cue"><i></i><span class="mono mono--sm">Descend</span></div>
+</header>
+
+<!-- ===================== 02 · THE CHART ===================== -->
+<section class="sec" id="chart">
+  <div class="wrap">
+    <div class="idx rv"><span class="mono mono--sm lume">01</span><i></i><span class="mono mono--sm">The chart</span></div>
+    <div class="sec-head">
+      <h2 class="rv">Every site on this route was sounded by us.</h2>
+      <p class="rv">Nothing here came off a tourist map. The line below is the actual track we run, plotted from our own echo soundings. Hover a station to read its wall. Open one to read the dive.</p>
+    </div>
+
+    <div class="chart-stage">
+      <div class="chart-col">
+        <div class="chart-frame">
+          <div class="chart-scroll">
+          <svg class="chart-svg" viewBox="0 0 1200 700" role="img" aria-label="Expedition chart of nine charted dive sites">
+            <defs>
+              <linearGradient id="shelfFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#14384A" stop-opacity=".42"/>
+                <stop offset="100%" stop-color="#14384A" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- bathymetric contour rings around each feature -->
+            <g id="contours"></g>
+            <!-- reef and island landmasses -->
+            <g id="islands"></g>
+            <!-- scattered echo soundings, the way a real chart is annotated -->
+            <g id="soundings"></g>
+
+            <!-- the route -->
+            <path id="routeBase" class="route-base"></path>
+            <path id="route" class="route"></path>
+
+            <!-- nodes injected by script -->
+            <g id="nodes"></g>
+
+            <!-- chart chrome -->
+            <g class="ptext">
+              <text x="24" y="34" style="letter-spacing:.24em">CHART SND-04 · EASTERN BANDA SEA</text>
+              <text x="24" y="50" style="letter-spacing:.24em">SOUNDINGS IN METRES · WGS 84</text>
+            </g>
+            <g stroke="rgba(230,239,240,.2)" stroke-width="1">
+              <line x1="1080" y1="660" x2="1160" y2="660"/>
+              <line x1="1080" y1="655" x2="1080" y2="665"/>
+              <line x1="1160" y1="655" x2="1160" y2="665"/>
+            </g>
+            <text class="ptext" x="1096" y="650">20 NAUTICAL MILES</text>
+          </svg>
+          </div>
+          <span class="chart-hint mono mono--sm">Drag the chart sideways</span>
+
+          <!-- expanded site brief -->
+          <div class="brief" id="brief" aria-hidden="true">
+            <button class="brief-close mono mono--sm" id="briefClose">Close</button>
+            <div class="brief-img"><img id="briefImg" src="img/site-wall.webp" alt=""></div>
+            <div class="brief-body">
+              <span class="mono mono--sm lume" id="briefNum">STATION 01</span>
+              <h3 id="briefName">Site</h3>
+              <p id="briefText">.</p>
+              <div class="brief-meta" id="briefMeta"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-legend mono mono--sm">
+          <span class="lg"><i class="on"></i>Charted station</span>
+          <span class="lg"><i></i>Sounded, not yet dived</span>
+          <span class="lg"><i class="dash"></i>Planned track</span>
+          <span class="lg" style="color:var(--faint)">Use &larr; &rarr; to step through stations</span>
+        </div>
+      </div>
+
+      <!-- depth profile probe -->
+      <aside class="probe" id="probe" aria-live="polite">
+        <div class="probe-top">
+          <span class="probe-name" id="pName">Select a station</span>
+          <span class="probe-num" id="pNum">--</span>
+        </div>
+
+        <svg class="profile-svg" viewBox="0 0 300 190" role="img" aria-label="Depth profile cross-section">
+          <line class="wline" x1="0" y1="14" x2="300" y2="14"/>
+          <text class="ptext" x="4" y="10">SURFACE</text>
+          <path class="seabed" id="pSeabed" d="M0,190 L300,190 Z"></path>
+          <path class="diveline" id="pDive" d=""></path>
+          <circle class="divedot" id="pDot" cx="0" cy="0" r="2.6" opacity="0"></circle>
+          <text class="ptext" id="pMaxLabel" x="0" y="0" opacity="0">0 M</text>
+        </svg>
+
+        <div class="probe-grid">
+          <div class="pg"><span class="mono mono--sm">Max depth</span><b id="pDepth">—</b></div>
+          <div class="pg"><span class="mono mono--sm">Current</span><b id="pCurrent">—</b></div>
+          <div class="pg"><span class="mono mono--sm">Visibility</span><b id="pViz">—</b></div>
+          <div class="pg"><span class="mono mono--sm">Water</span><b id="pTemp">—</b></div>
+        </div>
+        <p class="probe-note" id="pNote">Hover or focus a station on the chart to pull its sounding profile. Click to open the full dive brief.</p>
+        <span class="mono mono--sm probe-hint" id="pHint">Awaiting selection</span>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 03 · THE DESCENT ===================== -->
+<section id="descent">
+  <div class="descent-pin">
+    <div class="descent-bg">
+      <img id="z0" src="img/zone-sunlit.webp" alt="Sunlight fanning down onto a reef ridge in the epipelagic zone">
+      <img id="z1" src="img/zone-twilight.webp" alt="Dim cold mid-water in the mesopelagic zone">
+      <img id="z2" src="img/zone-midnight.webp" alt="A translucent deep sea creature lit by a submersible light in the bathypelagic zone">
+    </div>
+    <div class="descent-veil"></div>
+    <canvas id="snow"></canvas>
+
+    <div class="descent-in">
+      <article class="zone" id="zone0">
+        <span class="zone-tag mono mono--sm">Epipelagic &nbsp;·&nbsp; 0 to 200 m</span>
+        <h3>The sunlit layer, where every other operator stops.</h3>
+        <p>Warm, bright, busy. It is where the reef lives and where checkout dives happen. We spend one morning here, then leave it behind.</p>
+      </article>
+      <article class="zone" id="zone1">
+        <span class="zone-tag mono mono--sm">Mesopelagic &nbsp;·&nbsp; 200 to 1000 m</span>
+        <h3>The twilight. Colour goes first, then contrast.</h3>
+        <p>Below two hundred metres red has already gone. Shapes arrive before they resolve. This is where our deeper walls drop away and where the big animals pass through on their way up.</p>
+      </article>
+      <article class="zone" id="zone2">
+        <span class="zone-tag mono mono--sm">Bathypelagic &nbsp;·&nbsp; below 1000 m</span>
+        <h3>Midnight. Nothing down here has ever seen the sun.</h3>
+        <p>We do not dive it. We sound it, we film it from the ROV, and we sit with the fact that the floor under the vessel is a thousand metres further down than anything we will touch.</p>
+      </article>
+    </div>
+
+    <div class="gauge">
+      <div class="gauge-num"><span id="gaugeNum">0000</span><s>M</s></div>
+      <div class="gauge-track"><i id="gaugeDot"></i></div>
+      <span class="mono mono--sm" id="gaugeZone">Epipelagic</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 04 · THE VESSEL ===================== -->
+<section class="sec" id="vessel">
+  <div class="wrap">
+    <div class="idx rv"><span class="mono mono--sm lume">02</span><i></i><span class="mono mono--sm">The vessel</span></div>
+    <div class="vessel-grid">
+      <div class="vessel-img rv" data-parallax>
+        <img src="img/vessel-dawn.webp" alt="An expedition liveaboard at anchor inside a remote atoll lagoon at dawn">
+        <div class="vessel-stamp">
+          <span class="mono mono--sm lume">MV SONDA</span>
+          <span class="mono mono--sm">Steel hull &nbsp;·&nbsp; Built 2019 &nbsp;·&nbsp; Refit 2025</span>
+        </div>
+      </div>
+      <div>
+        <h2 class="rv" style="font-size:clamp(1.8rem,3.6vw,2.9rem);margin-bottom:1.2rem">Nineteen hours from the nearest harbour, and self sufficient for twenty one days.</h2>
+        <p class="rv" style="color:var(--haze);margin-bottom:2rem;max-width:44ch">Everything on this list exists because something went wrong on an earlier trip. The chamber is the only one within four hundred nautical miles.</p>
+        <div class="spec rv">
+          <div class="spec-row"><span class="mono mono--sm">Length overall</span><b>38.6 m</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Guest berths</span><b>16</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Crew and guides</span><b>14</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Range</span><b>3200 nm</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Compressors</span><b>2 &nbsp;+&nbsp; nitrox membrane</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Recompression chamber</span><b>Aboard</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Tenders</span><b>3 &nbsp;·&nbsp; 7.5 m RIB</b></div>
+          <div class="spec-row"><span class="mono mono--sm">Watermaker</span><b>9000 L / day</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 05 · EXPEDITIONS ===================== -->
+<section class="sec" id="trips">
+  <div class="wrap">
+    <div class="idx rv"><span class="mono mono--sm lume">03</span><i></i><span class="mono mono--sm">Expeditions</span></div>
+    <div class="sec-head">
+      <h2 class="rv">Four departures a year. That is all the weather allows.</h2>
+      <p class="rv">Berths are held for returning divers until ninety days out. Minimum 100 logged dives, and at least 20 of them below thirty metres.</p>
+    </div>
+
+    <!-- the sailing year: mean swell, the closed monsoon window, four departures -->
+    <div class="year rv">
+      <svg class="year-svg" viewBox="0 0 1200 208" role="img"
+           aria-label="The sailing year: mean swell by month, the closed monsoon window, and four selectable departures">
+        <defs>
+          <pattern id="closedHatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="7" stroke="rgba(126,154,166,.3)" stroke-width="1"/>
+          </pattern>
+          <linearGradient id="swellFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#14384A" stop-opacity=".72"/>
+            <stop offset="100%" stop-color="#14384A" stop-opacity=".05"/>
+          </linearGradient>
+        </defs>
+        <g id="yearBody"></g>
+      </svg>
+      <div class="year-key mono mono--sm">
+        <span class="yk"><i class="swell"></i>Mean swell</span>
+        <span class="yk"><i class="closed"></i>Closed, monsoon</span>
+        <span class="yk"><i class="depkey"></i>Departure</span>
+        <span class="yk yk-hint">Pick a departure, or use &larr; &rarr;</span>
+      </div>
+    </div>
+
+    <!-- the selected departure, drawn as its own track on the same chart coordinates -->
+    <div class="dep rv">
+      <div class="dep-map">
+        <svg class="dep-svg" viewBox="0 0 1200 700" role="img" aria-label="Track for the selected departure">
+          <g id="depBody"></g>
+        </svg>
+        <span class="mono mono--sm dep-cap">Track for this departure &nbsp;·&nbsp; same chart, same soundings</span>
+      </div>
+
+      <div class="dep-info">
+        <span class="mono mono--sm lume" id="depDate">MAR 2027</span>
+        <h3 id="depName">Outer Banda Traverse</h3>
+        <p id="depBlurb">The full traverse.</p>
+        <div class="dep-rows">
+          <div class="dep-row"><span class="mono mono--sm">Stations</span><b id="depStations">4</b></div>
+          <div class="dep-row"><span class="mono mono--sm">Nights aboard</span><b id="depNights">12</b></div>
+          <div class="dep-row"><span class="mono mono--sm">Deepest dive</span><b id="depDeep">72 m</b></div>
+          <div class="dep-row">
+            <span class="mono mono--sm">Berths left</span>
+            <b class="dep-berths"><span class="berth-dots" id="depDots"></span><span id="depFree">2</span></b>
+          </div>
+          <div class="dep-row"><span class="mono mono--sm">Per berth</span><b id="depPrice">$8,400</b></div>
+        </div>
+        <a class="submit" href="#booking"><span>Request this departure</span><span>&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 06 · BOOKING ===================== -->
+<section class="sec" id="booking">
+  <div class="wrap">
+    <div class="idx rv"><span class="mono mono--sm lume">04</span><i></i><span class="mono mono--sm">Request a berth</span></div>
+    <div class="book-grid">
+      <div class="book-img rv" data-parallax>
+        <img src="img/deck-briefing.webp" alt="A diver checking a regulator on the dive deck at first light">
+      </div>
+      <div class="book-panel">
+        <h2 class="rv">Tell us what you have dived. We will tell you honestly if this is too much.</h2>
+        <p class="rv" style="color:var(--haze);max-width:46ch">We turn down roughly a third of requests. Nobody enjoys being the one person on the boat who cannot do the dive.</p>
+        <form class="book-panel rv" onsubmit="event.preventDefault();this.querySelector('.submit span').textContent='Request logged';">
+          <div class="book-row">
+            <label class="field"><span class="mono mono--sm">Name</span><input type="text" placeholder="Your full name" required></label>
+            <label class="field"><span class="mono mono--sm">Email</span><input type="email" placeholder="you@example.com" required></label>
+          </div>
+          <div class="book-row">
+            <label class="field"><span class="mono mono--sm">Departure</span>
+              <select><option>Mar 2027 · Outer Banda Traverse</option><option>Jun 2027 · The Pelagic Window</option><option>Sep 2027 · Night Garden Charter</option><option>Nov 2027 · Survey Leg</option></select>
+            </label>
+            <label class="field"><span class="mono mono--sm">Logged dives</span><input type="number" min="0" placeholder="100" required></label>
+          </div>
+          <button class="submit mono" type="submit"><span>Send request</span><span>&rarr;</span></button>
+        </form>
+        <div class="creds mono mono--sm">
+          <span>Trimix guides aboard</span>
+          <span>DAN partnered</span>
+          <span>Chamber on board</span>
+          <span>Max 6 divers per guide</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== 07 · FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-col">
+        <h4>Station</h4>
+        <p style="color:var(--haze);max-width:34ch">SONDA operates one vessel and one route. When the weather closes the Banda in January we stop, refit, and sound new ground.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Expeditions</h4>
+        <a href="#trips">Outer Banda Traverse</a>
+        <a href="#trips">The Pelagic Window</a>
+        <a href="#trips">Night Garden Charter</a>
+        <a href="#trips">Survey Leg</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <a href="#booking">Request a berth</a>
+        <a href="#chart">The chart</a>
+        <a href="#vessel">MV Sonda</a>
+        <a href="#booking">Medical and prerequisites</a>
+      </div>
+    </div>
+
+    <div class="foot-status mono mono--sm">
+      <span>08&deg;41.2&prime;S &nbsp;134&deg;07.6&prime;E</span>
+      <span>Sea floor <span class="lume">1840 m</span></span>
+      <span>Next departure <span class="lume">Mar 2027</span></span>
+      <span id="clock2">--:--:-- UTC</span>
+    </div>
+    <div class="foot-mark"><span>SONDA</span><i class="sounding-line" id="soundLine"></i></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   SITE DATA — every station carries its own real sounding profile.
+   `profile` is a seabed cross-section: [x 0..1, depth 0..1].
+   `dive` is how deep the dive actually goes, as a fraction.
+   ============================================================ */
+const SITES = [
+  { n:'01', name:'Taka Reef',      x:148,  y:566, depth:22, cur:'Slack to 0.5 kn', viz:'30 m', temp:'28.1 °C', dived:1,
+    img:'img/zone-sunlit.webp', dive:.28,
+    profile:[[0,.05],[.22,.12],[.42,.2],[.6,.3],[.78,.42],[1,.5]],
+    note:'The checkout dive. A gentle coral ridge that lets the guides watch your trim before anything serious happens.',
+    life:'Bumphead parrotfish, reef sharks' },
+
+  { n:'02', name:'The Ledge',      x:252,  y:432, depth:38, cur:'0.5 to 1.5 kn', viz:'25 m', temp:'27.6 °C', dived:1,
+    img:'img/site-wall.webp', dive:.52,
+    profile:[[0,.06],[.3,.09],[.42,.55],[.55,.62],[.75,.7],[1,.76]],
+    note:'A shelf that ends without warning. You swim over sand at eighteen metres and then there is simply nothing under you.',
+    life:'Grey reefs, dogtooth tuna' },
+
+  { n:'03', name:'Sula Seamount',  x:420,  y:374, depth:55, cur:'1 to 2.5 kn', viz:'35 m', temp:'26.8 °C', dived:1,
+    img:'img/site-pelagic.webp', dive:.62,
+    profile:[[0,.9],[.24,.62],[.42,.2],[.5,.14],[.62,.24],[.8,.66],[1,.92]],
+    note:'A pinnacle rising off a thousand metre floor. Current hits the summit and everything in the water column comes to feed on it.',
+    life:'Hammerheads, schooling barracuda' },
+
+  { n:'04', name:'Black Arch',     x:492,  y:198, depth:44, cur:'0.5 to 1 kn', viz:'22 m', temp:'27.0 °C', dived:1,
+    img:'img/site-wall.webp', dive:.58,
+    profile:[[0,.12],[.24,.5],[.36,.34],[.46,.52],[.62,.68],[.82,.74],[1,.8]],
+    note:'A collapsed lava tube you swim through at thirty two metres. Two minutes of total dark, then the exit opens onto open blue.',
+    life:'Sweetlips, giant frogfish' },
+
+  { n:'05', name:'Cathedral',      x:652,  y:284, depth:36, cur:'Slack', viz:'40 m', temp:'27.4 °C', dived:1,
+    img:'img/site-pelagic.webp', dive:.46,
+    profile:[[0,.1],[.2,.14],[.34,.42],[.5,.3],[.66,.44],[.84,.6],[1,.66]],
+    note:'Light shafts drop through four holes in the reef roof at about eleven in the morning. Fifteen minutes, then it closes.',
+    life:'Glassfish clouds, whitetips' },
+
+  { n:'06', name:'The Chimney',    x:744,  y:456, depth:61, cur:'0.5 to 2 kn', viz:'18 m', temp:'26.2 °C', dived:1,
+    img:'img/zone-midnight.webp', dive:.74,
+    profile:[[0,.14],[.32,.2],[.44,.86],[.5,.94],[.56,.86],[.68,.24],[1,.18]],
+    note:'A vertical shaft cut into the wall. It bottoms out at sixty one metres and the temperature drops four degrees on the way down.',
+    life:'Slipper lobster, deep gorgonians' },
+
+  { n:'07', name:'Mola Point',     x:902,  y:388, depth:48, cur:'1 to 2 kn', viz:'28 m', temp:'25.4 °C', dived:1,
+    img:'img/site-pelagic.webp', dive:.6,
+    profile:[[0,.2],[.22,.36],[.4,.52],[.58,.58],[.76,.7],[1,.82]],
+    note:'A cold upwelling corner. Uncomfortable, low visibility, and the single most reliable big animal station on the route.',
+    life:'Mola mola, thresher sharks' },
+
+  { n:'08', name:'Night Garden',   x:988,  y:216, depth:18, cur:'Slack', viz:'20 m', temp:'28.4 °C', dived:1,
+    img:'img/site-lume.webp', dive:.24,
+    profile:[[0,.08],[.24,.16],[.46,.14],[.64,.24],[.82,.2],[1,.3]],
+    note:'Shallow, sheltered, and done only after dark. Kill your torch, wave a hand, and the whole bay lights up green behind it.',
+    life:'Bioluminescent plankton, bobtail squid' },
+
+  { n:'09', name:'Hadal Rim',      x:1122, y:336, depth:72, cur:'2 to 3 kn', viz:'15 m', temp:'24.1 °C', dived:0,
+    img:'img/site-wall.webp', dive:.86,
+    profile:[[0,.16],[.18,.22],[.28,.92],[.4,.96],[.6,.97],[.8,.98],[1,.99]],
+    note:'Sounded on the 2026 survey leg, dived twice, then closed. The wall keeps going past our gas plan and the current does not forgive.',
+    life:'Unrecorded' }
+];
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const clamp = (v,a,b) => Math.min(b,Math.max(a,v));
+const lerp = (a,b,t) => a + (b-a)*t;
+const NS = 'http://www.w3.org/2000/svg';
+
+/* one smoothed track through a list of points (catmull-rom -> cubic bezier).
+   Shared: the main chart and each departure's mini track use the same curve. */
+function smooth(pts){
+  if(pts.length < 2) return '';
+  let d = `M${pts[0].x},${pts[0].y}`;
+  for(let i=0;i<pts.length-1;i++){
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${p1.x+(p2.x-p0.x)/6},${p1.y+(p2.y-p0.y)/6}`
+       + ` ${p2.x-(p3.x-p1.x)/6},${p2.y-(p3.y-p1.y)/6} ${p2.x},${p2.y}`;
+  }
+  return d;
+}
+
+/* ============================================================
+   00 · SOUNDING loader — gates every reveal behind `ready`
+   ============================================================ */
+let ready = false;
+(function sounding(){
+  const num = $('#snd-num'), bar = $('#snd-bar'), shell = $('#sounding');
+  $$('.ping').forEach(p => p.classList.add('go'));
+  const target = 1840, dur = 1300, t0 = performance.now();
+  function step(t){
+    const p = clamp((t - t0)/dur, 0, 1);
+    const eased = 1 - Math.pow(1-p, 3);
+    num.textContent = String(Math.round(eased*target)).padStart(4,'0');
+    bar.style.width = (eased*100).toFixed(1) + '%';
+    if(p < 1){ requestAnimationFrame(step); }
+    else{
+      setTimeout(()=>{
+        shell.classList.add('lift');
+        document.body.classList.remove('is-loading');
+        document.body.classList.add('is-ready');
+        ready = true;
+        revealAll();
+        setTimeout(()=> shell.remove(), 1100);
+      }, 220);
+    }
+  }
+  // gate on fonts, not window.load — avoids a reflow mid-reveal
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(()=> requestAnimationFrame(step));
+})();
+
+/* ============================================================
+   REVEALS — sink in from above, only once ready
+   ============================================================ */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+},{ threshold:.15, rootMargin:'0px 0px -6% 0px' });
+
+function revealAll(){
+  $$('.rv').forEach((el,i)=>{
+    if(el.closest('.hero')){
+      setTimeout(()=> el.classList.add('in'), 90*i);
+    } else {
+      io.observe(el);
+    }
+  });
+}
+
+/* ============================================================
+   SMOOTH SCROLL + GSAP
+   ============================================================ */
+gsap.registerPlugin(ScrollTrigger);
+let lenis = null;
+if(window.Lenis){
+  lenis = new Lenis({ duration:1.05, smoothWheel:true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+  window.__lenis = lenis;   // exposed so tooling can drive scroll deterministically
+}
+
+/* nav: gets out of the way going down, comes back coming up, and
+   only wears a scrim once it is over content instead of the hero */
+(function nav(){
+  const bar = document.querySelector('.nav');
+  let last = 0;
+  function onScroll(y){
+    const stuck = y > window.innerHeight * .72;
+    bar.classList.toggle('stuck', stuck);
+    bar.classList.toggle('hide', stuck && y > last + 4);
+    if(y < last - 4) bar.classList.remove('hide');
+    last = y;
+  }
+  if(lenis) lenis.on('scroll', ({ scroll }) => onScroll(scroll));
+  else window.addEventListener('scroll', () => onScroll(window.scrollY), { passive:true });
+})();
+$$('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const t = document.querySelector(a.getAttribute('href'));
+    if(!t) return;
+    e.preventDefault();
+    if(lenis) lenis.scrollTo(t, { offset:0 });
+    else t.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+/* ============================================================
+   LIVE CHROME — clock + contextual station readout
+   ============================================================ */
+(function chrome(){
+  const c1 = $('#clock'), c2 = $('#clock2');
+  function tick(){
+    const d = new Date();
+    const s = [d.getUTCHours(),d.getUTCMinutes(),d.getUTCSeconds()]
+      .map(n=>String(n).padStart(2,'0')).join(':') + ' UTC';
+    c1.textContent = s; c2.textContent = s;
+  }
+  tick(); setInterval(tick, 1000);
+
+  const st = $('#station');
+  const marks = [
+    ['.hero','At anchor · Station 00'],
+    ['#chart','Plotting track · 09 stations'],
+    ['#descent','Descending · water column'],
+    ['#vessel','Alongside · MV Sonda'],
+    ['#trips','Scheduling · 4 departures'],
+    ['#booking','Open channel · requests'],
+    ['footer','End of chart']
+  ];
+  marks.forEach(([sel,label])=>{
+    const el = document.querySelector(sel);
+    if(!el) return;
+    ScrollTrigger.create({
+      trigger:el, start:'top 60%', end:'bottom 40%',
+      onToggle:(s)=>{ if(s.isActive){ st.style.opacity=0;
+        setTimeout(()=>{ st.textContent = label; st.style.opacity=1; },180); } }
+    });
+  });
+
+  /* the footer carries its own status bar, so the floating HUD stands down */
+  ScrollTrigger.create({
+    trigger:'footer', start:'top 78%',
+    onToggle:(s)=> document.body.classList.toggle('hud-off', s.isActive)
+  });
+})();
+
+/* ============================================================
+   02 · THE CHART
+   ============================================================ */
+(function chart(){
+  const svg = $('.chart-svg');
+  const nodesG = $('#nodes'), contoursG = $('#contours');
+  const route = $('#route'), routeBase = $('#routeBase');
+
+  const pts = SITES.map(s=>({x:s.x,y:s.y}));
+  const d = smooth(pts);
+  route.setAttribute('d', d);
+  routeBase.setAttribute('d', d);
+
+  /* --- the chart body: reefs, bathymetry, echo soundings -----
+     Seeded so the chart is byte-identical on every load. */
+  const islandsG = $('#islands'), soundingsG = $('#soundings');
+  let seed = 20260808;
+  const rnd = () => (seed = (seed*1664525 + 1013904223) % 4294967296) / 4294967296;
+
+  /* an irregular closed lobe, so nothing reads as a plain circle */
+  function blob(cx, cy, r, jitter){
+    const N = 11, pp = [];
+    for(let i=0;i<N;i++){
+      const a = (i/N)*Math.PI*2;
+      const rr = r * (1 + (rnd()-.5)*jitter);
+      pp.push({ x: cx + Math.cos(a)*rr, y: cy + Math.sin(a)*rr*.78 });
+    }
+    // close the ring by wrapping the control points
+    let d = `M${pp[0].x.toFixed(1)},${pp[0].y.toFixed(1)}`;
+    for(let i=0;i<N;i++){
+      const p0 = pp[(i-1+N)%N], p1 = pp[i%N], p2 = pp[(i+1)%N], p3 = pp[(i+2)%N];
+      d += ` C${(p1.x+(p2.x-p0.x)/6).toFixed(1)},${(p1.y+(p2.y-p0.y)/6).toFixed(1)}`
+         + ` ${(p2.x-(p3.x-p1.x)/6).toFixed(1)},${(p2.y-(p3.y-p1.y)/6).toFixed(1)}`
+         + ` ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+    }
+    return d + 'Z';
+  }
+
+  const FEATURES = [
+    { cx: 92,  cy: 652, r:108, land:true  },  // the home reef, bottom left
+    { cx: 566, cy: 618, r: 58, land:true  },  // outer atoll
+    { cx:1112, cy: 104, r: 86, land:true  },  // the last land before open ocean
+    { cx: 838, cy: 126, r: 36, land:true  },  // a rock
+    { cx: 420, cy: 374, r: 70, land:false },  // Sula Seamount, submerged
+    { cx: 744, cy: 456, r: 56, land:false },  // The Chimney
+    { cx:1122, cy: 336, r: 78, land:false }   // Hadal Rim
+  ];
+
+  FEATURES.forEach(f=>{
+    const rings = f.land ? 3 : 4;
+    for(let i=rings;i>=1;i--){
+      const p = document.createElementNS(NS,'path');
+      p.setAttribute('d', blob(f.cx, f.cy, f.r*(0.42 + i*0.26), .18));
+      p.setAttribute('class', i > (f.land?1:2) ? 'contour contour--deep' : 'contour');
+      contoursG.appendChild(p);
+    }
+    if(f.land){
+      const core = document.createElementNS(NS,'path');
+      core.setAttribute('d', blob(f.cx, f.cy, f.r*0.5, .26));
+      core.setAttribute('class','island');
+      islandsG.appendChild(core);
+    }
+  });
+
+  /* echo soundings: a depth figure gets deeper the further it sits
+     from the nearest reef, exactly how a real chart reads */
+  const nearestLand = (x,y) => Math.min(...FEATURES.filter(f=>f.land)
+    .map(f => Math.hypot(x-f.cx, y-f.cy) - f.r*0.5));
+  for(let gx=0; gx<13; gx++){
+    for(let gy=0; gy<7; gy++){
+      const x = 52 + gx*92 + (rnd()-.5)*40;
+      const y = 60 + gy*94 + (rnd()-.5)*40;
+      if(rnd() > .62) continue;
+      // keep soundings clear of the stations themselves
+      if(SITES.some(s => Math.hypot(x-s.x, y-s.y) < 62)) continue;
+      const dist = nearestLand(x,y);
+      if(dist < 6) continue;
+      const depth = Math.round(clamp(dist*3.1 + rnd()*90, 8, 1990));
+      const t = document.createElementNS(NS,'text');
+      t.setAttribute('x', x.toFixed(0));
+      t.setAttribute('y', y.toFixed(0));
+      t.setAttribute('class','sounding');
+      t.textContent = depth < 100 ? depth.toFixed(0) : depth;
+      soundingsG.appendChild(t);
+    }
+  }
+
+  /* nodes */
+  const nodeEls = SITES.map((s,i)=>{
+    const g = document.createElementNS(NS,'g');
+    g.setAttribute('class','node');
+    g.setAttribute('tabindex','0');
+    g.setAttribute('role','button');
+    g.setAttribute('aria-label', `Station ${s.n}, ${s.name}, maximum depth ${s.depth} metres`);
+    g.dataset.i = i;
+    g.dataset.locked = s.dived ? '0' : '1';
+    const flip = s.y > 430;
+    g.innerHTML =
+      `<circle class="node-pulse" cx="${s.x}" cy="${s.y}" r="6"></circle>
+       <circle class="node-ring" cx="${s.x}" cy="${s.y}" r="8"></circle>
+       <circle class="node-core" cx="${s.x}" cy="${s.y}" r="2.6"></circle>
+       <text class="node-label" x="${s.x}" y="${flip ? s.y+26 : s.y-18}" text-anchor="middle">${s.n} · ${s.name.toUpperCase()}</text>
+       <circle class="node-hit" cx="${s.x}" cy="${s.y}" r="26"></circle>`;
+    nodesG.appendChild(g);
+    return g;
+  });
+
+  /* --- route draws itself on scroll scrub -------------------
+     Never .from() inside a scrubbed timeline: set the start
+     state explicitly, then .to() it. */
+  const len = route.getTotalLength();
+  gsap.set(route, { strokeDasharray: len, strokeDashoffset: len });
+  gsap.set(nodeEls, { opacity: 0 });
+
+  const tl = gsap.timeline({
+    scrollTrigger:{ trigger:'#chart', start:'top 62%', end:'bottom 88%', scrub:.6 }
+  });
+  tl.to(route, { strokeDashoffset: 0, ease:'none', duration: 1 }, 0);
+  nodeEls.forEach((el,i)=>{
+    tl.to(el, { opacity:1, duration:.06, ease:'none' }, (i/SITES.length)*0.94);
+  });
+
+  /* --- the depth profile probe ----------------------------- */
+  const P = { W:300, H:190, TOP:14 };
+  const el = {
+    name:$('#pName'), num:$('#pNum'), seabed:$('#pSeabed'), dive:$('#pDive'),
+    dot:$('#pDot'), maxLabel:$('#pMaxLabel'),
+    depth:$('#pDepth'), cur:$('#pCurrent'), viz:$('#pViz'), temp:$('#pTemp'),
+    note:$('#pNote'), hint:$('#pHint')
+  };
+
+  function drawProfile(s){
+    const usable = P.H - P.TOP - 6;
+    const px = f => f * P.W;
+    const py = f => P.TOP + f * usable;
+
+    // seabed cross-section, closed to the bottom of the frame
+    let dSea = `M0,${py(s.profile[0][1])}`;
+    for(let i=1;i<s.profile.length;i++){
+      const [x,y] = s.profile[i], [px0,py0] = s.profile[i-1];
+      const cx = px((px0 + x)/2);
+      dSea += ` Q${cx},${py(py0)} ${px(x)},${py(y)}`;
+    }
+    dSea += ` L${P.W},${P.H} L0,${P.H} Z`;
+    el.seabed.setAttribute('d', dSea);
+
+    // the dive line: entry at the surface, down to working depth, back up
+    const dy = py(s.dive);
+    el.dive.setAttribute('d',
+      `M18,${P.TOP} L${P.W*.3},${dy} L${P.W*.66},${dy} L${P.W-20},${P.TOP+10}`);
+    el.dot.setAttribute('cx', P.W*.48);
+    el.dot.setAttribute('cy', dy);
+    el.dot.setAttribute('opacity','1');
+    el.maxLabel.setAttribute('x', P.W*.48 + 8);
+    el.maxLabel.setAttribute('y', dy - 5);
+    el.maxLabel.setAttribute('opacity','1');
+    el.maxLabel.textContent = s.depth + ' M';
+  }
+
+  let active = -1;
+  function select(i, {open=false}={}){
+    const s = SITES[i];
+    if(!s) return;
+    active = i;
+    nodeEls.forEach((n,j)=> n.classList.toggle('on', j===i));
+    el.name.textContent = s.name;
+    el.num.textContent = 'STN ' + s.n;
+    el.depth.textContent = s.depth + ' m';
+    el.cur.textContent = s.cur;
+    el.viz.textContent = s.viz;
+    el.temp.textContent = s.temp;
+    el.note.textContent = s.note;
+    el.hint.textContent = s.dived ? 'Click to open the dive brief' : 'Closed · sounded, not in rotation';
+    drawProfile(s);
+    if(open) openBrief(i);
+  }
+
+  /* --- the expanded brief ---------------------------------- */
+  const brief = $('#brief');
+  function openBrief(i){
+    const s = SITES[i];
+    $('#briefImg').src = s.img;
+    $('#briefImg').alt = s.name;
+    $('#briefNum').textContent = 'STATION ' + s.n + (s.dived ? '' : ' · CLOSED');
+    $('#briefName').textContent = s.name;
+    $('#briefText').textContent = s.note;
+    $('#briefMeta').innerHTML = [
+      ['Max depth', s.depth + ' m'],
+      ['Current', s.cur],
+      ['Visibility', s.viz],
+      ['Water', s.temp],
+      ['On the wall', s.life]
+    ].map(([k,v]) => `<div><span class="mono mono--sm">${k}</span><b>${v}</b></div>`).join('');
+    brief.classList.add('open');
+    brief.setAttribute('aria-hidden','false');
+    $('#briefClose').focus();
+  }
+  function closeBrief(){
+    brief.classList.remove('open');
+    brief.setAttribute('aria-hidden','true');
+    if(active > -1) nodeEls[active].focus();
+  }
+  $('#briefClose').addEventListener('click', closeBrief);
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && brief.classList.contains('open')) closeBrief(); });
+
+  /* --- interaction ----------------------------------------- */
+  nodeEls.forEach((n,i)=>{
+    n.addEventListener('mouseenter', ()=> select(i));
+    n.addEventListener('focus',      ()=> select(i));
+    n.addEventListener('click',      ()=> select(i,{open:true}));
+    n.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); select(i,{open:true}); }
+      if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){ e.preventDefault(); nodeEls[(i+1)%nodeEls.length].focus(); }
+      if(e.key === 'ArrowLeft'  || e.key === 'ArrowUp'  ){ e.preventDefault(); nodeEls[(i-1+nodeEls.length)%nodeEls.length].focus(); }
+    });
+  });
+
+  /* prime the probe with the first station once the chart is in view */
+  ScrollTrigger.create({ trigger:'#chart', start:'top 55%', once:true, onEnter:()=> select(0) });
+})();
+
+/* ============================================================
+   03 · THE DESCENT — pinned water column, 3 zones, marine snow
+   ============================================================ */
+(function descent(){
+  const zones = [$('#zone0'), $('#zone1'), $('#zone2')];
+  const imgs  = [$('#z0'), $('#z1'), $('#z2')];
+  const num = $('#gaugeNum'), dot = $('#gaugeDot'), zlabel = $('#gaugeZone');
+  const pin = $('.descent-pin');
+  const names = ['Epipelagic','Mesopelagic','Bathypelagic'];
+
+  gsap.set(zones, { opacity:0, y:-24 });
+  gsap.set(imgs,  { opacity:0, scale:1.06, yPercent:0 });
+  gsap.set(imgs[0], { opacity:1 });
+  gsap.set(zones[0], { opacity:1, y:0 });
+
+  const tl = gsap.timeline({
+    scrollTrigger:{ trigger:'#descent', start:'top top', end:'bottom bottom', scrub:.6 }
+  });
+
+  /* Pad the timeline to a total duration of exactly 1 so every position below
+     IS the scroll fraction. Without this the timeline ended at 0.82 and GSAP
+     stretched it to fill the scroll, which pushed the midnight zone's fade-in
+     out to the very end of the section: it was never on screen long enough
+     to read. */
+  tl.to({}, { duration: 1 }, 0);
+
+  // zone 0 -> 1
+  tl.to(zones[0], { opacity:0, y:26, duration:.08 }, .24)
+    .to(imgs[0],  { opacity:0, duration:.12 }, .24)
+    .to(imgs[1],  { opacity:1, duration:.12 }, .26)
+    .to(zones[1], { opacity:1, y:0, duration:.08 }, .34)
+  // zone 1 -> 2
+    .to(zones[1], { opacity:0, y:26, duration:.08 }, .58)
+    .to(imgs[1],  { opacity:0, duration:.12 }, .58)
+    .to(imgs[2],  { opacity:1, duration:.12 }, .60)
+    .to(zones[2], { opacity:1, y:0, duration:.08 }, .68);
+
+  // the gauge: depth climbs monotonically, background sinks toward black
+  ScrollTrigger.create({
+    trigger:'#descent', start:'top top', end:'bottom bottom', scrub:true,
+    onUpdate:(self)=>{
+      const p = self.progress;
+      const depth = Math.round(Math.pow(p, 1.45) * 1840);
+      num.textContent = String(depth).padStart(4,'0');
+      dot.style.top = (p*100).toFixed(1) + '%';
+      const zi = depth < 200 ? 0 : depth < 1000 ? 1 : 2;
+      zlabel.textContent = names[zi];
+      // the water column itself drifts and creeps closer as you sink through it.
+      // drift must never exceed the scale overhang, (scale-1)/2, or the top edge
+      // of the frame opens up: at p=1 that is 6% travel against 8.5% of headroom.
+      gsap.set(imgs, { yPercent: p * 6, scale: 1.08 + p * 0.09 });
+      pin.style.background = `linear-gradient(180deg,#04121B ${(1-p)*40}%, #010A10 100%)`;
+      $('.descent-veil').style.opacity = (0.3 + p*0.45).toFixed(3);
+      snowDensity = zi === 0 ? 1 : zi === 1 ? .6 : .3;
+    }
+  });
+
+  /* --- marine snow (canvas 2D, drifting upward as we sink) -- */
+  const cv = $('#snow'), ctx = cv.getContext('2d');
+  let parts = [], W = 0, H = 0, dpr = 1, raf = 0, visible = false;
+  window.snowDensity = 1;
+
+  function size(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W*dpr; cv.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n = Math.round(clamp(W*H/9000, 40, 220));
+    parts = Array.from({length:n}, ()=>({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.5 + .3,
+      v: Math.random()*.5 + .16,
+      a: Math.random()*.5 + .12,
+      d: Math.random()*Math.PI*2
+    }));
+  }
+
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    const dens = window.snowDensity;
+    for(let i=0;i<parts.length;i++){
+      const p = parts[i];
+      if(i/parts.length > dens) continue;
+      p.y -= p.v;                    // drifts up: the camera is sinking
+      p.d += 0.008;
+      p.x += Math.sin(p.d)*0.16;
+      if(p.y < -4){ p.y = H + 4; p.x = Math.random()*W; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(214,235,240,${p.a*dens})`;
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  // only run the loop while the section is on screen: no leak, no idle cost
+  const vis = new IntersectionObserver(([e])=>{
+    visible = e.isIntersecting;
+    if(visible && !raf){ size(); raf = requestAnimationFrame(frame); }
+    else if(!visible && raf){ cancelAnimationFrame(raf); raf = 0; }
+  },{ threshold:0 });
+  vis.observe($('#descent'));
+
+  let rt;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(rt);
+    rt = setTimeout(()=>{ if(visible) size(); }, 180);
+  });
+})();
+
+/* ============================================================
+   05 · EXPEDITIONS — the sailing year as an instrument.
+   The headline claims the weather sets the schedule, so the
+   design has to PROVE it: mean swell per month, the closed
+   monsoon window, and the four departures that fit between.
+   Selecting one redraws its own track on the chart's own
+   coordinates, so the mini map is literally the same water.
+   ============================================================ */
+(function expeditions(){
+  const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  // mean significant wave height, metres. The monsoon peak is why Jan and Feb are shut.
+  const SWELL = [4.2, 3.8, 2.1, 1.4, 1.1, 0.9, 1.0, 1.2, 1.3, 1.8, 2.4, 3.6];
+  const CLOSED = [0, 1];
+  const TRIPS = [
+    { m:2,  date:'MAR 2027', name:'Outer Banda Traverse', nights:12, berths:6, free:2, price:'$8,400',
+      stations:[0,2,3,8],
+      blurb:'The whole route, end to end, finishing on the wall we do not talk about much. Two berths left because returning divers took the rest.' },
+    { m:5,  date:'JUN 2027', name:'The Pelagic Window',   nights:12, berths:6, free:5, price:'$8,900',
+      stations:[0,2,4,6],
+      blurb:'Timed to the upwelling. Flatter water, colder corners, and the best odds of the year on big animals in open blue.' },
+    { m:8,  date:'SEP 2027', name:'Night Garden Charter', nights:10, berths:6, free:1, price:'$9,600',
+      stations:[0,1,4,7],
+      blurb:'Built around the bioluminescence. Six night dives, shallow and sheltered, and the shortest surface intervals we run.' },
+    { m:10, date:'NOV 2027', name:'Survey Leg, open berths', nights:14, berths:6, free:6, price:'$7,200',
+      stations:[0,3,5,7,8],
+      blurb:'We are sounding two uncharted walls. Cheaper, longer, and you help run the echo sounder. Nothing about it is a holiday.' }
+  ];
+
+  const body = $('#yearBody'), depBody = $('#depBody');
+  const X0 = 44, X1 = 1156, CELL = (X1 - X0) / 12;
+  const BASE = 118, TOP = 24, MAXS = 4.5;
+  const sy = v => BASE - (v / MAXS) * (BASE - TOP);
+  const mk = (tag, attrs, txt) => {
+    const e = document.createElementNS(NS, tag);
+    for(const k in attrs) e.setAttribute(k, attrs[k]);
+    if(txt != null) e.textContent = txt;
+    return e;
+  };
+
+  /* --- the year axis ---------------------------------------- */
+  // the swell curve, drawn through the month centres and closed down to the baseline
+  const spts = SWELL.map((v,i)=>({ x: X0 + i*CELL + CELL/2, y: sy(v) }));
+  const curve = smooth(spts);
+  body.appendChild(mk('path', {
+    class:'yswell',
+    d: `M${X0},${BASE} L${X0},${spts[0].y} L${spts[0].x},${spts[0].y}${curve.slice(curve.indexOf(' C'))} L${X1},${spts[11].y} L${X1},${BASE} Z`
+  }));
+
+  // the closed window
+  CLOSED.forEach(m=>{
+    body.appendChild(mk('rect', { class:'yclosed', x: X0 + m*CELL, y: TOP - 4,
+      width: CELL, height: BASE - TOP + 4 }));
+  });
+  body.appendChild(mk('text', { class:'yclosed-lbl', x: X0 + CELL, y: TOP - 10 }, 'CLOSED · MONSOON'));
+
+  // baseline, month ticks and labels
+  body.appendChild(mk('line', { class:'yaxis', x1: X0, y1: BASE, x2: X1, y2: BASE }));
+  MONTHS.forEach((mo,i)=>{
+    const x = X0 + i*CELL;
+    body.appendChild(mk('line', { class:'ytick', x1: x, y1: TOP - 4, x2: x, y2: BASE }));
+    body.appendChild(mk('text', { class:'ymonth', x: x + CELL/2, y: 196 }, mo));
+  });
+  body.appendChild(mk('line', { class:'ytick', x1: X1, y1: TOP - 4, x2: X1, y2: BASE }));
+  body.appendChild(mk('text', { class:'ymonth', x: X0 - 12, y: sy(MAXS) + 4, style:'text-anchor:end' }, '4.5 M'));
+  body.appendChild(mk('text', { class:'ymonth', x: X0 - 12, y: BASE + 4, style:'text-anchor:end' }, '0'));
+
+  // the four departures
+  const bars = TRIPS.map((t,i)=>{
+    const g = mk('g', { class:'ybar', tabindex:'0', role:'button',
+      'aria-label': `${t.date}, ${t.name}, ${t.free} of ${t.berths} berths left, ${t.price} per berth` });
+    const bx = X0 + t.m*CELL + CELL*0.19, bw = CELL*0.62;
+    g.appendChild(mk('line', { class:'ystem', x1: bx + bw/2, y1: sy(SWELL[t.m]), x2: bx + bw/2, y2: 128 }));
+    g.appendChild(mk('rect', { x: bx, y: 128, width: bw, height: 22, rx: 2 }));
+    g.appendChild(mk('text', { class:'ynum', x: bx + bw/2, y: 143 }, String(i+1).padStart(2,'0')));
+    g.appendChild(mk('text', { class:'ysold', x: bx + bw/2, y: 166 }, t.free === 0 ? 'FULL' : `${t.free} LEFT`));
+    body.appendChild(g);
+    return g;
+  });
+
+  /* --- the selected departure's own track ------------------- */
+  function drawDeparture(i){
+    const t = TRIPS[i];
+    depBody.textContent = '';
+
+    // the same reefs, faint, so the mini map is recognisably the same water
+    [[92,652,108],[566,618,58],[1112,104,86]].forEach(([cx,cy,r])=>{
+      depBody.appendChild(mk('ellipse', { class:'depIsland', cx, cy, rx: r*0.5, ry: r*0.39 }));
+      depBody.appendChild(mk('ellipse', { class:'depContour', cx, cy, rx: r*0.86, ry: r*0.67 }));
+    });
+
+    // the full route, ghosted, then this departure's leg on top
+    depBody.appendChild(mk('path', { class:'depGhost', d: smooth(SITES.map(s=>({x:s.x,y:s.y}))) }));
+    depBody.appendChild(mk('path', { class:'depTrack',
+      d: smooth(t.stations.map(k=>({ x: SITES[k].x, y: SITES[k].y }))) }));
+
+    t.stations.forEach(k=>{
+      const s = SITES[k];
+      depBody.appendChild(mk('circle', { class:'depNodeRing', cx: s.x, cy: s.y, r: 16 }));
+      depBody.appendChild(mk('circle', { class:'depNode', cx: s.x, cy: s.y, r: 6 }));
+      depBody.appendChild(mk('text', { class:'depLbl', x: s.x, y: s.y > 430 ? s.y + 36 : s.y - 26 },
+        s.name.toUpperCase()));
+    });
+
+    // the panel
+    $('#depDate').textContent = t.date;
+    $('#depName').textContent = t.name;
+    $('#depBlurb').textContent = t.blurb;
+    $('#depStations').textContent = t.stations.length;
+    $('#depNights').textContent = t.nights;
+    $('#depDeep').textContent = Math.max(...t.stations.map(k=>SITES[k].depth)) + ' m';
+    $('#depPrice').textContent = t.price;
+    $('#depFree').textContent = t.free === 0 ? 'Full' : `${t.free} of ${t.berths}`;
+    $('#depDots').innerHTML = Array.from({length:t.berths},(_,n)=>
+      `<i class="${n < t.free ? 'free' : ''}"></i>`).join('');
+
+    bars.forEach((b,j)=> b.classList.toggle('on', j === i));
+  }
+
+  bars.forEach((b,i)=>{
+    b.addEventListener('click', ()=> drawDeparture(i));
+    b.addEventListener('focus', ()=> drawDeparture(i));
+    b.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); drawDeparture(i); }
+      if(e.key === 'ArrowRight'){ e.preventDefault(); bars[(i+1)%bars.length].focus(); }
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); bars[(i-1+bars.length)%bars.length].focus(); }
+    });
+  });
+
+  drawDeparture(0);
+})();
+
+/* ============================================================
+   PARALLAX — every photograph sinks slower than the frame that
+   holds it, so scrolling past one reads as depth rather than a
+   slide. The image is over-scaled first, so the drift never
+   exposes an edge. Set-then-to, never .from(), so landing
+   mid-page still resolves to the right position.
+   ============================================================ */
+$$('[data-parallax]').forEach(frame=>{
+  const img = frame.querySelector('img');
+  if(!img) return;
+  const HANG = 1.2, DRIFT = 7;   // 10% overhang each side, ±7% travel: never exposes an edge
+  gsap.set(img, { scale: HANG, yPercent: -DRIFT, willChange:'transform' });
+  gsap.to(img, {
+    yPercent: DRIFT, ease:'none',
+    scrollTrigger:{
+      trigger: frame, start:'top bottom', end:'bottom top', scrub:.6,
+      // release the compositor layer once the frame is off screen
+      onEnter:      ()=> gsap.set(img, { willChange:'transform' }),
+      onEnterBack:  ()=> gsap.set(img, { willChange:'transform' }),
+      onLeave:      ()=> gsap.set(img, { willChange:'auto' }),
+      onLeaveBack:  ()=> gsap.set(img, { willChange:'auto' })
+    }
+  });
+});
+
+/* ============================================================
+   07 · FOOTER sounding line
+   ============================================================ */
+gsap.timeline({ scrollTrigger:{ trigger:'footer', start:'top 90%', end:'bottom bottom', scrub:.6 } })
+  .fromTo('#soundLine', { height:0 }, { height:'100%', ease:'none' });
+
+gsap.timeline({ scrollTrigger:{ trigger:'.foot-mark', start:'top 95%', end:'bottom bottom', scrub:.6 } })
+  .fromTo('.foot-mark span', { yPercent:34 }, { yPercent:6, ease:'none' });
+
+/* hero parallax: the water keeps sinking as you leave it */
+gsap.timeline({ scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:.6 } })
+  .fromTo('.hero-media', { yPercent:0 }, { yPercent:12, ease:'none' }, 0)
+  .fromTo('.hero-in',    { yPercent:0, opacity:1 }, { yPercent:-6, opacity:0, ease:'none' }, 0);
+
+/* keep triggers honest when the video finally reports its size */
+const hv = $('#heroVid');
+if(hv) hv.addEventListener('loadeddata', ()=> ScrollTrigger.refresh());
+window.addEventListener('load', ()=> ScrollTrigger.refresh());
+
+})();
+</script>
+</body>
+</html>
